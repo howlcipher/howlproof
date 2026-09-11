@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Rendered checks on the published site. Screenshots stay local.
 
 A page that was never rendered has not been shown to work at any width, so this
@@ -12,6 +13,49 @@ from playwright.sync_api import sync_playwright
 
 WIDTHS = (375, 768, 1440)
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _collect_errors(errors: list[str]):
+    def record(message) -> None:
+        if message.type == "error":
+            errors.append(message.text)
+
+    return record
+
+
+def _problems(page, width: int, errors: list[str]) -> list[str]:
+    """Everything a reader would hit at this width, as a list of failures."""
+    found: list[str] = []
+
+    def check(condition: bool, description: str) -> None:
+        if not condition:
+            found.append(f"{width}px: {description}")
+
+    check(page.locator("h1").count() == 1, "there is not exactly one h1")
+    check(bool(page.title()), "the document has no title")
+    check(
+        bool(page.locator('meta[name="description"]').get_attribute("content")),
+        "there is no meta description",
+    )
+    check(page.locator("main").is_visible(), "the main landmark is not visible")
+    check(
+        page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1"),
+        "the document scrolls horizontally",
+    )
+    for link in page.locator('a[href^="#"]').all():
+        fragment = (link.get_attribute("href") or "#")[1:]
+        if fragment:
+            check(
+                page.locator(f'[id="{fragment}"]').count() == 1,
+                f"#{fragment} resolves to no unique element",
+            )
+    page.keyboard.press("Tab")
+    focused = page.evaluate(
+        "() => (document.activeElement && document.activeElement.className) || ''"
+    )
+    check("skip-link" in focused, f"the first tab stop is not the skip link ({focused!r})")
+    check(not errors, f"the page logged console errors: {errors[:3]}")
+    return found
 
 
 def main() -> int:
@@ -30,43 +74,9 @@ def main() -> int:
         for width in WIDTHS:
             page = browser.new_page(viewport={"width": width, "height": 1000})
             errors: list[str] = []
-            page.on(
-                "console",
-                lambda message: errors.append(message.text)
-                if message.type == "error"
-                else None,
-            )
+            page.on("console", _collect_errors(errors))
             page.goto(url, wait_until="networkidle")
-
-            def check(condition: bool, description: str) -> None:
-                if not condition:
-                    failures.append(f"{width}px: {description}")
-
-            check(page.locator("h1").count() == 1, "there is not exactly one h1")
-            check(bool(page.title()), "the document has no title")
-            check(
-                bool(page.locator('meta[name="description"]').get_attribute("content")),
-                "there is no meta description",
-            )
-            check(page.locator("main").is_visible(), "the main landmark is not visible")
-            check(
-                page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1"),
-                "the document scrolls horizontally",
-            )
-            for link in page.locator('a[href^="#"]').all():
-                fragment = (link.get_attribute("href") or "#")[1:]
-                if fragment:
-                    check(
-                        page.locator(f'[id="{fragment}"]').count() == 1,
-                        f"#{fragment} resolves to no unique element",
-                    )
-            page.keyboard.press("Tab")
-            focused = page.evaluate(
-                "() => (document.activeElement && document.activeElement.className) || ''"
-            )
-            check("skip-link" in focused, f"the first tab stop is not the skip link ({focused!r})")
-            check(not errors, f"the page logged console errors: {errors[:3]}")
-
+            failures.extend(_problems(page, width, errors))
             page.screenshot(path=str(screenshots / f"site_{width}.png"), full_page=True)
             print(f"rendered {width}px -> screenshots/site_{width}.png")
             page.close()
@@ -90,8 +100,10 @@ def main() -> int:
         for failure in failures:
             print(f"FAIL {failure}", file=sys.stderr)
         return 1
-    print(f"PASS {', '.join(f'{w}px' for w in WIDTHS)}: one h1, landmarks, fragments, keyboard, "
-          "no overflow, no console errors, theme and drawer")
+    print(
+        f"PASS {', '.join(f'{w}px' for w in WIDTHS)}: one h1, landmarks, fragments, keyboard, "
+        "no overflow, no console errors, theme and drawer"
+    )
     return 0
 
 

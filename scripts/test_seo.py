@@ -4,10 +4,10 @@ SEO & Search Discoverability Verification Suite for HowlProof.
 Validates structured data, canonical tags, sitemap, robots.txt, and entity linking.
 """
 
+import json
 import os
 import re
 import sys
-import json
 import xml.etree.ElementTree as ET
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -15,6 +15,7 @@ DOCS_DIR = os.path.join(REPO_ROOT, "docs")
 INDEX_HTML = os.path.join(DOCS_DIR, "index.html")
 ROBOTS_TXT = os.path.join(DOCS_DIR, "robots.txt")
 SITEMAP_XML = os.path.join(DOCS_DIR, "sitemap.xml")
+
 
 def test_seo():
     print("=== Running HowlProof SEO Verification ===")
@@ -40,7 +41,9 @@ def test_seo():
     assert meta_desc_match, "Missing meta description in index.html"
     meta_desc = meta_desc_match.group(1).strip()
     assert len(meta_desc) > 30, "Meta description too short"
-    assert len(meta_desc) <= 170, f"Meta description exceeds 170 chars ({len(meta_desc)}): {meta_desc}"
+    assert len(meta_desc) <= 170, (
+        f"Meta description exceeds 170 chars ({len(meta_desc)}): {meta_desc}"
+    )
     print(f"  [PASS] meta description exists: {meta_desc[:60]}... ({len(meta_desc)} chars)")
 
     # Canonical URL check
@@ -65,7 +68,9 @@ def test_seo():
 
     # Open Graph & Twitter Cards
     assert 'property="og:title"' in html or "property='og:title'" in html, "Missing og:title"
-    assert 'property="og:description"' in html or "property='og:description'" in html, "Missing og:description"
+    assert 'property="og:description"' in html or "property='og:description'" in html, (
+        "Missing og:description"
+    )
     assert 'property="og:url"' in html or "property='og:url'" in html, "Missing og:url"
     assert 'name="twitter:card"' in html or "name='twitter:card'" in html, "Missing twitter:card"
     print("  [PASS] Open Graph and Twitter card tags verified")
@@ -80,19 +85,13 @@ def test_seo():
     ld = json.loads(json_ld_matches[0].strip())
     assert ld.get("@context") in ("https://schema.org", "http://schema.org"), "Invalid @context"
     ld_type = ld.get("@type")
-    assert ld_type == "SoftwareApplication", (
-        f"Expected SoftwareApplication, got {ld_type}"
-    )
+    assert ld_type == "SoftwareApplication", f"Expected SoftwareApplication, got {ld_type}"
     author = ld.get("author", {})
     expected_author = "William" + " " + "Elias"
-    assert author.get("name") == expected_author, (
-        f"Author name must be {expected_author}"
-    )
+    assert author.get("name") == expected_author, f"Author name must be {expected_author}"
     author_url = author.get("url")
     expected_author_url = "https://howlcipher.github.io/william_elias/"
-    assert author_url == expected_author_url, (
-        "Author URL must point to william_elias portfolio"
-    )
+    assert author_url == expected_author_url, "Author URL must point to william_elias portfolio"
     print(f"  [PASS] JSON-LD valid and correctly attributes {expected_author}")
 
     # Internal entity links
@@ -122,9 +121,10 @@ def test_seo():
     assert expected_canonical in locs, (
         f"sitemap.xml does not contain canonical URL {expected_canonical}"
     )
-    print(f"  [PASS] docs/sitemap.xml valid and contains canonical URL")
+    print("  [PASS] docs/sitemap.xml valid and contains canonical URL")
 
     print("\nAll SEO validations PASSED successfully!\n")
+
 
 if __name__ == "__main__":
     try:
@@ -132,6 +132,6 @@ if __name__ == "__main__":
     except AssertionError as e:
         print(f"FAIL: {e}", file=sys.stderr)
         sys.exit(1)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - a script reports any failure and exits non-zero
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)

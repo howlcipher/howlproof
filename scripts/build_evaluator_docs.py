@@ -72,8 +72,7 @@ def render() -> str:
             tools = ", ".join(f"`{name}`" for name in sorted(evaluator.tools)) or "nothing extra"
             in_profiles = ", ".join(sorted(membership.get(evaluator.id, []))) or "none"
             lines.append(
-                f"| `{evaluator.id}` | v{evaluator.version} | {summary} | {tools} | "
-                f"{in_profiles} |"
+                f"| `{evaluator.id}` | v{evaluator.version} | {summary} | {tools} | {in_profiles} |"
             )
         lines.append("")
 
@@ -88,8 +87,10 @@ def render() -> str:
         lines.append(f"| `{name}` | {len(data['evaluators'])} | {description} |")
     lines += [
         "",
-        "A single evaluator id is accepted anywhere a profile name is, so one check can be "
-        "re-run in isolation:",
+        (
+            "A single evaluator id is accepted anywhere a profile name is, so one check can "
+            "be re-run in isolation:"
+        ),
         "",
         "```bash",
         "howlproof evaluate . --profile markup.escaping",
