@@ -133,6 +133,45 @@ def test_evidence_inside_the_artifact_is_refused(tmp_path):
     assert "refusing to write evidence inside" in json.loads(result.stderr)["error"]
 
 
+def test_an_artifact_that_mutates_itself_exits_four(tmp_path):
+    """Exit 4 is a documented behaviour, so it is exercised through the real CLI.
+
+    The artifact's own declared command writes into the artifact while the evaluation
+    is running. Nothing HowlProof does causes this, which is the point: the guard is
+    on the subject, not on the evaluator's good intentions.
+    """
+    artifact = tmp_path / "self-mutating"
+    artifact.mkdir()
+    (artifact / "README.md").write_text("# An artifact that edits itself mid-evaluation\n")
+    marker = artifact / "WRITTEN_DURING_EVALUATION.txt"
+    (artifact / "howlproof.yaml").write_text(
+        "schema_version: 1\n"
+        "artifact: self-mutating\n"
+        "profiles: [cli.contract]\n"
+        "acceptance:\n"
+        "  - {id: AC-01, requirement: max_findings, limit: 0}\n"
+        "cli:\n"
+        "  command:\n"
+        "    - python3\n"
+        "    - -c\n"
+        f"    - \"open({str(marker)!r}, 'a').write('x')\"\n"
+    )
+    result = howlproof(
+        "evaluate",
+        str(artifact),
+        "--evidence-root",
+        str(tmp_path / "proof"),
+        "--json",
+        expect=4,
+    )
+    payload = json.loads(result.stdout)
+    assert payload["verdict"] == "INSUFFICIENT_EVIDENCE"
+    assert payload["deciding_rule"] == "integrity"
+    integrity = next(f for f in payload["findings"] if f["adversary"] == "INTEGRITY")
+    assert integrity["severity"] == "BLOCKER"
+    assert "WRITTEN_DURING_EVALUATION.txt" in json.dumps(integrity)
+
+
 # -- configuration ----------------------------------------------------------
 
 

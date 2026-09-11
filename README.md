@@ -72,10 +72,12 @@ howlproof report /tmp/proof
 ```
 
 `tests/fixtures/vulnerable_app` is a deliberately defective artifact shipped with
-the package. The evaluation exits `30` and produces findings for a committed
-credential, four workflow weaknesses, an escaper that is wrong for the context it
-is used in, a documented sync that has drifted, and broken links. Its neighbour
-`tests/fixtures/clean_app` is the same shapes built correctly and is not rejected.
+the package. The evaluation exits `30` and raises twelve findings: a committed credential, four
+workflow weaknesses, an escaper that is wrong for the context it is used in, an
+HTML sink with no escaping at all, a documented sync that has drifted, broken
+links, missing page metadata, rendering defects at a declared width, and its own
+unqualified documentation claims. Its neighbour `tests/fixtures/clean_app` is the
+same shapes built correctly, raises none of those, and is not rejected.
 
 ## Checks are not all the same kind of answer
 

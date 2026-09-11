@@ -482,11 +482,13 @@ Checks: 12 verified, 4 failed, 0 skipped, 1 unavailable, 3 n/a, 0 errored
   operator     2 finding(s)
 
 Blocking findings:
-  HP-SEC-0007  HIGH   Stored data executes as script in the interface
+  HP-SEC-0007  HIGH          Stored data executes as script in the interface: mission_id_js_string
 
 Why:
   - AC-01 violated: 2 security findings at or above HIGH, limit 0
-  - HP-SEC-0007 (HIGH, reproduction confirmed)</code></pre>
+  - HP-SEC-0007 (HIGH, reproduction confirmed): Stored data executes as script in the interface: mission_id_js_string
+
+Evidence: dogfood/howlboard/hp-20260911-133826-ddbaef4e94e2</code></pre>
                     </div>
 
                     <div class="grid-2col">
@@ -512,7 +514,7 @@ Why:
 
                     <h3>Every check is separable by how it was validated</h3>
                     <p>
-                        The result document keeps <code>REAL</code>, <code>SIMULATED</code>, <code>SKIPPED</code>, <code>UNAVAILABLE</code>, <code>NOT_APPLICABLE</code> and <code>ERROR</code> apart rather than reporting a count of "passed". In this run nineteen checks observed the real artifact, one was simulated (persistent state was corrupted deliberately, and the artifact refused to start with a diagnostic, which is the correct behaviour), one was unavailable because HowlBoard is not a Python package, and three did not apply.
+                        The result document keeps <code>REAL</code>, <code>SIMULATED</code>, <code>SKIPPED</code>, <code>UNAVAILABLE</code>, <code>NOT_APPLICABLE</code> and <code>ERROR</code> apart rather than reporting a count of "passed". Of this run's twenty checks, fifteen observed the real artifact, one was simulated (persistent state was corrupted deliberately, and the artifact refused to start with a diagnostic, which is the correct behaviour), one was unavailable because HowlBoard is not a Python package, and three did not apply.
                     </p>
 
                     <div class="code-container">
@@ -641,7 +643,7 @@ howlproof findings /tmp/proof
 howlproof report /tmp/proof</code></pre>
                     </div>
                     <p>
-                        <code>tests/fixtures/vulnerable_app</code> is a deliberately defective artifact shipped with the package. The evaluation exits <code>30</code> and raises findings for a committed credential, four workflow weaknesses, an escaper that is wrong for the context it is used in, a documented sync that has drifted, and broken links. Its neighbour <code>tests/fixtures/clean_app</code> is the same shapes built correctly, and is not rejected.
+                        <code>tests/fixtures/vulnerable_app</code> is a deliberately defective artifact shipped with the package. The evaluation exits <code>30</code> and raises twelve findings: a committed credential, four workflow weaknesses, an escaper that is wrong for the context it is used in, an HTML sink with no escaping at all, a documented sync that has drifted, broken links, missing page metadata, rendering defects at a declared width, and its own unqualified documentation claims. Its neighbour <code>tests/fixtures/clean_app</code> is the same shapes built correctly, raises none of those, and is not rejected.
                     </p>
                     <p class="small">
                         Milestone one. Experimental, not production-ready. The verdict model is argued for rather than measured: there is no labelled corpus yet, so no claim about detection rate appears anywhere in this project.

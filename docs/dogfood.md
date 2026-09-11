@@ -27,7 +27,7 @@ evaluation possible.
 | --- | --- |
 | Acceptance criteria satisfied | 6 of 7 |
 | Checks | 12 verified, 4 failed, 0 skipped, 1 unavailable, 3 not applicable, 0 errored |
-| Validation mode | 19 real, 1 simulated |
+| Validation mode | 15 real, 1 simulated, 1 unavailable, 3 not applicable |
 | Findings | 9, of which 1 blocking |
 
 **Claims that held.** `docs/architecture.md` states that authority is computed on
