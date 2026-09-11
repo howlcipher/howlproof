@@ -1,0 +1,18 @@
+{
+  "summary": "Re-read the workflow and match the same construct.",
+  "requires_service": false,
+  "notes": "",
+  "steps": [
+    {
+      "description": "Inspect .github/workflows/ci.yml at line 23.",
+      "kind": "file_probe",
+      "payload": {
+        "path": ".github/workflows/ci.yml",
+        "pattern": "actions/setup\\-python@v5"
+      },
+      "expect": {
+        "matches": true
+      }
+    }
+  ]
+}

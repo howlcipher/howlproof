@@ -1,0 +1,27 @@
+{
+  "schema": "howlproof.run/v1",
+  "run_id": "hp-20260911-135058-acbea8a02413",
+  "authority": "ADVISORY",
+  "version": "0.1.0",
+  "implementation_hash": "131b8f848a493261497e024c9f40f19634e8865979678cd1f8a576065aa00a19",
+  "artifact": "howlboard",
+  "profiles": [
+    "web.dom_injection"
+  ],
+  "started_at": "2026-09-11T13:50:58.994489+00:00",
+  "completed_at": "2026-09-11T13:51:10.904490+00:00",
+  "verdict": "INSUFFICIENT_EVIDENCE",
+  "evaluators": [
+    "web.dom_injection/v1"
+  ],
+  "file_hashes": {
+    "checks.jsonl": "5548682f6699b6766fd09379925d5ad9cc568b577958b7fad260f88ee35d0822",
+    "config.json": "3f69a8d2ba47b4071da19b900c19c7a44b722545c2b0bb49b2af9dc35f65a261",
+    "environment.json": "7afb4f0eca945b40cb566f3ed45429e2e4f391a190f5b16eb29d7b97260406de",
+    "evidence/web.dom_injection/mission_id_js_string.json": "dd2cdd8f9d154f2fc8b70830f463f908c4b7dbca8e03cba2ab28078ad14e05cb",
+    "handoff.json": "444d452554f781866c7336b240ea3b12d0fe1d3cd70b97a832ce4137a7148182",
+    "result.json": "169f92d3d5c44c873ba108d63baa7a7c39700a7181dffa7c7748ace790a22ba9",
+    "result.md": "ee3da09dc8c3d1a5e12e1fece69f54ff63faeef002504d5810aa88d04b1d64ca",
+    "target.json": "37b47da4e2b00d256764b7fb46c23733886c9fb7c33a076d116c1d1b8bb94f4a"
+  }
+}

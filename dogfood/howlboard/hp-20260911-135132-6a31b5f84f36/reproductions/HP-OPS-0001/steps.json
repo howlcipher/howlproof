@@ -1,0 +1,17 @@
+{
+  "summary": "Re-run web.responsive against the artifact.",
+  "requires_service": false,
+  "notes": "This observation is made by the evaluator, not by a replayable command. Use `howlproof verify-fix` to re-verify it.",
+  "steps": [
+    {
+      "description": "Render the declared pages again at each declared width.",
+      "kind": "reevaluate",
+      "payload": {
+        "evaluator": "web.responsive"
+      },
+      "expect": {
+        "finding_present": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+[
+  {
+    "file": "README.md",
+    "line": 17,
+    "claim": "JavaScript backend. There is no hand-written server code and no hand-written"
+  },
+  {
+    "file": "README.md",
+    "line": 27,
+    "claim": "- **Authority is derived on every read, never replayed from storage.** An"
+  },
+  {
+    "file": "README.md",
+    "line": 29,
+    "claim": "once it lapses, and a mission cannot enter `EXECUTING` without live delegated"
+  },
+  {
+    "file": "README.md",
+    "line": 33,
+    "claim": "its own status with an explicit note, never folded into `passed`."
+  },
+  {
+    "file": "README.md",
+    "line": 34,
+    "claim": "- **Demo data is labelled.** Every record carries `provenance`. Hand-authored"
+  },
+  {
+    "file": "README.md",
+    "line": 84,
+    "claim": "the mission lifecycle, every invalid state transition, authority expiry,"
+  },
+  {
+    "file": "README.md",
+    "line": 136,
+    "claim": "- [Domain model](docs/domain_model.md) — every field mapped to its ecosystem source"
+  },
+  {
+    "file": "docs/architecture.md",
+    "line": 38,
+    "claim": "through the same module as the product is the reason it cannot drift from it —"
+  },
+  {
+    "file": "docs/architecture.md",
+    "line": 41,
+    "claim": "**Authority is computed, not stored.** `envelope_status` runs on every read and"
+  },
+  {
+    "file": "docs/architecture.md",
+    "line": 45,
+    "claim": "prevent. The cost is that authority cannot be cached; at this scale that is"
+  },
+  {
+    "file": "docs/architecture.md",
+    "line": 66,
+    "claim": "**Ledger import is offline and separate.** 232,000 ledger entries cannot be"
+  },
+  {
+    "file": "docs/architecture.md",
+    "line": 73,
+    "claim": "exposes query parameters, path parameters or request headers. Every addressable"
+  },
+  {
+    "file": "docs/architecture.md",
+    "line": 80,
+    "claim": "`esc` is built from `str_split`/`str_join` and applied to every interpolated"
+  },
+  {
+    "file": "docs/architecture.md",
+    "line": 94,
+    "claim": "server assigned and never carried it; `/api/seed` and the offline ledger importer"
+  },
+  {
+    "file": "docs/architecture.md",
+    "line": 109,
+    "claim": "| `database` | every `store_*` operation |"
+  },
+  {
+    "file": "docs/domain_model.md",
+    "line": 3,
+    "claim": "Every term below already existed somewhere in the Howl ecosystem. HowlBoard"
+  },
+  {
+    "file": "docs/domain_model.md",
+    "line": 45,
+    "claim": "(`src/control_plane/authority_envelope.py`), **derived on every read**:"
+  },
+  {
+    "file": "docs/domain_model.md",
+    "line": 125,
+    "claim": "is contract-tested: `claimed` must never be reported as `passed`."
+  },
+  {
+    "file": "docs/domain_model.md",
+    "line": 133,
+    "claim": "`PURSUE` / `REJECT` / `DEFER` / `REQUIRES_HUMAN` / `NO_VALUABLE_ACTION`. None of"
+  }
+]

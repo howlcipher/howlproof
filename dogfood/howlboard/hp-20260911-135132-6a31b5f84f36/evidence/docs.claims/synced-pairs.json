@@ -1,0 +1,9 @@
+[
+  {
+    "left": "docs/missions.json",
+    "right": "data/fixtures/missions.json",
+    "left_exists": true,
+    "right_exists": true,
+    "identical": true
+  }
+]

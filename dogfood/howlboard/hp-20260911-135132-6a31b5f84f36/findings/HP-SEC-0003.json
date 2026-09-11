@@ -1,0 +1,40 @@
+{
+  "check_id": "ci.supplychain",
+  "adversary": "SECURITY",
+  "category": "security",
+  "title": "actions/setup-python is pinned to a mutable reference",
+  "severity": "MEDIUM",
+  "confidence": "HIGH",
+  "summary": ".github/workflows/ci.yml runs actions/setup-python at `v5`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+  "evidence": "uses: actions/setup-python@v5",
+  "recommended_remediation": "Pin the action to a full 40-character commit SHA and record the intended version in a comment.",
+  "location": ".github/workflows/ci.yml:23",
+  "rule": "ci.unpinned_action",
+  "state": "FOUND",
+  "reproduction": {
+    "summary": "Re-read the workflow and match the same construct.",
+    "requires_service": false,
+    "notes": "",
+    "steps": [
+      {
+        "description": "Inspect .github/workflows/ci.yml at line 23.",
+        "kind": "file_probe",
+        "payload": {
+          "path": ".github/workflows/ci.yml",
+          "pattern": "actions/setup\\-python@v5"
+        },
+        "expect": {
+          "matches": true
+        }
+      }
+    ]
+  },
+  "resolution_reason": null,
+  "id": "HP-SEC-0003",
+  "fingerprint": "5d5ee9a1951e4859c8fc37f9b33cb60a023b9d4c66b7b17921809d7ac6803e39",
+  "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+  "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+  "detail": {},
+  "blocking": false
+}

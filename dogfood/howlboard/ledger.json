@@ -20,8 +20,8 @@
             }
           ],
           "id": "HP-SEC-0005",
-          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
-          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "last_seen_run": "hp-20260911-135257-e7c81bc63b96",
+          "last_seen_tree_digest": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd",
           "severity": "MEDIUM",
           "state": "FOUND",
           "title": "`set_html` builds markup from an interpolated value in frontend/app.howl"
@@ -40,8 +40,8 @@
             }
           ],
           "id": "HP-SEC-0004",
-          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
-          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+          "last_seen_tree_digest": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd",
           "severity": "MEDIUM",
           "state": "FOUND",
           "title": ".github/workflows/ci.yml declares no GITHUB_TOKEN permissions"
@@ -60,8 +60,8 @@
             }
           ],
           "id": "HP-SEC-0002",
-          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
-          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+          "last_seen_tree_digest": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd",
           "severity": "MEDIUM",
           "state": "FOUND",
           "title": "actions/setup-go is pinned to a mutable reference"
@@ -80,8 +80,8 @@
             }
           ],
           "id": "HP-OPS-0001",
-          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
-          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+          "last_seen_tree_digest": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd",
           "severity": "MEDIUM",
           "state": "FOUND",
           "title": "The published site fails rendered checks at declared widths"
@@ -100,8 +100,8 @@
             }
           ],
           "id": "HP-SEC-0003",
-          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
-          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+          "last_seen_tree_digest": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd",
           "severity": "MEDIUM",
           "state": "FOUND",
           "title": "actions/setup-python is pinned to a mutable reference"
@@ -117,13 +117,19 @@
               "note": "first observed",
               "run_id": "hp-20260911-133826-ddbaef4e94e2",
               "state": "FOUND"
+            },
+            {
+              "at": "2026-09-11T13:51:10.917610+00:00",
+              "note": "the evaluator ran against the changed artifact and no longer raises this finding",
+              "run_id": "hp-20260911-135058-acbea8a02413",
+              "state": "VERIFIED_FIXED"
             }
           ],
           "id": "HP-SEC-0007",
           "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
           "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
           "severity": "HIGH",
-          "state": "FOUND",
+          "state": "VERIFIED_FIXED",
           "title": "Stored data executes as script in the interface: mission_id_js_string"
         },
         "98ae02d8885b642b9c4874904680a49471b8b6043b10a77ac74af0bebb5aa57c": {
@@ -137,13 +143,19 @@
               "note": "first observed",
               "run_id": "hp-20260911-133826-ddbaef4e94e2",
               "state": "FOUND"
+            },
+            {
+              "at": "2026-09-11T13:52:57.428510+00:00",
+              "note": "the evaluator ran against the changed artifact and no longer raises this finding",
+              "run_id": "hp-20260911-135257-e7c81bc63b96",
+              "state": "VERIFIED_FIXED"
             }
           ],
           "id": "HP-SEC-0006",
           "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
           "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
           "severity": "HIGH",
-          "state": "FOUND",
+          "state": "VERIFIED_FIXED",
           "title": "`esc` does not escape the single quote but is used inside a JavaScript string literal"
         },
         "cbdef474f2456fd666c9c0093695ab1ea6772a7bc5ddd8dacdf0231fe0f69c13": {
@@ -160,8 +172,8 @@
             }
           ],
           "id": "HP-OPS-0002",
-          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
-          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+          "last_seen_tree_digest": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd",
           "severity": "INFORMATIONAL",
           "state": "FOUND",
           "title": "18 absolute documentation claims are unverified"
@@ -180,8 +192,8 @@
             }
           ],
           "id": "HP-SEC-0001",
-          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
-          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+          "last_seen_tree_digest": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd",
           "severity": "MEDIUM",
           "state": "FOUND",
           "title": "actions/checkout is pinned to a mutable reference"

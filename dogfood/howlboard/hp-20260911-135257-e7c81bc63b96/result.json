@@ -1,0 +1,164 @@
+{
+  "schema": "howlproof.result/v1",
+  "run_id": "hp-20260911-135257-e7c81bc63b96",
+  "authority": "ADVISORY",
+  "version": "0.1.0",
+  "artifact": "howlboard",
+  "profiles": [
+    "markup.escaping"
+  ],
+  "adversaries": [
+    "SECURITY"
+  ],
+  "target": {
+    "root": "/run/media/system/tallgeese/dev/howlboard",
+    "is_git": true,
+    "commit": "82358ffd18b4e74532c86a24e04988428a10dc26",
+    "branch": "fix/escape-mission-id-for-handler-context",
+    "dirty": false,
+    "file_count": 38,
+    "oversized_files_not_copied": [],
+    "tree_digest_before": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd",
+    "tree_digest_after": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd"
+  },
+  "started_at": "2026-09-11T13:52:57.311045+00:00",
+  "completed_at": "2026-09-11T13:52:57.421472+00:00",
+  "duration_ms": 110,
+  "verdict": "INSUFFICIENT_EVIDENCE",
+  "verdict_definition": "The artifact may or may not be acceptable. The evaluation that ran was inadequate to make a defensible determination, so no determination is claimed.",
+  "deciding_rule": "no_acceptance_criteria",
+  "rationale": [
+    "The artifact defines no acceptance criteria.",
+    "Running checks without criteria shows activity, not conformance."
+  ],
+  "criteria": [],
+  "counts": {
+    "checks": 1,
+    "verified": 0,
+    "failed": 1,
+    "skipped": 0,
+    "unavailable": 0,
+    "not_applicable": 0,
+    "errored": 0,
+    "simulated": 0,
+    "findings": 1,
+    "blocking_findings": 0,
+    "criteria_satisfied": 0,
+    "criteria_total": 0,
+    "by_severity": {
+      "BLOCKER": 0,
+      "HIGH": 0,
+      "MEDIUM": 1,
+      "LOW": 0,
+      "INFORMATIONAL": 0
+    },
+    "by_adversary": {
+      "FUNCTIONAL": 0,
+      "SECURITY": 1,
+      "RELIABILITY": 0,
+      "AI": 0,
+      "OPERATOR": 0,
+      "INTEGRITY": 0
+    }
+  },
+  "checks": [
+    {
+      "check_id": "markup.escaping",
+      "checker": "markup.escaping/v1",
+      "adversary": "SECURITY",
+      "status": "FAILED",
+      "summary": "1 interpolations are escaped inadequately for their context",
+      "limitation": "static reading of HTML construction sites and the artifact's own escape function; it shows that an escaper's character set is insufficient for a context, not that a particular input reaches that context at runtime",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/markup.escaping/analysis.json"
+      ],
+      "detail": {
+        "escape_coverage": {
+          "esc": {
+            "defined_in": "frontend/mission_view.howl",
+            "line": 64,
+            "escapes": [
+              "\"",
+              "&",
+              "'",
+              "<",
+              ">"
+            ],
+            "missing": []
+          }
+        },
+        "issues": 1
+      }
+    }
+  ],
+  "findings": [
+    {
+      "check_id": "markup.escaping",
+      "adversary": "SECURITY",
+      "category": "security",
+      "title": "`set_html` builds markup from an interpolated value in frontend/app.howl",
+      "severity": "MEDIUM",
+      "confidence": "HIGH",
+      "summary": "A call to `set_html` assembles HTML containing an interpolated value and no escape function appears in the surrounding expression.",
+      "evidence": "set_html (dom_query \"#feed\") (str_join (list html \"</div>\") \"\"))\n          )\n        )\n      )\n    )\n  )\n\n  (defun open_mission (id)\n    (type_hint return \"void\")\n    (try_let (raw (fetch (call api_url \"/api/missions/get\") \"POST\" (str_join (list \"{\\\"id\\\":\\\"\" id \"\\\"}\") \"\")))\n      (catch err (call sh",
+      "recommended_remediation": "Route every interpolated value through the artifact's escape function, or set text content instead of markup.",
+      "location": "frontend/app.howl:201",
+      "rule": "markup.sink_without_escaping",
+      "state": "FOUND",
+      "reproduction": {
+        "summary": "Re-read the source and match the same construction.",
+        "requires_service": false,
+        "notes": "",
+        "steps": [
+          {
+            "description": "Inspect frontend/app.howl around line 201.",
+            "kind": "file_probe",
+            "payload": {
+              "path": "frontend/app.howl",
+              "pattern": "set_html"
+            },
+            "expect": {
+              "matches": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": null,
+      "id": "HP-SEC-0005",
+      "fingerprint": "0d69e57f51c7077dae7865695d627b65d74f6669679081393ea35b7851ba59da",
+      "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+      "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+      "last_seen_run": "hp-20260911-135257-e7c81bc63b96",
+      "detail": {
+        "file": "frontend/app.howl",
+        "line": 201,
+        "rule": "markup.sink_without_escaping",
+        "severity": "MEDIUM",
+        "title": "`set_html` builds markup from an interpolated value in frontend/app.howl",
+        "summary": "A call to `set_html` assembles HTML containing an interpolated value and no escape function appears in the surrounding expression.",
+        "evidence": "set_html (dom_query \"#feed\") (str_join (list html \"</div>\") \"\"))\n          )\n        )\n      )\n    )\n  )\n\n  (defun open_mission (id)\n    (type_hint return \"void\")\n    (try_let (raw (fetch (call api_url \"/api/missions/get\") \"POST\" (str_join (list \"{\\\"id\\\":\\\"\" id \"\\\"}\") \"\")))\n      (catch err (call sh",
+        "pattern": "set_html",
+        "remediation": "Route every interpolated value through the artifact's escape function, or set text content instead of markup."
+      },
+      "blocking": false
+    }
+  ],
+  "unresolved_risks": [
+    "HP-SEC-0005 (MEDIUM): A call to `set_html` assembles HTML containing an interpolated value and no escape function appears in the surrounding expression."
+  ],
+  "limitations": [],
+  "notes": [],
+  "validation_modes": {
+    "REAL": [
+      "markup.escaping"
+    ],
+    "SIMULATED": [],
+    "SKIPPED": [],
+    "UNAVAILABLE": [],
+    "NOT_APPLICABLE": [],
+    "ERROR": []
+  }
+}

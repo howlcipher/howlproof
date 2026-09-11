@@ -1,0 +1,32 @@
+[
+  {
+    "probe": {
+      "name": "execute_without_approval",
+      "method": "POST",
+      "path": "/api/missions/state",
+      "body": {
+        "id": "CO-118",
+        "state": "EXECUTING"
+      },
+      "setup": [],
+      "expect_status": 403,
+      "expect_body_contains": "AUTHORITY_DENIED",
+      "description": "HowlBoard documents two independent gates on execution, and states that a mission cannot enter EXECUTING without live delegated authority. CO-118 is AWAITING_APPROVAL with decision REQUIRE_APPROVAL and no approval at all."
+    },
+    "response": {
+      "status": 403,
+      "elapsed_ms": 1,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:51:32 GMT",
+        "Content-Length": "79",
+        "Connection": "close"
+      },
+      "body": "{\"envelope_status\":\"ENVELOPE_ABSENT\",\"error\":\"AUTHORITY_DENIED\",\"id\":\"CO-118\"}\n",
+      "error": ""
+    }
+  }
+]

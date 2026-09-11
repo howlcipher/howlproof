@@ -89,6 +89,33 @@ escape function in the expression, a horizontal scroll on the published site at
   nothing in this evaluation exercised it. That documented limitation is
   unchallenged by this run.
 
+### The loop, end to end
+
+The remediation was made in HowlBoard's own repository, by a change to
+`frontend/mission_view.howl` and `frontend/app.howl`: identifiers moved out of
+event-handler attributes into `data-mission-id`, where escaping the quote
+characters is sufficient, and each handler became a constant that reads the value
+back with `this.dataset`. HowlProof did not make that change.
+
+| Stage | What happened | Bundle |
+| --- | --- | --- |
+| `FOUND` | `markup.escaping` read HowlBoard's escape function, found it omits the single quote, and located a call site placing its output in a JavaScript string. `HP-SEC-0006`, `HIGH` confidence | `hp-20260911-133826-ddbaef4e94e2` |
+| `REPRODUCED` | A real browser executed the payload against the compiled interface. `HP-SEC-0007`, `CONFIRMED` | same |
+| `REMEDIATION_REQUESTED` | [howlboard#5](https://github.com/howlcipher/howlboard/pull/5), with the evidence bundle cited | — |
+| `VERIFIED_FIXED` | `verify-fix` confirmed the tree digest had changed, re-ran `web.dom_injection`, and the payload no longer executed | `hp-20260911-135058-acbea8a02413` |
+| `VERIFIED_FIXED` | The same for `HP-SEC-0006`, re-running `markup.escaping` | `hp-20260911-135257-e7c81bc63b96` |
+| Re-evaluation | The full contract re-run: `CONDITIONALLY_PROVEN`, 7 of 7 acceptance criteria satisfied, both `HIGH` findings gone | `hp-20260911-135132-6a31b5f84f36` |
+
+The tree digests recorded in the fix bundles differ from the state the findings
+were raised against (`e5a9f720…` before, `d2205a2d…` after), which is what allowed
+`verify-fix` to answer at all. Against an unchanged tree it refuses.
+
+Note what the ledger does **not** do. The five remaining `MEDIUM` findings still
+read `FOUND` after a full re-evaluation that no longer raises two of them, because
+a finding disappearing from a later run is not evidence that it was repaired. Only
+`verify-fix`, which re-runs the specific evaluator against a changed artifact,
+moves a finding to `VERIFIED_FIXED`.
+
 ### Three defects this dogfood found in HowlProof
 
 Pointing the evaluator at a real artifact broke the evaluator in three ways, all

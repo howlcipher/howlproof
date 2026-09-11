@@ -52,10 +52,14 @@ acceptance:
     requirement: coverage_floor
     min_conclusive_fraction: 0.6
 
+  # secrets.scan is deliberately not listed here. A check that raises findings fails
+  # whenever it finds anything at all, including something an operator has examined
+  # and accepted, so gating on its status would duplicate AC-02 while making an
+  # explicit acceptance impossible to express. Findings-producing checks belong under
+  # max_findings; checks_pass is for gates that are pass or fail on their own terms.
   - id: AC-06
     requirement: checks_pass
     checks:
-      - secrets.scan
       - ci.supplychain
       - release.version
 

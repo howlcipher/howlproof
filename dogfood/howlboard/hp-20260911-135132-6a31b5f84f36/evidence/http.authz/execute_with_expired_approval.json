@@ -1,0 +1,68 @@
+[
+  {
+    "setup": {
+      "method": "POST",
+      "path": "/api/missions/approve",
+      "body": {
+        "id": "CO-118",
+        "approver": "howlproof-evaluation",
+        "ttl_seconds": -5
+      }
+    },
+    "response": {
+      "status": 200,
+      "elapsed_ms": 1,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:51:32 GMT",
+        "Connection": "close",
+        "Transfer-Encoding": "chunked"
+      },
+      "body": "{\"authority\":{\"approval\":{\"approver\":\"howlproof-evaluation\",\"expires_at\":1789134687,\"issued_at\":1789134692},\"decision\":\"REQUIRE_APPROVAL\",\"digest\":\"sha256:c41d780be92f\",\"gates\":[{\"name\":\"repository_authorized\",\"status\":\"PASS\"},{\"name\":\"action_class_allowed\",\"status\":\"PASS\"},{\"name\":\"risk_below_threshold\",\"status\":\"FAIL\"},{\"name\":\"human_sign_off\",\"status\":\"PENDING\"}],\"reason\":\"change widens an authority boundary; human sign-off required\"},\"created_at\":1789024052,\"description\":\"Release approvals expire after one hour, which is shorter than a staged production rollout. Operators re-approve mid-rollout, which defeats the point of a bound approval.\",\"envelope_status\":\"ENVELOPE_EXPIRED\",\"evidence\":[{\"collected_at\":1789027652,\"description\":\"Proposed policy change, not merged\",\"fingerprint\":\"sha256:2ae901bb37d4\",\"ref\":\"proposal/ttl-per-action-class\",\"source\":\"howlcipher/howlchangeops\",\"type\":\"git_branch\"},{\"collected_at\":1789027652,\"description\":\"Current approval lifetime and its rationale\",\"fingerprint\":\"sha256:6f30c8ae2b19\",\"ref\":\"docs/authority_model.md\",\"source\":\"howlchangeops\",\"type\":\"continuity_doc\"},{\"collected_at\":1789027652,\"description\":\"3 of 5 recent production rollouts required mid-flight re-approval\",\"fingerprint\":\"sha256:90bd4417ce55\",\"ref\":\"rollout-audit-2026-09\",\"source\":\"operator notes\",\"type\":\"custom\"}],\"execution\":{\"current_operation\":\"held at human authority boundary\",\"delta\":{\"deletions\":0,\"files_added\":[],\"files_deleted\":[],\"files_modified\":[],\"insertions\":0,\"unexpected\":[]},\"ended_at\":0,\"executor\":\"\",\"receipt\":{\"error_message\":\"\",\"executed_at\":0,\"rollback_status\":\"\",\"verification\":\"\"},\"recovery_actions\":[],\"retries\":0,\"started_at\":0},\"executor\":\"\",\"id\":\"CO-118\",\"is_override\":false,\"outcome\":\"\",\"plan\":[{\"action\":\"Draft the per-action-class TTL policy schema\",\"command\":\"\",\"owner\":\"codex\",\"priority\":\"IMMEDIATE\",\"state\":\"complete\"},{\"action\":\"Obtain human approval to widen the authority bound\",\"command\":\"\",\"owner\":\"human_operator\",\"priority\":\"IMMEDIATE\",\"state\":\"active\"},{\"action\":\"Implement the policy field and validation\",\"command\":\"\",\"owner\":\"codex\",\"priority\":\"NEXT\",\"state\":\"pending\"},{\"action\":\"Add expiry regression coverage\",\"command\":\"go test ./adapter/\",\"owner\":\"codex\",\"priority\":\"NEXT\",\"state\":\"pending\"}],\"priority\":\"NORMAL\",\"project\":\"HowlChangeOps\",\"provenance\":\"DEMO\",\"reasoning\":{\"assumptions\":[\"Longer TTLs remain acceptable only when scoped to a single decision digest.\"],\"confidence\":\"medium\",\"decided_by\":\"codex\",\"observations\":[\"Approval carries issued_at, expires_at, and a nonce, but no configurable TTL.\",\"Three of the last five production rollouts required a second approval.\",\"Re-approval reuses the same decision digest, so it is indistinguishable from the first.\"],\"options\":[{\"assessment\":\"Scoped and auditable; needs human sign-off because it widens an authority bound.\",\"option\":\"Make TTL a per-action-class policy value\"},{\"assessment\":\"Simple, but widens authority for every action class indiscriminately.\",\"option\":\"Raise the global TTL to six hours\"},{\"assessment\":\"Removes the bound entirely; rejected.\",\"option\":\"Allow unlimited re-approval\"}],\"problem\":\"Approval.expires_at is fixed at one hour. A staged production rollout routinely exceeds that, so operators re-approve mid-flight and the approval stops being a meaningful bound.\",\"rationale\":\"Widening an authority boundary is exactly the class of change that must not be autonomous. The narrow option is proposed and held for a human.\",\"selected\":\"Make TTL a per-action-class policy value\"},\"recommended_executor\":\"codex\",\"risk_level\":\"HIGH\",\"state\":\"AWAITING_APPROVAL\",\"task_class\":\"policy_change\",\"title\":\"Widen approval TTL for long-running release windows\",\"updated_at\":1789134692,\"verification\":[]}\n",
+      "error": ""
+    }
+  },
+  {
+    "probe": {
+      "name": "execute_with_expired_approval",
+      "method": "POST",
+      "path": "/api/missions/state",
+      "body": {
+        "id": "CO-118",
+        "state": "EXECUTING"
+      },
+      "setup": [
+        {
+          "method": "POST",
+          "path": "/api/missions/approve",
+          "body": {
+            "id": "CO-118",
+            "approver": "howlproof-evaluation",
+            "ttl_seconds": -5
+          }
+        }
+      ],
+      "expect_status": 403,
+      "expect_body_contains": "ENVELOPE_EXPIRED",
+      "description": "HowlBoard documents that authority is computed on every read rather than replayed from storage. This mints an approval that is already expired and then attempts the transition it would otherwise authorise."
+    },
+    "response": {
+      "status": 403,
+      "elapsed_ms": 0,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:51:32 GMT",
+        "Content-Length": "80",
+        "Connection": "close"
+      },
+      "body": "{\"envelope_status\":\"ENVELOPE_EXPIRED\",\"error\":\"AUTHORITY_DENIED\",\"id\":\"CO-118\"}\n",
+      "error": ""
+    }
+  }
+]

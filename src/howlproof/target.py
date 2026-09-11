@@ -239,10 +239,17 @@ class Target:
         return sorted(str(p.relative_to(self.workspace)) for p in self.workspace.glob(pattern))
 
     def _resolve(self, relative: str) -> Path:
-        path = (self.workspace / relative).resolve()
-        if self.workspace not in path.parents and path != self.workspace:
+        """Contain a path lexically, without following symlinks out of the workspace.
+
+        Resolving first would reject legitimate paths: a virtual environment the
+        evaluation itself provisions links its interpreter at the system one, and
+        `.resolve()` on `bin/python` lands outside the workspace. Normalising instead
+        still refuses `..` traversal, which is the escape a configuration could attempt.
+        """
+        candidate = Path(os.path.normpath(self.workspace / relative))
+        if self.workspace != candidate and self.workspace not in candidate.parents:
             raise TargetError(f"path escapes the workspace: {relative}")
-        return path
+        return candidate
 
     # -- execution --------------------------------------------------------
 

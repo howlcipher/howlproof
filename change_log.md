@@ -20,6 +20,20 @@ requires a recorded reproduction. verify-fix refuses to answer when the artifact
 has not changed and re-runs the evaluator when it has; a claim that something was
 repaired never produces VERIFIED_FIXED on its own.
 
+Dogfooding against HowlBoard and against HowlProof itself found five defects in
+the evaluator before the committed runs. The injection check left its payload in
+the workspace so another check reported the file as drifted; a payload that never
+reached the rendered page was reported as safe rather than unavailable, which is
+the exact failure this project exists to avoid; a required tool was reported
+absent because a criterion guessed its version flag; workspace path containment
+resolved symlinks and so rejected the interpreter the evaluation provisions for a
+Python artifact; and the bundle integrity index hashed decoded text, so two
+different screenshots could hash alike. All five are fixed with tests.
+
+`accept` records a decision to live with a finding. The reason is mandatory and
+checked for substance, the finding stops blocking, and it stays in the ledger and
+in every report. There is no way to dismiss one quietly.
+
 Ecosystem integration is by documented file contract into schemas HowlPlane,
 HowlBoard and HowlRelay already read, so no sibling component changes. There is
 no HowlChangeOps ingest path for an external verdict and the handoff for it says

@@ -1,0 +1,22 @@
+{
+  "observed": {
+    "index.html": {
+      "title": "HowlBoard | AI Engineering Mission Control",
+      "description": "HowlBoard is the canonical HowlFrame reference application: mission control for autonomous engineering work, showing authority, evidence and verification.",
+      "canonical": "https://howlcipher.github.io/howlboard/",
+      "og": {
+        "og:type": "website",
+        "og:site_name": "HowlBoard",
+        "og:title": "HowlBoard | AI Engineering Mission Control",
+        "og:description": "Mission control for governed autonomous engineering work, built end to end in HowlFrame. Authority, evidence, verification and outcome, made inspectable.",
+        "og:url": "https://howlcipher.github.io/howlboard/",
+        "og:image": "https://howlcipher.github.io/howlboard/social-preview.png",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:image:alt": "HowlBoard deterministic state matrix and telemetry evaluation surface"
+      },
+      "h1_count": 1
+    }
+  },
+  "problems": []
+}

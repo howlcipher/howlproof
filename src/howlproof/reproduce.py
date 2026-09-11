@@ -260,8 +260,10 @@ def verify_fix(
             "A statement that a defect was fixed is not evidence that it was."
         )
 
-    evaluator_id = str(finding.get("check_id", "")).split(".")[0:2]
-    scoped = _scoped_config(config, finding)
+    evaluator_id = _evaluator_of(finding)
+    scoped = _scoped_config(
+        config, finding, evaluator_id if registry_has(registry, evaluator_id) else ""
+    )
     result = evaluate(
         target_root=target_root,
         config=scoped,
@@ -277,17 +279,15 @@ def verify_fix(
         "path": result["path"],
         "previous_tree_digest": recorded_tree_digest,
         "current_tree_digest": current,
-        "evaluator": ".".join(evaluator_id),
+        "evaluator": evaluator_id,
         "checks": [
-            c["check_id"]
-            for c in result["checks"]
-            if c["check_id"].startswith(".".join(evaluator_id))
+            c["check_id"] for c in result["checks"] if c["check_id"].startswith(evaluator_id)
         ],
     }
     inconclusive = [
         c
         for c in result["checks"]
-        if c["check_id"].startswith(".".join(evaluator_id))
+        if c["check_id"].startswith(evaluator_id)
         and c["status"] in {"UNAVAILABLE", "SKIPPED", "ERROR", "NOT_APPLICABLE"}
     ]
     if still:
@@ -314,11 +314,25 @@ def verify_fix(
     )
 
 
-def _scoped_config(config: ProofConfig, finding: dict[str, Any]) -> ProofConfig:
-    """Re-run only the evaluator that raised the finding, with acceptance criteria removed."""
+def _evaluator_of(finding: dict[str, Any]) -> str:
+    """The evaluator that raised a finding, recovered from its check id."""
+    return ".".join(str(finding.get("check_id", "")).split(".")[:2])
+
+
+def registry_has(registry: Registry, name: str) -> bool:
+    return name in registry.names()
+
+
+def _scoped_config(config: ProofConfig, finding: dict[str, Any], evaluator: str) -> ProofConfig:
+    """Re-run the evaluator that raised the finding, with acceptance criteria removed.
+
+    Criteria are dropped because this run answers one question about one finding, not
+    whether the artifact as a whole is acceptable. That remains a job for a full
+    evaluation, which is deliberately not what a fix check performs.
+    """
     data = config.model_dump()
     data["acceptance"] = []
-    data["profiles"] = ["default"]
+    data["profiles"] = [evaluator] if evaluator else ["default"]
     data["adversaries"] = [finding.get("adversary", "FUNCTIONAL")]
     return ProofConfig.model_validate(data)
 

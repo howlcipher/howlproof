@@ -1,0 +1,95 @@
+{
+  "schema": "howlproof.result/v1",
+  "run_id": "hp-20260911-135058-acbea8a02413",
+  "authority": "ADVISORY",
+  "version": "0.1.0",
+  "artifact": "howlboard",
+  "profiles": [
+    "web.dom_injection"
+  ],
+  "adversaries": [
+    "SECURITY"
+  ],
+  "target": {
+    "root": "/run/media/system/tallgeese/dev/howlboard",
+    "is_git": true,
+    "commit": "82358ffd18b4e74532c86a24e04988428a10dc26",
+    "branch": "fix/escape-mission-id-for-handler-context",
+    "dirty": false,
+    "file_count": 38,
+    "oversized_files_not_copied": [],
+    "tree_digest_before": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd",
+    "tree_digest_after": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd"
+  },
+  "started_at": "2026-09-11T13:50:58.994489+00:00",
+  "completed_at": "2026-09-11T13:51:10.904490+00:00",
+  "duration_ms": 11910,
+  "verdict": "INSUFFICIENT_EVIDENCE",
+  "verdict_definition": "The artifact may or may not be acceptable. The evaluation that ran was inadequate to make a defensible determination, so no determination is claimed.",
+  "deciding_rule": "no_acceptance_criteria",
+  "rationale": [
+    "The artifact defines no acceptance criteria.",
+    "Running checks without criteria shows activity, not conformance."
+  ],
+  "criteria": [],
+  "counts": {
+    "checks": 1,
+    "verified": 1,
+    "failed": 0,
+    "skipped": 0,
+    "unavailable": 0,
+    "not_applicable": 0,
+    "errored": 0,
+    "simulated": 0,
+    "findings": 0,
+    "blocking_findings": 0,
+    "criteria_satisfied": 0,
+    "criteria_total": 0,
+    "by_severity": {
+      "BLOCKER": 0,
+      "HIGH": 0,
+      "MEDIUM": 0,
+      "LOW": 0,
+      "INFORMATIONAL": 0
+    },
+    "by_adversary": {
+      "FUNCTIONAL": 0,
+      "SECURITY": 0,
+      "RELIABILITY": 0,
+      "AI": 0,
+      "OPERATOR": 0,
+      "INTEGRITY": 0
+    }
+  },
+  "checks": [
+    {
+      "check_id": "web.dom_injection.mission_id_js_string",
+      "checker": "web.dom_injection/v1",
+      "adversary": "SECURITY",
+      "status": "VERIFIED",
+      "summary": "mission_id_js_string: the payload reached the page and was rendered as data rather than executed",
+      "limitation": "one authored payload rendered by a real browser against a locally started instance; it proves this value executes, not that every value does",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/web.dom_injection/mission_id_js_string.json"
+      ],
+      "detail": {}
+    }
+  ],
+  "findings": [],
+  "unresolved_risks": [],
+  "limitations": [],
+  "notes": [],
+  "validation_modes": {
+    "REAL": [
+      "web.dom_injection.mission_id_js_string"
+    ],
+    "SIMULATED": [],
+    "SKIPPED": [],
+    "UNAVAILABLE": [],
+    "NOT_APPLICABLE": [],
+    "ERROR": []
+  }
+}

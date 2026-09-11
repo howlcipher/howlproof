@@ -113,6 +113,20 @@ Only a `CONFIRMED` finding at or above the blocking severity can reject an
 artifact; a severe finding that was not reproduced routes to `REQUIRES_HUMAN`
 instead.
 
+## Accepting a finding
+
+A finding that an operator has examined and chosen to live with is recorded, not
+deleted:
+
+```bash
+howlproof accept HP-SEC-0001 --reason "Authored fixture data; the value was never valid."
+```
+
+The reason is mandatory and checked for substance, mirroring HowlPlane's rule that
+dismissing a blocker or high finding requires an explicit resolution reason. The
+finding stops blocking verdicts, stays in the ledger with that reason attached, and
+keeps appearing in every report. There is no way to make one disappear quietly.
+
 ## The falsification loop
 
 ```bash

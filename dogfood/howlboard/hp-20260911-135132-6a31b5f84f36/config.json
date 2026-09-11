@@ -1,0 +1,212 @@
+{
+  "source": "dogfood/howlboard/howlproof.yaml",
+  "schema_version": 1,
+  "artifact": "howlboard",
+  "description": "Mission control for AI engineering work and the canonical HowlFrame reference application. Evaluated across its API, its interface, its published site and its documentation.",
+  "profiles": [
+    "security",
+    "api",
+    "web",
+    "documentation",
+    "reliability"
+  ],
+  "adversaries": [
+    "FUNCTIONAL",
+    "SECURITY",
+    "RELIABILITY",
+    "AI",
+    "OPERATOR"
+  ],
+  "blocking_severity": "HIGH",
+  "acceptance": [
+    {
+      "id": "AC-01",
+      "requirement": "max_findings",
+      "limit": 0,
+      "min_severity": "HIGH",
+      "adversary": "SECURITY",
+      "optional": false
+    },
+    {
+      "id": "AC-02",
+      "requirement": "checks_pass",
+      "checks": [
+        "http.authz.execute_without_approval",
+        "http.authz.execute_with_expired_approval"
+      ],
+      "optional": false
+    },
+    {
+      "id": "AC-03",
+      "requirement": "checks_pass",
+      "checks": [
+        "http.abuse",
+        "reliability.partial_request"
+      ],
+      "optional": false
+    },
+    {
+      "id": "AC-04",
+      "requirement": "checks_pass",
+      "checks": [
+        "web.links",
+        "docs.claims.sync"
+      ],
+      "optional": false
+    },
+    {
+      "id": "AC-05",
+      "requirement": "tool_required",
+      "tools": [
+        "go"
+      ],
+      "optional": false
+    },
+    {
+      "id": "AC-06",
+      "requirement": "no_regressions",
+      "optional": false
+    },
+    {
+      "id": "AC-07",
+      "requirement": "coverage_floor",
+      "min_conclusive_fraction": 0.6,
+      "optional": false
+    }
+  ],
+  "exclusions": [],
+  "include_ignored": [
+    "howlframe_bin",
+    "backend/server.hfbc",
+    "frontend/app.js",
+    "docs/demo.js"
+  ],
+  "service": {
+    "base_url": "http://127.0.0.1:8080",
+    "start": [
+      "./howlframe_bin",
+      "-run-bc",
+      "-allow-caps",
+      "network,database,filesystem",
+      "backend/server.hfbc"
+    ],
+    "stop": [],
+    "workdir": ".",
+    "ready_path": "/api/missions",
+    "ready_method": "POST",
+    "ready_timeout_seconds": 45,
+    "seed": [
+      "POST /api/seed"
+    ]
+  },
+  "api": {
+    "endpoints": [
+      "/api/missions",
+      "/api/dashboard",
+      "/api/projects",
+      "/api/timeline"
+    ],
+    "mutating_endpoint": "/api/missions/create",
+    "mutating_body": {
+      "title": "HowlProof idempotency probe",
+      "project": "howlproof",
+      "priority": "NORMAL"
+    },
+    "authority_probes": [
+      {
+        "name": "execute_without_approval",
+        "method": "POST",
+        "path": "/api/missions/state",
+        "body": {
+          "id": "CO-118",
+          "state": "EXECUTING"
+        },
+        "setup": [],
+        "expect_status": 403,
+        "expect_body_contains": "AUTHORITY_DENIED",
+        "description": "HowlBoard documents two independent gates on execution, and states that a mission cannot enter EXECUTING without live delegated authority. CO-118 is AWAITING_APPROVAL with decision REQUIRE_APPROVAL and no approval at all."
+      },
+      {
+        "name": "execute_with_expired_approval",
+        "method": "POST",
+        "path": "/api/missions/state",
+        "body": {
+          "id": "CO-118",
+          "state": "EXECUTING"
+        },
+        "setup": [
+          {
+            "method": "POST",
+            "path": "/api/missions/approve",
+            "body": {
+              "id": "CO-118",
+              "approver": "howlproof-evaluation",
+              "ttl_seconds": -5
+            }
+          }
+        ],
+        "expect_status": 403,
+        "expect_body_contains": "ENVELOPE_EXPIRED",
+        "description": "HowlBoard documents that authority is computed on every read rather than replayed from storage. This mints an approval that is already expired and then attempts the transition it would otherwise authorise."
+      }
+    ],
+    "max_body_bytes": 2000000
+  },
+  "web": {
+    "root": "docs",
+    "pages": [
+      "index.html"
+    ],
+    "viewports": [
+      375,
+      768,
+      1440
+    ],
+    "require_skip_link": true,
+    "canonical_prefix": "https://howlcipher.github.io/howlboard/"
+  },
+  "markup": {
+    "sources": [
+      "frontend/*.howl",
+      "docs/*.howl"
+    ],
+    "sink_functions": [
+      "set_html"
+    ],
+    "escape_functions": [
+      "esc",
+      "view/esc"
+    ]
+  },
+  "injection": {
+    "app_root": "frontend",
+    "page": "index.html",
+    "marker": "__howlproof_injection",
+    "seed_request": "POST /api/seed",
+    "settle_ms": 3000,
+    "payloads": [
+      {
+        "name": "mission_id_js_string",
+        "file": "data/fixtures/missions.json",
+        "pointer": "/missions/0/id",
+        "value": "HF-412'); window.__howlproof_injection=1; ('",
+        "description": "A mission identifier carrying a single quote, placed in the fixture the seed endpoint loads. Identifiers created through the API are server assigned, but seeded and ledger-imported records keep whatever identifier the source document carried."
+      }
+    ]
+  },
+  "cli": null,
+  "ai": null,
+  "docs": {
+    "claim_sources": [
+      "README.md",
+      "docs/architecture.md",
+      "docs/domain_model.md"
+    ],
+    "synced_pairs": [
+      [
+        "docs/missions.json",
+        "data/fixtures/missions.json"
+      ]
+    ]
+  }
+}

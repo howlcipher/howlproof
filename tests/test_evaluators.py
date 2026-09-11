@@ -222,6 +222,18 @@ def test_reads_cannot_escape_the_workspace(tmp_path):
         handle.read_text("../../etc/passwd")
 
 
+def test_a_symlink_the_evaluation_created_is_still_readable(tmp_path):
+    """A provisioned interpreter links out of the workspace and must stay usable."""
+    target = tmp_path / "artifact"
+    shutil.copytree(CLEAN, target)
+    handle = Target.prepare(target, tmp_path / "workspace")
+    linked = tmp_path / "outside.txt"
+    linked.write_text("provisioned by the evaluation")
+    (handle.workspace / "tool").symlink_to(linked)
+    assert handle.exists("tool")
+    assert handle.read_text("tool") == "provisioned by the evaluation"
+
+
 def test_a_workspace_inside_the_target_is_refused(tmp_path):
     target = tmp_path / "artifact"
     shutil.copytree(CLEAN, target)

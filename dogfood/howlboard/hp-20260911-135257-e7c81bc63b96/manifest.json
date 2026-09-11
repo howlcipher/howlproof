@@ -1,0 +1,29 @@
+{
+  "schema": "howlproof.run/v1",
+  "run_id": "hp-20260911-135257-e7c81bc63b96",
+  "authority": "ADVISORY",
+  "version": "0.1.0",
+  "implementation_hash": "131b8f848a493261497e024c9f40f19634e8865979678cd1f8a576065aa00a19",
+  "artifact": "howlboard",
+  "profiles": [
+    "markup.escaping"
+  ],
+  "started_at": "2026-09-11T13:52:57.311045+00:00",
+  "completed_at": "2026-09-11T13:52:57.421472+00:00",
+  "verdict": "INSUFFICIENT_EVIDENCE",
+  "evaluators": [
+    "markup.escaping/v1"
+  ],
+  "file_hashes": {
+    "checks.jsonl": "c8c3337b58859f262ffb1f629dbe5c0aa5c18fbb86e3b4a00241865ed548d9b4",
+    "config.json": "663275b44e371fea460c371fa45a5b661cdabceacc57caf6227f902b26c19366",
+    "environment.json": "1bcd47167a42b67ff0f6e686f01d99efb5415b3317dc6ac024621bc1bffb5e37",
+    "evidence/markup.escaping/analysis.json": "3ff6462e55ab2c83c620d9686a06abf3276325e0865ea1d39237b4c47d7e8261",
+    "findings/HP-SEC-0005.json": "de1660993f3999e432931f71ae1eaba052708636440e7a1b97fda48ee16467ce",
+    "handoff.json": "f6e23940a036319d9a94b975c89012126d6b8d5f0e085c499a3d021f0bedf7b2",
+    "reproductions/HP-SEC-0005/steps.json": "34a062de6645b725ef8f3fbd6d049ad66c28f898167372c5733c39dd586e826d",
+    "result.json": "cf7ce86a18d65b1cda341607c83fe6d98c6052b8d472a9a6116898b2ceefbafe",
+    "result.md": "7d750639294a3293c60fea202471942f097d7b55c543fe4a40c035ade1f5a7af",
+    "target.json": "37b47da4e2b00d256764b7fb46c23733886c9fb7c33a076d116c1d1b8bb94f4a"
+  }
+}

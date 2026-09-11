@@ -1,0 +1,942 @@
+{
+  "schema": "howlproof.result/v1",
+  "run_id": "hp-20260911-135132-6a31b5f84f36",
+  "authority": "ADVISORY",
+  "version": "0.1.0",
+  "artifact": "howlboard",
+  "profiles": [
+    "security",
+    "api",
+    "web",
+    "documentation",
+    "reliability"
+  ],
+  "adversaries": [
+    "FUNCTIONAL",
+    "SECURITY",
+    "RELIABILITY",
+    "AI",
+    "OPERATOR"
+  ],
+  "target": {
+    "root": "/run/media/system/tallgeese/dev/howlboard",
+    "is_git": true,
+    "commit": "82358ffd18b4e74532c86a24e04988428a10dc26",
+    "branch": "fix/escape-mission-id-for-handler-context",
+    "dirty": false,
+    "file_count": 38,
+    "oversized_files_not_copied": [],
+    "tree_digest_before": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd",
+    "tree_digest_after": "d2205a2d835910d1d9cce0b29543b8944a1abda50117fc910377e2354bb3cfbd"
+  },
+  "started_at": "2026-09-11T13:51:32.528902+00:00",
+  "completed_at": "2026-09-11T13:52:33.565969+00:00",
+  "duration_ms": 61037,
+  "verdict": "CONDITIONALLY_PROVEN",
+  "verdict_definition": "The artifact passed subject to documented assumptions, exclusions, environment limitations or unresolved non-blocking findings, each named in the result.",
+  "deciding_rule": "conditional",
+  "rationale": [
+    "sast.bandit was UNAVAILABLE: the artifact has no pyproject.toml to install",
+    "deps.audit did not apply: the artifact declares no Python dependencies to audit",
+    "cli.destructive did not apply: the artifact declares no destructive subcommands to inspect",
+    "release.version did not apply: the artifact has no pyproject.toml declaring a version",
+    "unresolved MEDIUM finding HP-SEC-0001: actions/checkout is pinned to a mutable reference",
+    "unresolved MEDIUM finding HP-SEC-0002: actions/setup-go is pinned to a mutable reference",
+    "unresolved MEDIUM finding HP-SEC-0003: actions/setup-python is pinned to a mutable reference",
+    "unresolved MEDIUM finding HP-SEC-0004: .github/workflows/ci.yml declares no GITHUB_TOKEN permissions",
+    "unresolved MEDIUM finding HP-SEC-0005: `set_html` builds markup from an interpolated value in frontend/app.howl",
+    "unresolved MEDIUM finding HP-OPS-0001: The published site fails rendered checks at declared widths"
+  ],
+  "criteria": [
+    {
+      "id": "AC-01",
+      "requirement": "max_findings",
+      "outcome": "SATISFIED",
+      "detail": "0 security findings at or above HIGH, limit 0",
+      "optional": false,
+      "evidence": {
+        "finding_ids": []
+      }
+    },
+    {
+      "id": "AC-02",
+      "requirement": "checks_pass",
+      "outcome": "SATISFIED",
+      "detail": "2 required checks verified",
+      "optional": false,
+      "evidence": {
+        "verified": [
+          "http.authz.execute_with_expired_approval",
+          "http.authz.execute_without_approval"
+        ]
+      }
+    },
+    {
+      "id": "AC-03",
+      "requirement": "checks_pass",
+      "outcome": "SATISFIED",
+      "detail": "2 required checks verified",
+      "optional": false,
+      "evidence": {
+        "verified": [
+          "http.abuse",
+          "reliability.partial_request"
+        ]
+      }
+    },
+    {
+      "id": "AC-04",
+      "requirement": "checks_pass",
+      "outcome": "SATISFIED",
+      "detail": "2 required checks verified",
+      "optional": false,
+      "evidence": {
+        "verified": [
+          "docs.claims.sync",
+          "web.links"
+        ]
+      }
+    },
+    {
+      "id": "AC-05",
+      "requirement": "tool_required",
+      "outcome": "SATISFIED",
+      "detail": "1 required tools present",
+      "optional": false,
+      "evidence": {
+        "tools": [
+          "go"
+        ]
+      }
+    },
+    {
+      "id": "AC-06",
+      "requirement": "no_regressions",
+      "outcome": "SATISFIED",
+      "detail": "no previously fixed finding reappeared",
+      "optional": false,
+      "evidence": {}
+    },
+    {
+      "id": "AC-07",
+      "requirement": "coverage_floor",
+      "outcome": "SATISFIED",
+      "detail": "16 of 17 applicable checks were conclusive (0.94), floor 0.60",
+      "optional": false,
+      "evidence": {
+        "fraction": 0.9412
+      }
+    }
+  ],
+  "counts": {
+    "checks": 20,
+    "verified": 13,
+    "failed": 3,
+    "skipped": 0,
+    "unavailable": 1,
+    "not_applicable": 3,
+    "errored": 0,
+    "simulated": 1,
+    "findings": 7,
+    "blocking_findings": 0,
+    "criteria_satisfied": 7,
+    "criteria_total": 7,
+    "by_severity": {
+      "BLOCKER": 0,
+      "HIGH": 0,
+      "MEDIUM": 6,
+      "LOW": 0,
+      "INFORMATIONAL": 1
+    },
+    "by_adversary": {
+      "FUNCTIONAL": 0,
+      "SECURITY": 5,
+      "RELIABILITY": 0,
+      "AI": 0,
+      "OPERATOR": 2,
+      "INTEGRITY": 0
+    }
+  },
+  "checks": [
+    {
+      "check_id": "secrets.scan",
+      "checker": "secrets.scan/v1",
+      "adversary": "SECURITY",
+      "status": "VERIFIED",
+      "summary": "no credential-shaped strings in 29 text files",
+      "limitation": "pattern matching over text files in the working tree; it does not inspect git history, binaries, or credentials held only in a runtime environment",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/secrets.scan/matches.json"
+      ],
+      "detail": {
+        "files_scanned": 29
+      }
+    },
+    {
+      "check_id": "ci.supplychain",
+      "checker": "ci.supplychain/v1",
+      "adversary": "SECURITY",
+      "status": "FAILED",
+      "summary": "4 supply-chain weaknesses across 1 workflows",
+      "limitation": "static analysis of workflow files in this checkout; it does not evaluate the repository's branch protection, org policy, or the actions' own contents",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/ci.supplychain/workflow-issues.json"
+      ],
+      "detail": {
+        "workflows": [
+          ".github/workflows/ci.yml"
+        ],
+        "issues": 4
+      }
+    },
+    {
+      "check_id": "markup.escaping",
+      "checker": "markup.escaping/v1",
+      "adversary": "SECURITY",
+      "status": "FAILED",
+      "summary": "1 interpolations are escaped inadequately for their context",
+      "limitation": "static reading of HTML construction sites and the artifact's own escape function; it shows that an escaper's character set is insufficient for a context, not that a particular input reaches that context at runtime",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/markup.escaping/analysis.json"
+      ],
+      "detail": {
+        "escape_coverage": {
+          "esc": {
+            "defined_in": "frontend/mission_view.howl",
+            "line": 64,
+            "escapes": [
+              "\"",
+              "&",
+              "'",
+              "<",
+              ">"
+            ],
+            "missing": []
+          }
+        },
+        "issues": 1
+      }
+    },
+    {
+      "check_id": "sast.bandit",
+      "checker": "sast.bandit/v1",
+      "adversary": "SECURITY",
+      "status": "UNAVAILABLE",
+      "summary": "the check could not run",
+      "limitation": "nothing about this surface was established",
+      "reason": "the artifact has no pyproject.toml to install",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [],
+      "detail": {}
+    },
+    {
+      "check_id": "deps.audit",
+      "checker": "deps.audit/v1",
+      "adversary": "SECURITY",
+      "status": "NOT_APPLICABLE",
+      "summary": "the artifact has no such surface",
+      "limitation": "absence of a surface is not evidence about other surfaces",
+      "reason": "the artifact declares no Python dependencies to audit",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [],
+      "detail": {}
+    },
+    {
+      "check_id": "http.authz.execute_without_approval",
+      "checker": "http.authz/v1",
+      "adversary": "SECURITY",
+      "status": "VERIFIED",
+      "summary": "execute_without_approval: refused with 403 as documented",
+      "limitation": "one authored request against a locally started instance; it does not enumerate every path to the same authority",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/http.authz/execute_without_approval.json"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "http.authz.execute_with_expired_approval",
+      "checker": "http.authz/v1",
+      "adversary": "SECURITY",
+      "status": "VERIFIED",
+      "summary": "execute_with_expired_approval: refused with 403 as documented",
+      "limitation": "one authored request against a locally started instance; it does not enumerate every path to the same authority",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/http.authz/execute_with_expired_approval.json"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "web.dom_injection.mission_id_js_string",
+      "checker": "web.dom_injection/v1",
+      "adversary": "SECURITY",
+      "status": "VERIFIED",
+      "summary": "mission_id_js_string: the payload reached the page and was rendered as data rather than executed",
+      "limitation": "one authored payload rendered by a real browser against a locally started instance; it proves this value executes, not that every value does",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/web.dom_injection/mission_id_js_string.json"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "http.abuse",
+      "checker": "http.abuse/v1",
+      "adversary": "FUNCTIONAL",
+      "status": "VERIFIED",
+      "summary": "7 malformed requests were rejected cleanly and the service stayed up",
+      "limitation": "a fixed catalogue of malformed requests against one endpoint; it is not a fuzzing campaign and does not enumerate the artifact's whole input space",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/http.abuse/abuse.json"
+      ],
+      "detail": {
+        "cases": [
+          "malformed_json",
+          "empty_body",
+          "wrong_content_type",
+          "array_instead_of_object",
+          "null_body",
+          "deep_nesting",
+          "oversized_body"
+        ],
+        "unknown_route_status": 404
+      }
+    },
+    {
+      "check_id": "api.idempotency",
+      "checker": "api.idempotency/v1",
+      "adversary": "RELIABILITY",
+      "status": "VERIFIED",
+      "summary": "repeating the request returned 201; responses differed, which a create endpoint may intend",
+      "limitation": "two sequential identical requests; it observes repeat behaviour and does not establish idempotency under concurrency",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/api.idempotency/repeat.json"
+      ],
+      "detail": {
+        "responses_identical": false
+      }
+    },
+    {
+      "check_id": "reliability.partial_request",
+      "checker": "reliability.partial_request/v1",
+      "adversary": "RELIABILITY",
+      "status": "VERIFIED",
+      "summary": "the service survived truncated and invalid connections",
+      "limitation": "three truncated or invalid connections; it is not a sustained resource-exhaustion test and does not measure behaviour under load",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/reliability.partial_request/partial.json"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "web.links",
+      "checker": "web.links/v1",
+      "adversary": "OPERATOR",
+      "status": "VERIFIED",
+      "summary": "all 50 references resolve",
+      "limitation": "internal references and page fragments are resolved against this checkout; external destinations were not fetched because network access was not granted",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/web.links/links.json"
+      ],
+      "detail": {
+        "external_count": 12
+      }
+    },
+    {
+      "check_id": "web.metadata",
+      "checker": "web.metadata/v1",
+      "adversary": "OPERATOR",
+      "status": "VERIFIED",
+      "summary": "1 pages carry title, description, canonical, Open Graph tags and a single h1, alongside robots.txt and sitemap.xml",
+      "limitation": "presence and shape of declared metadata in this checkout; it does not verify what a search engine or social platform will actually render",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/web.metadata/metadata.json"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "web.responsive",
+      "checker": "web.responsive/v1",
+      "adversary": "OPERATOR",
+      "status": "FAILED",
+      "summary": "1 rendering problems across 3 widths",
+      "limitation": "rendered checks for overflow, landmarks, headings and keyboard entry at the declared widths; it is not a full accessibility audit and does not replace review with assistive technology",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/web.responsive/index-375.png",
+        "evidence/web.responsive/index-768.png",
+        "evidence/web.responsive/index-1440.png",
+        "evidence/web.responsive/rendered.json"
+      ],
+      "detail": {
+        "problems": [
+          {
+            "page": "index.html",
+            "width": 375,
+            "why": "the document scrolls horizontally"
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "docs.claims.absolutes",
+      "checker": "docs.claims/v1",
+      "adversary": "OPERATOR",
+      "status": "VERIFIED",
+      "summary": "19 absolute documentation claims collected for challenge",
+      "limitation": "it locates absolute claims and reports them for adversarial attention; it does not by itself decide whether each claim is true",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/docs.claims/absolute-claims.json"
+      ],
+      "detail": {
+        "count": 19,
+        "claims": [
+          {
+            "file": "README.md",
+            "line": 17,
+            "claim": "JavaScript backend. There is no hand-written server code and no hand-written"
+          },
+          {
+            "file": "README.md",
+            "line": 27,
+            "claim": "- **Authority is derived on every read, never replayed from storage.** An"
+          },
+          {
+            "file": "README.md",
+            "line": 29,
+            "claim": "once it lapses, and a mission cannot enter `EXECUTING` without live delegated"
+          },
+          {
+            "file": "README.md",
+            "line": 33,
+            "claim": "its own status with an explicit note, never folded into `passed`."
+          },
+          {
+            "file": "README.md",
+            "line": 34,
+            "claim": "- **Demo data is labelled.** Every record carries `provenance`. Hand-authored"
+          },
+          {
+            "file": "README.md",
+            "line": 84,
+            "claim": "the mission lifecycle, every invalid state transition, authority expiry,"
+          },
+          {
+            "file": "README.md",
+            "line": 136,
+            "claim": "- [Domain model](docs/domain_model.md) — every field mapped to its ecosystem source"
+          },
+          {
+            "file": "docs/architecture.md",
+            "line": 38,
+            "claim": "through the same module as the product is the reason it cannot drift from it —"
+          },
+          {
+            "file": "docs/architecture.md",
+            "line": 41,
+            "claim": "**Authority is computed, not stored.** `envelope_status` runs on every read and"
+          },
+          {
+            "file": "docs/architecture.md",
+            "line": 45,
+            "claim": "prevent. The cost is that authority cannot be cached; at this scale that is"
+          },
+          {
+            "file": "docs/architecture.md",
+            "line": 66,
+            "claim": "**Ledger import is offline and separate.** 232,000 ledger entries cannot be"
+          },
+          {
+            "file": "docs/architecture.md",
+            "line": 73,
+            "claim": "exposes query parameters, path parameters or request headers. Every addressable"
+          },
+          {
+            "file": "docs/architecture.md",
+            "line": 80,
+            "claim": "`esc` is built from `str_split`/`str_join` and applied to every interpolated"
+          },
+          {
+            "file": "docs/architecture.md",
+            "line": 94,
+            "claim": "server assigned and never carried it; `/api/seed` and the offline ledger importer"
+          },
+          {
+            "file": "docs/architecture.md",
+            "line": 109,
+            "claim": "| `database` | every `store_*` operation |"
+          },
+          {
+            "file": "docs/domain_model.md",
+            "line": 3,
+            "claim": "Every term below already existed somewhere in the Howl ecosystem. HowlBoard"
+          },
+          {
+            "file": "docs/domain_model.md",
+            "line": 45,
+            "claim": "(`src/control_plane/authority_envelope.py`), **derived on every read**:"
+          },
+          {
+            "file": "docs/domain_model.md",
+            "line": 125,
+            "claim": "is contract-tested: `claimed` must never be reported as `passed`."
+          },
+          {
+            "file": "docs/domain_model.md",
+            "line": 133,
+            "claim": "`PURSUE` / `REJECT` / `DEFER` / `REQUIRES_HUMAN` / `NO_VALUABLE_ACTION`. None of"
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "docs.claims.sync",
+      "checker": "docs.claims/v1",
+      "adversary": "OPERATOR",
+      "status": "VERIFIED",
+      "summary": "all 1 file pairs documented as synchronised are identical",
+      "limitation": "byte comparison of the declared pairs at this commit; it does not detect semantic drift between files that are supposed to agree but are not copies",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/docs.claims/synced-pairs.json"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "cli.destructive",
+      "checker": "cli.destructive/v1",
+      "adversary": "OPERATOR",
+      "status": "NOT_APPLICABLE",
+      "summary": "the artifact has no such surface",
+      "limitation": "absence of a surface is not evidence about other surfaces",
+      "reason": "the artifact declares no destructive subcommands to inspect",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [],
+      "detail": {}
+    },
+    {
+      "check_id": "release.version",
+      "checker": "release.version/v1",
+      "adversary": "OPERATOR",
+      "status": "NOT_APPLICABLE",
+      "summary": "the artifact has no such surface",
+      "limitation": "absence of a surface is not evidence about other surfaces",
+      "reason": "the artifact has no pyproject.toml declaring a version",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [],
+      "detail": {}
+    },
+    {
+      "check_id": "service.restart",
+      "checker": "service.restart/v1",
+      "adversary": "RELIABILITY",
+      "status": "VERIFIED",
+      "summary": "the service restarted and answered again; state did not survive the restart",
+      "limitation": "one clean stop and start; it does not simulate a crash, a partial write, or concurrent traffic during shutdown",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/service.restart/restart.json"
+      ],
+      "detail": {
+        "state_persisted": false
+      }
+    },
+    {
+      "check_id": "reliability.corrupt_store",
+      "checker": "reliability.corrupt_store/v1",
+      "adversary": "RELIABILITY",
+      "status": "VERIFIED",
+      "summary": "with howlboard_missions.json truncated the artifact refused to start with a diagnostic",
+      "limitation": "the corruption was injected by the evaluator into the workspace copy, so this is a simulated fault; the artifact's reaction to it is a real observation",
+      "reason": "",
+      "mode": "SIMULATED",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/reliability.corrupt_store/corrupt-store.json"
+      ],
+      "detail": {}
+    }
+  ],
+  "findings": [
+    {
+      "check_id": "ci.supplychain",
+      "adversary": "SECURITY",
+      "category": "security",
+      "title": "actions/checkout is pinned to a mutable reference",
+      "severity": "MEDIUM",
+      "confidence": "HIGH",
+      "summary": ".github/workflows/ci.yml runs actions/checkout at `v4`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+      "evidence": "uses: actions/checkout@v4",
+      "recommended_remediation": "Pin the action to a full 40-character commit SHA and record the intended version in a comment.",
+      "location": ".github/workflows/ci.yml:15",
+      "rule": "ci.unpinned_action",
+      "state": "FOUND",
+      "reproduction": {
+        "summary": "Re-read the workflow and match the same construct.",
+        "requires_service": false,
+        "notes": "",
+        "steps": [
+          {
+            "description": "Inspect .github/workflows/ci.yml at line 15.",
+            "kind": "file_probe",
+            "payload": {
+              "path": ".github/workflows/ci.yml",
+              "pattern": "actions/checkout@v4"
+            },
+            "expect": {
+              "matches": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": null,
+      "id": "HP-SEC-0001",
+      "fingerprint": "f7b8fe437cef56aebbaf43416e9a39ed4a9a9bee65fffde2e5ff8a1e1bf81d75",
+      "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+      "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+      "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+      "detail": {},
+      "blocking": false
+    },
+    {
+      "check_id": "ci.supplychain",
+      "adversary": "SECURITY",
+      "category": "security",
+      "title": "actions/setup-go is pinned to a mutable reference",
+      "severity": "MEDIUM",
+      "confidence": "HIGH",
+      "summary": ".github/workflows/ci.yml runs actions/setup-go at `v5`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+      "evidence": "uses: actions/setup-go@v5",
+      "recommended_remediation": "Pin the action to a full 40-character commit SHA and record the intended version in a comment.",
+      "location": ".github/workflows/ci.yml:18",
+      "rule": "ci.unpinned_action",
+      "state": "FOUND",
+      "reproduction": {
+        "summary": "Re-read the workflow and match the same construct.",
+        "requires_service": false,
+        "notes": "",
+        "steps": [
+          {
+            "description": "Inspect .github/workflows/ci.yml at line 18.",
+            "kind": "file_probe",
+            "payload": {
+              "path": ".github/workflows/ci.yml",
+              "pattern": "actions/setup\\-go@v5"
+            },
+            "expect": {
+              "matches": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": null,
+      "id": "HP-SEC-0002",
+      "fingerprint": "3297963530bad58f953ce51c3d30518780f9f52b7afd87bf35b84980a7625292",
+      "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+      "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+      "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+      "detail": {},
+      "blocking": false
+    },
+    {
+      "check_id": "ci.supplychain",
+      "adversary": "SECURITY",
+      "category": "security",
+      "title": "actions/setup-python is pinned to a mutable reference",
+      "severity": "MEDIUM",
+      "confidence": "HIGH",
+      "summary": ".github/workflows/ci.yml runs actions/setup-python at `v5`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+      "evidence": "uses: actions/setup-python@v5",
+      "recommended_remediation": "Pin the action to a full 40-character commit SHA and record the intended version in a comment.",
+      "location": ".github/workflows/ci.yml:23",
+      "rule": "ci.unpinned_action",
+      "state": "FOUND",
+      "reproduction": {
+        "summary": "Re-read the workflow and match the same construct.",
+        "requires_service": false,
+        "notes": "",
+        "steps": [
+          {
+            "description": "Inspect .github/workflows/ci.yml at line 23.",
+            "kind": "file_probe",
+            "payload": {
+              "path": ".github/workflows/ci.yml",
+              "pattern": "actions/setup\\-python@v5"
+            },
+            "expect": {
+              "matches": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": null,
+      "id": "HP-SEC-0003",
+      "fingerprint": "5d5ee9a1951e4859c8fc37f9b33cb60a023b9d4c66b7b17921809d7ac6803e39",
+      "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+      "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+      "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+      "detail": {},
+      "blocking": false
+    },
+    {
+      "check_id": "ci.supplychain",
+      "adversary": "SECURITY",
+      "category": "security",
+      "title": ".github/workflows/ci.yml declares no GITHUB_TOKEN permissions",
+      "severity": "MEDIUM",
+      "confidence": "HIGH",
+      "summary": "Without an explicit `permissions:` block the workflow inherits the repository default, which may grant write access to contents, packages and more than the job needs.",
+      "evidence": "no top-level or per-job `permissions:` key",
+      "recommended_remediation": "Add `permissions: {contents: read}` and widen only where required.",
+      "location": ".github/workflows/ci.yml:1",
+      "rule": "ci.default_permissions",
+      "state": "FOUND",
+      "reproduction": {
+        "summary": "Re-read the workflow and match the same construct.",
+        "requires_service": false,
+        "notes": "",
+        "steps": [
+          {
+            "description": "Inspect .github/workflows/ci.yml at line 1.",
+            "kind": "file_probe",
+            "payload": {
+              "path": ".github/workflows/ci.yml",
+              "pattern": "jobs:"
+            },
+            "expect": {
+              "matches": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": null,
+      "id": "HP-SEC-0004",
+      "fingerprint": "20016dcc6c09e36c5a72693c29e0e76df0d22a0b2af7d10f86497440f9532b73",
+      "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+      "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+      "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+      "detail": {},
+      "blocking": false
+    },
+    {
+      "check_id": "markup.escaping",
+      "adversary": "SECURITY",
+      "category": "security",
+      "title": "`set_html` builds markup from an interpolated value in frontend/app.howl",
+      "severity": "MEDIUM",
+      "confidence": "HIGH",
+      "summary": "A call to `set_html` assembles HTML containing an interpolated value and no escape function appears in the surrounding expression.",
+      "evidence": "set_html (dom_query \"#feed\") (str_join (list html \"</div>\") \"\"))\n          )\n        )\n      )\n    )\n  )\n\n  (defun open_mission (id)\n    (type_hint return \"void\")\n    (try_let (raw (fetch (call api_url \"/api/missions/get\") \"POST\" (str_join (list \"{\\\"id\\\":\\\"\" id \"\\\"}\") \"\")))\n      (catch err (call sh",
+      "recommended_remediation": "Route every interpolated value through the artifact's escape function, or set text content instead of markup.",
+      "location": "frontend/app.howl:201",
+      "rule": "markup.sink_without_escaping",
+      "state": "FOUND",
+      "reproduction": {
+        "summary": "Re-read the source and match the same construction.",
+        "requires_service": false,
+        "notes": "",
+        "steps": [
+          {
+            "description": "Inspect frontend/app.howl around line 201.",
+            "kind": "file_probe",
+            "payload": {
+              "path": "frontend/app.howl",
+              "pattern": "set_html"
+            },
+            "expect": {
+              "matches": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": null,
+      "id": "HP-SEC-0005",
+      "fingerprint": "0d69e57f51c7077dae7865695d627b65d74f6669679081393ea35b7851ba59da",
+      "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+      "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+      "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+      "detail": {
+        "file": "frontend/app.howl",
+        "line": 201,
+        "rule": "markup.sink_without_escaping",
+        "severity": "MEDIUM",
+        "title": "`set_html` builds markup from an interpolated value in frontend/app.howl",
+        "summary": "A call to `set_html` assembles HTML containing an interpolated value and no escape function appears in the surrounding expression.",
+        "evidence": "set_html (dom_query \"#feed\") (str_join (list html \"</div>\") \"\"))\n          )\n        )\n      )\n    )\n  )\n\n  (defun open_mission (id)\n    (type_hint return \"void\")\n    (try_let (raw (fetch (call api_url \"/api/missions/get\") \"POST\" (str_join (list \"{\\\"id\\\":\\\"\" id \"\\\"}\") \"\")))\n      (catch err (call sh",
+        "pattern": "set_html",
+        "remediation": "Route every interpolated value through the artifact's escape function, or set text content instead of markup."
+      },
+      "blocking": false
+    },
+    {
+      "check_id": "web.responsive",
+      "adversary": "OPERATOR",
+      "category": "other",
+      "title": "The published site fails rendered checks at declared widths",
+      "severity": "MEDIUM",
+      "confidence": "CONFIRMED",
+      "summary": "index.html@375: the document scrolls horizontally",
+      "evidence": "[\n  {\n    \"page\": \"index.html\",\n    \"width\": 375,\n    \"why\": \"the document scrolls horizontally\"\n  }\n]",
+      "recommended_remediation": "Correct the layout or markup so each width renders without these defects.",
+      "location": null,
+      "rule": "web.responsive.defects",
+      "state": "FOUND",
+      "reproduction": {
+        "summary": "Re-run web.responsive against the artifact.",
+        "requires_service": false,
+        "notes": "This observation is made by the evaluator, not by a replayable command. Use `howlproof verify-fix` to re-verify it.",
+        "steps": [
+          {
+            "description": "Render the declared pages again at each declared width.",
+            "kind": "reevaluate",
+            "payload": {
+              "evaluator": "web.responsive"
+            },
+            "expect": {
+              "finding_present": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": null,
+      "id": "HP-OPS-0001",
+      "fingerprint": "40590dd024dddb5d326f447365c1813bbe490ea763f6e9e9b9ec30305b398ef3",
+      "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+      "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+      "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+      "detail": {},
+      "blocking": false
+    },
+    {
+      "check_id": "docs.claims.absolutes",
+      "adversary": "OPERATOR",
+      "category": "other",
+      "title": "19 absolute documentation claims are unverified",
+      "severity": "INFORMATIONAL",
+      "confidence": "CONFIRMED",
+      "summary": "The documentation asserts these without qualification. Each one is a promise a single counterexample breaks, and this evaluation did not independently establish any of them: README.md:17 JavaScript backend. There is no hand-written server code and no hand-written; README.md:27 - **Authority is derived on every read, never replayed from storage.** An; README.md:29 once it lapses, and a mission cannot enter `EXECUTING` without live delegated; README.md:33 its own status with an explicit note, never folded into `passed`.; README.md:34 - **Demo data is labelled.** Every record carries `provenance`. Hand-authored; README.md:84 the mission lifecycle, every invalid state transition, authority expiry,",
+      "evidence": "[\n  {\n    \"file\": \"README.md\",\n    \"line\": 17,\n    \"claim\": \"JavaScript backend. There is no hand-written server code and no hand-written\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 27,\n    \"claim\": \"- **Authority is derived on every read, never replayed from storage.** An\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 29,\n    \"claim\": \"once it lapses, and a mission cannot enter `EXECUTING` without live delegated\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 33,\n    \"claim\": \"its own status with an explicit note, never folded into `passed`.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 34,\n    \"claim\": \"- **Demo data is labelled.** Every record carries `provenance`. Hand-authored\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 84,\n    \"claim\": \"the mission lifecycle, every invalid state transition, authority expiry,\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 136,\n    \"claim\": \"- [Domain model](docs/domain_model.md) \\u2014 every field mapped to its ecosystem source\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 38,\n    \"claim\": \"through the same module as the product is the reason it cannot drift from it \\u2014\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 41,\n    \"claim\": \"**Authority is computed, not stored.** `envelope_status` runs on every read and\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 45,\n    \"claim\": \"prevent. The cost is that authority cannot be cached; at this scale that is\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 66,\n    \"claim\": \"**Ledger import is offline and separate.** 232,000 ledger entries cannot be\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 73,\n    \"claim\": \"exposes query parameters, path parameters or request headers. Every addressable\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 80,\n    \"claim\": \"`esc` is built from `str_split`/`str_join` and applied to every interpolated\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 94,\n    \"claim\": \"server assigned and never carried it; `/api/seed` and the offline ledger importer\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 109,\n    \"claim\": \"| `database` | every `store_*` operation |\"\n  },\n  {\n    \"file\": \"docs/domain_model.md\",\n    \"line\": 3,\n    \"claim\": \"Every term below already existed somewhere in the Howl ecosystem. HowlBoard\"\n  },\n  {\n    \"file\": \"docs/domain_model.md\",\n    \"line\": 45,\n    \"claim\": \"(`src/control_plane/authority_envelope.py`), **derived on every read**:\"\n  },\n  {\n    \"file\": \"docs/domain_model.md\",\n    \"line\": 125,\n    \"claim\": \"is contract-tested: `claimed` must never be reported as `passed`.\"\n  },\n  {\n    \"file\": \"docs/domain_model.md\",\n    \"line\": 133,\n    \"claim\": \"`PURSUE` / `REJECT` / `DEFER` / `REQUIRES_HUMAN` / `NO_VALUABLE_ACTION`. None of\"\n  }\n]",
+      "recommended_remediation": "Qualify the claim, or add a check that would fail if it stopped being true.",
+      "location": null,
+      "rule": "docs.claims.unverified_absolute",
+      "state": "FOUND",
+      "reproduction": {
+        "summary": "Re-run docs.claims against the artifact.",
+        "requires_service": false,
+        "notes": "This observation is made by the evaluator, not by a replayable command. Use `howlproof verify-fix` to re-verify it.",
+        "steps": [
+          {
+            "description": "Re-scan the declared documentation for unqualified absolute claims.",
+            "kind": "reevaluate",
+            "payload": {
+              "evaluator": "docs.claims"
+            },
+            "expect": {
+              "finding_present": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": null,
+      "id": "HP-OPS-0002",
+      "fingerprint": "cbdef474f2456fd666c9c0093695ab1ea6772a7bc5ddd8dacdf0231fe0f69c13",
+      "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+      "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+      "last_seen_run": "hp-20260911-135132-6a31b5f84f36",
+      "detail": {},
+      "blocking": false
+    }
+  ],
+  "unresolved_risks": [
+    "HP-SEC-0001 (MEDIUM): .github/workflows/ci.yml runs actions/checkout at `v4`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+    "HP-SEC-0002 (MEDIUM): .github/workflows/ci.yml runs actions/setup-go at `v5`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+    "HP-SEC-0003 (MEDIUM): .github/workflows/ci.yml runs actions/setup-python at `v5`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+    "HP-SEC-0004 (MEDIUM): Without an explicit `permissions:` block the workflow inherits the repository default, which may grant write access to contents, packages and more than the job needs.",
+    "HP-SEC-0005 (MEDIUM): A call to `set_html` assembles HTML containing an interpolated value and no escape function appears in the surrounding expression.",
+    "HP-OPS-0001 (MEDIUM): index.html@375: the document scrolls horizontally"
+  ],
+  "limitations": [
+    "sast.bandit was UNAVAILABLE: the artifact has no pyproject.toml to install",
+    "deps.audit was NOT_APPLICABLE: the artifact declares no Python dependencies to audit",
+    "cli.destructive was NOT_APPLICABLE: the artifact declares no destructive subcommands to inspect",
+    "release.version was NOT_APPLICABLE: the artifact has no pyproject.toml declaring a version",
+    "reliability.corrupt_store observed a simulation, not the real dependency"
+  ],
+  "notes": [],
+  "validation_modes": {
+    "REAL": [
+      "secrets.scan",
+      "ci.supplychain",
+      "markup.escaping",
+      "http.authz.execute_without_approval",
+      "http.authz.execute_with_expired_approval",
+      "web.dom_injection.mission_id_js_string",
+      "http.abuse",
+      "api.idempotency",
+      "reliability.partial_request",
+      "web.links",
+      "web.metadata",
+      "web.responsive",
+      "docs.claims.absolutes",
+      "docs.claims.sync",
+      "service.restart"
+    ],
+    "SIMULATED": [
+      "reliability.corrupt_store"
+    ],
+    "SKIPPED": [],
+    "UNAVAILABLE": [
+      "sast.bandit"
+    ],
+    "NOT_APPLICABLE": [
+      "deps.audit",
+      "cli.destructive",
+      "release.version"
+    ],
+    "ERROR": []
+  }
+}

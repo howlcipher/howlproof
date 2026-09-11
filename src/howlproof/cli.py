@@ -117,6 +117,23 @@ def build_parser() -> argparse.ArgumentParser:
     verify.add_argument("--allow-network", action="store_true")
     verify.add_argument("--json", action="store_true")
 
+    accept = commands.add_parser(
+        "accept",
+        help="record a decision to live with a finding, with a reason that stays attached",
+    )
+    accept.add_argument("finding")
+    accept.add_argument("--evidence-root", type=Path, default=DEFAULT_EVIDENCE_ROOT)
+    accept.add_argument(
+        "--reason",
+        required=True,
+        help="why this finding is acceptable; required, and checked for substance",
+    )
+    accept.add_argument(
+        "--state",
+        choices=[FindingState.ACCEPTED_RISK.value, FindingState.WONT_FIX.value],
+        default=FindingState.ACCEPTED_RISK.value,
+    )
+
     compare = commands.add_parser("compare", help="compare two evaluations of the same artifact")
     compare.add_argument("bundles", type=Path, nargs=2)
 
@@ -182,6 +199,8 @@ def _dispatch(args: argparse.Namespace) -> int:
         return _reproduce(args)
     if args.command == "verify-fix":
         return _verify_fix(args)
+    if args.command == "accept":
+        return _accept(args)
     if args.command == "compare":
         return _compare(args)
     if args.command == "handoff":
@@ -411,6 +430,44 @@ def _verify_fix(args: argparse.Namespace) -> int:
         print(f"  {outcome.reason}")
         print(f"  re-evaluation: {outcome.detail.get('path', 'none')}")
     return 0 if outcome.outcome == FindingState.VERIFIED_FIXED.value else EXIT_CODES[Verdict.REJECT]
+
+
+#: A dismissal has to say something. HowlPlane's reconciliation refuses a silent one
+#: and so does this, at the point the decision is recorded rather than when it is read.
+MINIMUM_REASON = 20
+
+
+def _accept(args: argparse.Namespace) -> int:
+    """Move a finding to a dismissed state. The reason travels with it, permanently."""
+    reason = args.reason.strip()
+    if len(reason) < MINIMUM_REASON:
+        return _fail(
+            f"a dismissal reason must be at least {MINIMUM_REASON} characters and explain why "
+            "the finding is acceptable; silent dismissal is what this field exists to prevent",
+            EXIT_USAGE,
+        )
+    ledger = Ledger.open(args.evidence_root)
+    artifact, record = ledger.find_anywhere(args.finding)
+    updated = ledger.record_state(
+        artifact, args.finding, FindingState(args.state), record.get("last_seen_run", ""), reason
+    )
+    ledger.save()
+    print(
+        json.dumps(
+            {
+                "finding": args.finding,
+                "artifact": artifact,
+                "state": updated["state"],
+                "reason": reason,
+                "note": (
+                    "This finding no longer blocks a verdict. It remains in the ledger with "
+                    "this reason attached, and reappears in every report."
+                ),
+            },
+            indent=2,
+        )
+    )
+    return 0
 
 
 def _compare(args: argparse.Namespace) -> int:

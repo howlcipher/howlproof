@@ -1,0 +1,34 @@
+{
+  "sources": [
+    "docs/demo.howl",
+    "frontend/app.howl",
+    "frontend/mission_view.howl"
+  ],
+  "escape_coverage": {
+    "esc": {
+      "defined_in": "frontend/mission_view.howl",
+      "line": 64,
+      "escapes": [
+        "\"",
+        "&",
+        "'",
+        "<",
+        ">"
+      ],
+      "missing": []
+    }
+  },
+  "issues": [
+    {
+      "file": "frontend/app.howl",
+      "line": 201,
+      "rule": "markup.sink_without_escaping",
+      "severity": "MEDIUM",
+      "title": "`set_html` builds markup from an interpolated value in frontend/app.howl",
+      "summary": "A call to `set_html` assembles HTML containing an interpolated value and no escape function appears in the surrounding expression.",
+      "evidence": "set_html (dom_query \"#feed\") (str_join (list html \"</div>\") \"\"))\n          )\n        )\n      )\n    )\n  )\n\n  (defun open_mission (id)\n    (type_hint return \"void\")\n    (try_let (raw (fetch (call api_url \"/api/missions/get\") \"POST\" (str_join (list \"{\\\"id\\\":\\\"\" id \"\\\"}\") \"\")))\n      (catch err (call sh",
+      "pattern": "set_html",
+      "remediation": "Route every interpolated value through the artifact's escape function, or set text content instead of markup."
+    }
+  ]
+}

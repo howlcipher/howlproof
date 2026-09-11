@@ -367,6 +367,65 @@ def test_verify_fix_reports_a_defect_that_is_still_present(rejected, tmp_path):
     assert payload["still_present"] is True
 
 
+# -- accepting a finding ----------------------------------------------------
+
+
+def test_a_dismissal_without_a_substantial_reason_is_refused(rejected):
+    _, root = rejected
+    result = howlproof(
+        "accept",
+        "HP-SEC-0001",
+        "--evidence-root",
+        str(root),
+        "--reason",
+        "fine",
+        expect=EXIT_USAGE,
+    )
+    assert "silent dismissal" in json.loads(result.stderr)["error"]
+
+
+def test_an_accepted_finding_stops_blocking_but_stays_in_the_ledger(rejected, tmp_path):
+    import shutil
+
+    _, root = rejected
+    evidence = tmp_path / "accepted"
+    evidence.mkdir()
+    shutil.copy(root / "ledger.json", evidence / "ledger.json")
+    payload = json.loads(
+        howlproof(
+            "accept",
+            "HP-SEC-0001",
+            "--evidence-root",
+            str(evidence),
+            "--reason",
+            "This credential is authored fixture data and was never valid.",
+            expect=0,
+        ).stdout
+    )
+    assert payload["state"] == "ACCEPTED_RISK"
+
+    # The next evaluation carries the decision forward and the finding no longer blocks.
+    result = howlproof("evaluate", str(VULNERABLE), "--evidence-root", str(evidence), "--json")
+    findings = {f["id"]: f for f in json.loads(result.stdout)["findings"]}
+    assert findings["HP-SEC-0001"]["state"] == "ACCEPTED_RISK"
+    assert findings["HP-SEC-0001"]["blocking"] is False
+    assert findings["HP-SEC-0001"]["resolution_reason"]
+
+
+def test_accepting_an_unknown_finding_is_a_usage_error(rejected):
+    _, root = rejected
+    result = howlproof(
+        "accept",
+        "HP-SEC-9999",
+        "--evidence-root",
+        str(root),
+        "--reason",
+        "This identifier does not exist in the ledger at all.",
+        expect=EXIT_USAGE,
+    )
+    assert "unknown finding" in json.loads(result.stderr)["error"]
+
+
 # -- ecosystem handoffs -----------------------------------------------------
 
 
