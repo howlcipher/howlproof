@@ -15,6 +15,8 @@ profiles:
   - security
   - documentation
   - web
+  # HowlProof's own command line, misused the way a tired operator would.
+  - cli.contract
 
 adversaries:
   - FUNCTIONAL
@@ -62,6 +64,7 @@ acceptance:
     checks:
       - ci.supplychain
       - release.version
+      - cli.contract
 
 cli:
   command:
