@@ -1,0 +1,17 @@
+{
+  "summary": "Re-run docs.claims against the artifact.",
+  "requires_service": false,
+  "notes": "This observation is made by the evaluator, not by a replayable command. Use `howlproof verify-fix` to re-verify it.",
+  "steps": [
+    {
+      "description": "Re-scan the declared documentation for unqualified absolute claims.",
+      "kind": "reevaluate",
+      "payload": {
+        "evaluator": "docs.claims"
+      },
+      "expect": {
+        "finding_present": true
+      }
+    }
+  ]
+}

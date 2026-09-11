@@ -144,13 +144,65 @@ from "never arrived".
 
 ## HowlProof
 
-**Bundle** [`dogfood/self/`](../dogfood/self) · contract `howlproof.yaml` at the
-repository root.
+**Run** `hp-20260911-140448-54eed6120948` · **artifact** commit `1b67d003` ·
+**verdict** `CONDITIONALLY_PROVEN` · **bundle** [`dogfood/self/`](../dogfood/self)
 
 HowlProof evaluates itself under the `python`, `security`, `documentation` and
-`web` profiles. Self-evaluation is the weakest form of independence available and
-is recorded as such: it demonstrates the tool runs against a real Python package
-with a real site, not that its judgment of itself is impartial.
+`web` profiles, against the contract in `howlproof.yaml` at the repository root.
+Self-evaluation is the weakest form of independence available and is recorded as
+such: it shows the tool runs against a real Python package with a real site, not
+that its judgment of itself is impartial.
 
-See the committed bundle for the current result, and `howlproof inspect
-dogfood/self` to re-verify it.
+| | |
+| --- | --- |
+| Acceptance criteria satisfied | 6 of 6 |
+| Checks | 11 verified, 1 failed, 1 skipped, 0 unavailable, 4 not applicable, 0 errored |
+| Findings | 4, of which 0 blocking |
+
+`CONDITIONALLY_PROVEN` rather than `PROVEN`, for reasons the result names: a
+dependency audit was `SKIPPED` because network access was not granted, and four
+checks did not apply because HowlProof declares no markup sources, no service, no
+injection payloads and no destructive subcommands. None of that is a pass.
+
+`secrets.scan` is `FAILED` and stays that way. It finds three credential-shaped
+strings, all of them authored fixture data that exists so the scanner has
+something to find, and each is recorded as `ACCEPTED_RISK` with its reason:
+
+```bash
+howlproof accept HP-SEC-0001 \
+  --reason "Authored fixture data in tests/fixtures/vulnerable_app, which exists so the
+            secret scanner has something to find. The value was never a valid credential."
+```
+
+Accepted findings stop blocking and keep appearing. The check stays `FAILED`,
+because it did find them.
+
+That is also why `secrets.scan` is deliberately absent from the `checks_pass`
+criterion in `howlproof.yaml`. A check that raises findings fails whenever it
+finds anything at all, including something an operator has examined and accepted,
+so gating on its status would duplicate the `max_findings` criterion while making
+an explicit acceptance impossible to express.
+
+### Two defects self-evaluation found
+
+1. **Workspace containment rejected the interpreter the evaluation provisions.**
+   Path containment resolved symlinks before checking, and a virtual environment
+   links `bin/python` at the system interpreter, so every Python check errored with
+   "path escapes the workspace". Containment is now lexical, which still refuses
+   `..` traversal. Before the fix, five checks reported `ERROR`.
+2. **The bundle integrity index hashed decoded text.** Screenshots were read with
+   replacement characters and hashed as strings, so two different images could hash
+   alike. It hashes bytes, and a test plants two PNGs that differ only in bytes.
+
+### Reproducing these runs
+
+Evidence is written outside the artifact, so a self-evaluation cannot write into
+the tree it is measuring, and the bundle is copied into `dogfood/` afterwards:
+
+```bash
+howlproof evaluate . --evidence-root /tmp/howlproof-self
+howlproof inspect /tmp/howlproof-self
+```
+
+`howlproof inspect dogfood/self` re-verifies the committed bundle against its own
+integrity index.

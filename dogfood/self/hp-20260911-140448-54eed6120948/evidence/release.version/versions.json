@@ -1,0 +1,10 @@
+{
+  "pyproject": "0.1.0",
+  "dunder": {
+    "src/howlproof/__init__.py": "0.1.0"
+  },
+  "changelog_file": "change_log.md",
+  "changelog_versions": [
+    "0.1.0"
+  ]
+}

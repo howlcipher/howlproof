@@ -1,0 +1,39 @@
+{
+  "check_id": "docs.claims.absolutes",
+  "adversary": "OPERATOR",
+  "category": "other",
+  "title": "34 absolute documentation claims are unverified",
+  "severity": "INFORMATIONAL",
+  "confidence": "CONFIRMED",
+  "summary": "The documentation asserts these without qualification. Each one is a promise a single counterexample breaks, and this evaluation did not independently establish any of them: README.md:46 | `PROVEN` | 0 | Every acceptance criterion was satisfied, no unresolved finding sits abov; README.md:48 | `REQUIRES_HUMAN` | 20 | The evidence cannot safely support an autonomous decision |; README.md:91 Four of these are not passes and none of them is silent. Every check also records; README.md:93 never reads like a clean result.; README.md:122 howlproof accept HP-SEC-0001 --reason \"Authored fixture data; the value was never valid.\"; README.md:128 keeps appearing in every report. There is no way to make one disappear quietly.",
+  "evidence": "[\n  {\n    \"file\": \"README.md\",\n    \"line\": 46,\n    \"claim\": \"| `PROVEN` | 0 | Every acceptance criterion was satisfied, no unresolved finding sits above the permitted threshold, and enough checks actually executed to justify saying so |\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 48,\n    \"claim\": \"| `REQUIRES_HUMAN` | 20 | The evidence cannot safely support an autonomous decision |\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 91,\n    \"claim\": \"Four of these are not passes and none of them is silent. Every check also records\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 93,\n    \"claim\": \"never reads like a clean result.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 122,\n    \"claim\": \"howlproof accept HP-SEC-0001 --reason \\\"Authored fixture data; the value was never valid.\\\"\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 128,\n    \"claim\": \"keeps appearing in every report. There is no way to make one disappear quietly.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 139,\n    \"claim\": \"state the finding was raised against, because an unchanged artifact cannot have\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 144,\n    \"claim\": \"A statement that a defect was repaired never produces `VERIFIED_FIXED`. Only a\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 153,\n    \"claim\": \"environment.json  every tool probed, and why an absent one is absent\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 163,\n    \"claim\": \"`howlproof inspect <bundle>` re-reads the bundle and recomputes every hash in its\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 208,\n    \"claim\": \"failure, never a silent skip. Any active exclusion prevents `PROVEN` and an\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 221,\n    \"claim\": \"and written into the workspace copy, never the artifact.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 232,\n    \"claim\": \"1. Evaluators never receive a writable handle to the artifact. The tree is\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 233,\n    \"claim\": \"materialised into a workspace copy and every command runs there.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 256,\n    \"claim\": \"Every handoff carries `authority: ADVISORY`. HowlProof issues verdicts; HowlPlane\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 268,\n    \"claim\": \"deserves and a finding from it is never `CONFIRMED`.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 278,\n    \"claim\": \"- **HowlProof is not an autonomous repair agent.** It never edits the artifact it\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 313,\n    \"claim\": \"- [Evaluators](docs/evaluators.md) \\u2014 every check, what it establishes and what it does not\"\n  },\n  {\n    \"file\": \"ROADMAP.md\",\n    \"line\": 38,\n    \"claim\": \"- Cross-artifact regression: replaying every `VERIFIED_FIXED` reproduction across\"\n  },\n  {\n    \"file\": \"docs/contract.md\",\n    \"line\": 35,\n    \"claim\": \"**Evaluators cannot write to the artifact.** `Target.prepare` materialises the\"\n  }\n]",
+  "recommended_remediation": "Qualify the claim, or add a check that would fail if it stopped being true.",
+  "location": null,
+  "rule": "docs.claims.unverified_absolute",
+  "state": "FOUND",
+  "reproduction": {
+    "summary": "Re-run docs.claims against the artifact.",
+    "requires_service": false,
+    "notes": "This observation is made by the evaluator, not by a replayable command. Use `howlproof verify-fix` to re-verify it.",
+    "steps": [
+      {
+        "description": "Re-scan the declared documentation for unqualified absolute claims.",
+        "kind": "reevaluate",
+        "payload": {
+          "evaluator": "docs.claims"
+        },
+        "expect": {
+          "finding_present": true
+        }
+      }
+    ]
+  },
+  "resolution_reason": null,
+  "id": "HP-OPS-0002",
+  "fingerprint": "238708c63d0faaaeb93f67a03ca6ef07cc9a7bf0b6f4a82ab7ca78b7486023b3",
+  "first_seen_run": "hp-20260911-140448-54eed6120948",
+  "first_seen_commit": "1b67d003e70c13af05a0e25407f497d6802c1270",
+  "last_seen_run": "hp-20260911-140448-54eed6120948",
+  "detail": {},
+  "blocking": false
+}

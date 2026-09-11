@@ -1,0 +1,8 @@
+argv: ['.howlproof-venv/bin/python', '-m', 'mypy']
+exit_code: 0
+
+--- stdout ---
+Success: no issues found in 26 source files
+
+
+--- stderr ---

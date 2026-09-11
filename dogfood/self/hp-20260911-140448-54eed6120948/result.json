@@ -1,0 +1,740 @@
+{
+  "schema": "howlproof.result/v1",
+  "run_id": "hp-20260911-140448-54eed6120948",
+  "authority": "ADVISORY",
+  "version": "0.1.0",
+  "artifact": "howlproof",
+  "profiles": [
+    "python",
+    "security",
+    "documentation",
+    "web"
+  ],
+  "adversaries": [
+    "FUNCTIONAL",
+    "SECURITY",
+    "RELIABILITY",
+    "AI",
+    "OPERATOR"
+  ],
+  "target": {
+    "root": "/run/media/system/tallgeese/dev/howlproof",
+    "is_git": true,
+    "commit": "1b67d003e70c13af05a0e25407f497d6802c1270",
+    "branch": "main",
+    "dirty": false,
+    "file_count": 196,
+    "oversized_files_not_copied": [],
+    "tree_digest_before": "13013bda9c82c62556ab70df0c9b50cb78ebcdbb242e3f38999516db89a5a09b",
+    "tree_digest_after": "13013bda9c82c62556ab70df0c9b50cb78ebcdbb242e3f38999516db89a5a09b"
+  },
+  "started_at": "2026-09-11T14:04:48.269300+00:00",
+  "completed_at": "2026-09-11T14:07:55.565848+00:00",
+  "duration_ms": 187296,
+  "verdict": "CONDITIONALLY_PROVEN",
+  "verdict_definition": "The artifact passed subject to documented assumptions, exclusions, environment limitations or unresolved non-blocking findings, each named in the result.",
+  "deciding_rule": "conditional",
+  "rationale": [
+    "deps.audit was SKIPPED: a dependency audit queries a remote advisory database and network access was not granted with --allow-network; no vulnerability was checked for and none is implied to be absent",
+    "markup.escaping did not apply: the artifact declares no markup sources to analyse",
+    "http.authz did not apply: the artifact declares no service, so there is nothing to reach",
+    "web.dom_injection did not apply: the artifact declares no injection payloads to attempt",
+    "cli.destructive did not apply: the artifact declares no destructive subcommands to inspect"
+  ],
+  "criteria": [
+    {
+      "id": "AC-01",
+      "requirement": "checks_pass",
+      "outcome": "SATISFIED",
+      "detail": "4 required checks verified",
+      "optional": false,
+      "evidence": {
+        "verified": [
+          "python.build",
+          "python.lint",
+          "python.tests",
+          "python.types"
+        ]
+      }
+    },
+    {
+      "id": "AC-02",
+      "requirement": "max_findings",
+      "outcome": "SATISFIED",
+      "detail": "0 security findings at or above HIGH, limit 0",
+      "optional": false,
+      "evidence": {
+        "finding_ids": []
+      }
+    },
+    {
+      "id": "AC-03",
+      "requirement": "tool_required",
+      "outcome": "SATISFIED",
+      "detail": "1 required tools present",
+      "optional": false,
+      "evidence": {
+        "tools": [
+          "python3"
+        ]
+      }
+    },
+    {
+      "id": "AC-04",
+      "requirement": "no_regressions",
+      "outcome": "SATISFIED",
+      "detail": "no previously fixed finding reappeared",
+      "optional": false,
+      "evidence": {}
+    },
+    {
+      "id": "AC-05",
+      "requirement": "coverage_floor",
+      "outcome": "SATISFIED",
+      "detail": "12 of 13 applicable checks were conclusive (0.92), floor 0.60",
+      "optional": false,
+      "evidence": {
+        "fraction": 0.9231
+      }
+    },
+    {
+      "id": "AC-06",
+      "requirement": "checks_pass",
+      "outcome": "SATISFIED",
+      "detail": "2 required checks verified",
+      "optional": false,
+      "evidence": {
+        "verified": [
+          "ci.supplychain",
+          "release.version"
+        ]
+      }
+    }
+  ],
+  "counts": {
+    "checks": 17,
+    "verified": 11,
+    "failed": 1,
+    "skipped": 1,
+    "unavailable": 0,
+    "not_applicable": 4,
+    "errored": 0,
+    "simulated": 0,
+    "findings": 4,
+    "blocking_findings": 0,
+    "criteria_satisfied": 6,
+    "criteria_total": 6,
+    "by_severity": {
+      "BLOCKER": 2,
+      "HIGH": 0,
+      "MEDIUM": 0,
+      "LOW": 1,
+      "INFORMATIONAL": 1
+    },
+    "by_adversary": {
+      "FUNCTIONAL": 0,
+      "SECURITY": 3,
+      "RELIABILITY": 0,
+      "AI": 0,
+      "OPERATOR": 1,
+      "INTEGRITY": 0
+    }
+  },
+  "checks": [
+    {
+      "check_id": "python.lint",
+      "checker": "python.lint/v1",
+      "adversary": "FUNCTIONAL",
+      "status": "VERIFIED",
+      "summary": "`.howlproof-venv/bin/python -m ruff check .` exited 0",
+      "limitation": "style and a narrow set of correctness lints, not program behaviour",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 47,
+      "evidence_refs": [
+        "evidence/python.lint/command.txt"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "python.types",
+      "checker": "python.types/v1",
+      "adversary": "FUNCTIONAL",
+      "status": "VERIFIED",
+      "summary": "`.howlproof-venv/bin/python -m mypy` exited 0",
+      "limitation": "static types only; runtime values and dynamic attribute access are unchecked",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 6548,
+      "evidence_refs": [
+        "evidence/python.types/command.txt"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "python.tests",
+      "checker": "python.tests/v1",
+      "adversary": "FUNCTIONAL",
+      "status": "VERIFIED",
+      "summary": "`.howlproof-venv/bin/python -m pytest -q` exited 0",
+      "limitation": "a passing suite shows the tests the artifact chose to write pass; it does not show that the suite covers the behaviour that matters",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 42653,
+      "evidence_refs": [
+        "evidence/python.tests/command.txt"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "python.build",
+      "checker": "python.build/v1",
+      "adversary": "FUNCTIONAL",
+      "status": "VERIFIED",
+      "summary": "`.howlproof-venv/bin/python -m build --outdir .howlproof-dist` exited 0",
+      "limitation": "the distribution builds; it does not establish that the built wheel installs or runs",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 3960,
+      "evidence_refs": [
+        "evidence/python.build/command.txt"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "release.version",
+      "checker": "release.version/v1",
+      "adversary": "OPERATOR",
+      "status": "VERIFIED",
+      "summary": "the declared version, package attribute and changelog agree",
+      "limitation": "compares the version strings the artifact declares about itself; it does not check published releases, git tags or what a built wheel actually contains",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/release.version/versions.json"
+      ],
+      "detail": {
+        "pyproject": "0.1.0",
+        "dunder": {
+          "src/howlproof/__init__.py": "0.1.0"
+        },
+        "changelog_file": "change_log.md",
+        "changelog_versions": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "check_id": "sast.bandit",
+      "checker": "sast.bandit/v1",
+      "adversary": "SECURITY",
+      "status": "VERIFIED",
+      "summary": "bandit reports no medium or high findings in .",
+      "limitation": "bandit's pattern catalogue at medium severity and above; it finds known shapes of insecure code, not logic or authority flaws",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/sast.bandit/bandit.txt"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "deps.audit",
+      "checker": "deps.audit/v1",
+      "adversary": "SECURITY",
+      "status": "SKIPPED",
+      "summary": "the check was deliberately not run",
+      "limitation": "nothing about this surface was established",
+      "reason": "a dependency audit queries a remote advisory database and network access was not granted with --allow-network; no vulnerability was checked for and none is implied to be absent",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [],
+      "detail": {}
+    },
+    {
+      "check_id": "secrets.scan",
+      "checker": "secrets.scan/v1",
+      "adversary": "SECURITY",
+      "status": "FAILED",
+      "summary": "3 credential-shaped strings in 181 text files",
+      "limitation": "pattern matching over text files in the working tree; it does not inspect git history, binaries, or credentials held only in a runtime environment",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/secrets.scan/matches.json"
+      ],
+      "detail": {
+        "files_scanned": 181,
+        "hits": 3
+      }
+    },
+    {
+      "check_id": "ci.supplychain",
+      "checker": "ci.supplychain/v1",
+      "adversary": "SECURITY",
+      "status": "VERIFIED",
+      "summary": "2 workflows pin their actions, scope permissions and keep untrusted expressions out of run blocks",
+      "limitation": "static analysis of workflow files in this checkout; it does not evaluate the repository's branch protection, org policy, or the actions' own contents",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/ci.supplychain/workflow-issues.json"
+      ],
+      "detail": {
+        "workflows": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/pages.yml"
+        ]
+      }
+    },
+    {
+      "check_id": "markup.escaping",
+      "checker": "markup.escaping/v1",
+      "adversary": "SECURITY",
+      "status": "NOT_APPLICABLE",
+      "summary": "the artifact has no such surface",
+      "limitation": "absence of a surface is not evidence about other surfaces",
+      "reason": "the artifact declares no markup sources to analyse",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [],
+      "detail": {}
+    },
+    {
+      "check_id": "http.authz",
+      "checker": "http.authz/v1",
+      "adversary": "SECURITY",
+      "status": "NOT_APPLICABLE",
+      "summary": "the artifact has no such surface",
+      "limitation": "absence of a surface is not evidence about other surfaces",
+      "reason": "the artifact declares no service, so there is nothing to reach",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [],
+      "detail": {}
+    },
+    {
+      "check_id": "web.dom_injection",
+      "checker": "web.dom_injection/v1",
+      "adversary": "SECURITY",
+      "status": "NOT_APPLICABLE",
+      "summary": "the artifact has no such surface",
+      "limitation": "absence of a surface is not evidence about other surfaces",
+      "reason": "the artifact declares no injection payloads to attempt",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [],
+      "detail": {}
+    },
+    {
+      "check_id": "docs.claims.absolutes",
+      "checker": "docs.claims/v1",
+      "adversary": "OPERATOR",
+      "status": "VERIFIED",
+      "summary": "34 absolute documentation claims collected for challenge",
+      "limitation": "it locates absolute claims and reports them for adversarial attention; it does not by itself decide whether each claim is true",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/docs.claims/absolute-claims.json"
+      ],
+      "detail": {
+        "count": 34,
+        "claims": [
+          {
+            "file": "README.md",
+            "line": 46,
+            "claim": "| `PROVEN` | 0 | Every acceptance criterion was satisfied, no unresolved finding sits above the permitted threshold, and enough checks actually executed to justify saying so |"
+          },
+          {
+            "file": "README.md",
+            "line": 48,
+            "claim": "| `REQUIRES_HUMAN` | 20 | The evidence cannot safely support an autonomous decision |"
+          },
+          {
+            "file": "README.md",
+            "line": 91,
+            "claim": "Four of these are not passes and none of them is silent. Every check also records"
+          },
+          {
+            "file": "README.md",
+            "line": 93,
+            "claim": "never reads like a clean result."
+          },
+          {
+            "file": "README.md",
+            "line": 122,
+            "claim": "howlproof accept HP-SEC-0001 --reason \"Authored fixture data; the value was never valid.\""
+          },
+          {
+            "file": "README.md",
+            "line": 128,
+            "claim": "keeps appearing in every report. There is no way to make one disappear quietly."
+          },
+          {
+            "file": "README.md",
+            "line": 139,
+            "claim": "state the finding was raised against, because an unchanged artifact cannot have"
+          },
+          {
+            "file": "README.md",
+            "line": 144,
+            "claim": "A statement that a defect was repaired never produces `VERIFIED_FIXED`. Only a"
+          },
+          {
+            "file": "README.md",
+            "line": 153,
+            "claim": "environment.json  every tool probed, and why an absent one is absent"
+          },
+          {
+            "file": "README.md",
+            "line": 163,
+            "claim": "`howlproof inspect <bundle>` re-reads the bundle and recomputes every hash in its"
+          },
+          {
+            "file": "README.md",
+            "line": 208,
+            "claim": "failure, never a silent skip. Any active exclusion prevents `PROVEN` and an"
+          },
+          {
+            "file": "README.md",
+            "line": 221,
+            "claim": "and written into the workspace copy, never the artifact."
+          },
+          {
+            "file": "README.md",
+            "line": 232,
+            "claim": "1. Evaluators never receive a writable handle to the artifact. The tree is"
+          },
+          {
+            "file": "README.md",
+            "line": 233,
+            "claim": "materialised into a workspace copy and every command runs there."
+          },
+          {
+            "file": "README.md",
+            "line": 256,
+            "claim": "Every handoff carries `authority: ADVISORY`. HowlProof issues verdicts; HowlPlane"
+          },
+          {
+            "file": "README.md",
+            "line": 268,
+            "claim": "deserves and a finding from it is never `CONFIRMED`."
+          },
+          {
+            "file": "README.md",
+            "line": 278,
+            "claim": "- **HowlProof is not an autonomous repair agent.** It never edits the artifact it"
+          },
+          {
+            "file": "README.md",
+            "line": 313,
+            "claim": "- [Evaluators](docs/evaluators.md) — every check, what it establishes and what it does not"
+          },
+          {
+            "file": "ROADMAP.md",
+            "line": 38,
+            "claim": "- Cross-artifact regression: replaying every `VERIFIED_FIXED` reproduction across"
+          },
+          {
+            "file": "docs/contract.md",
+            "line": 35,
+            "claim": "**Evaluators cannot write to the artifact.** `Target.prepare` materialises the"
+          }
+        ]
+      }
+    },
+    {
+      "check_id": "cli.destructive",
+      "checker": "cli.destructive/v1",
+      "adversary": "OPERATOR",
+      "status": "NOT_APPLICABLE",
+      "summary": "the artifact has no such surface",
+      "limitation": "absence of a surface is not evidence about other surfaces",
+      "reason": "the artifact declares no destructive subcommands to inspect",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [],
+      "detail": {}
+    },
+    {
+      "check_id": "web.links",
+      "checker": "web.links/v1",
+      "adversary": "OPERATOR",
+      "status": "VERIFIED",
+      "summary": "all 56 references resolve",
+      "limitation": "internal references and page fragments are resolved against this checkout; external destinations were not fetched because network access was not granted",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/web.links/links.json"
+      ],
+      "detail": {
+        "external_count": 22
+      }
+    },
+    {
+      "check_id": "web.metadata",
+      "checker": "web.metadata/v1",
+      "adversary": "OPERATOR",
+      "status": "VERIFIED",
+      "summary": "1 pages carry title, description, canonical, Open Graph tags and a single h1, alongside robots.txt and sitemap.xml",
+      "limitation": "presence and shape of declared metadata in this checkout; it does not verify what a search engine or social platform will actually render",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/web.metadata/metadata.json"
+      ],
+      "detail": {}
+    },
+    {
+      "check_id": "web.responsive",
+      "checker": "web.responsive/v1",
+      "adversary": "OPERATOR",
+      "status": "VERIFIED",
+      "summary": "1 pages render at 375px, 768px, 1440px with one h1, a main landmark, resolvable fragments, keyboard entry and no horizontal overflow",
+      "limitation": "rendered checks for overflow, landmarks, headings and keyboard entry at the declared widths; it is not a full accessibility audit and does not replace review with assistive technology",
+      "reason": "",
+      "mode": "REAL",
+      "duration_ms": 0,
+      "evidence_refs": [
+        "evidence/web.responsive/index-375.png",
+        "evidence/web.responsive/index-768.png",
+        "evidence/web.responsive/index-1440.png",
+        "evidence/web.responsive/rendered.json"
+      ],
+      "detail": {}
+    }
+  ],
+  "findings": [
+    {
+      "check_id": "secrets.scan",
+      "adversary": "SECURITY",
+      "category": "security",
+      "title": "Credential-shaped github_token in tests/fixtures/vulnerable_app/src/config.py",
+      "severity": "BLOCKER",
+      "confidence": "HIGH",
+      "summary": "A string matching the github_token credential format appears at tests/fixtures/vulnerable_app/src/config.py:3. The path suggests a fixture, so this may be intentional test data.",
+      "evidence": "ith a credential committed in the open.\"\"\"\n\nGITHUB_[REDACTED] chars redacted]\"\nDATABASE_PASSWORD",
+      "recommended_remediation": "Remove the value from the tree, rotate it if it was ever real, and load it from the environment or a secret store instead.",
+      "location": "tests/fixtures/vulnerable_app/src/config.py:3",
+      "rule": "secrets.github_token",
+      "state": "ACCEPTED_RISK",
+      "reproduction": {
+        "summary": "Re-read the file and match the same pattern.",
+        "requires_service": false,
+        "notes": "",
+        "steps": [
+          {
+            "description": "Search tests/fixtures/vulnerable_app/src/config.py for the github_token pattern.",
+            "kind": "file_probe",
+            "payload": {
+              "path": "tests/fixtures/vulnerable_app/src/config.py",
+              "pattern": "gh[pousr]_[A-Za-z0-9]{30,}"
+            },
+            "expect": {
+              "matches": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": "Authored fixture data in tests/fixtures/vulnerable_app, which exists so the secret scanner has something to find. The value was never a valid credential.",
+      "id": "HP-SEC-0001",
+      "fingerprint": "b72549eff9c7b62eb55915d449a755f0c8d83d167fcd50434a46349bbeb34278",
+      "first_seen_run": "hp-20260911-135533-80faec93e9d9",
+      "first_seen_commit": "4884ed92becf0f466843303a03f1fbdd3db6d42a",
+      "last_seen_run": "hp-20260911-140448-54eed6120948",
+      "detail": {
+        "file": "tests/fixtures/vulnerable_app/src/config.py",
+        "line": 3,
+        "kind": "github_token",
+        "pattern": "gh[pousr]_[A-Za-z0-9]{30,}",
+        "severity": "BLOCKER",
+        "looks_like_fixture": true,
+        "excerpt": "ith a credential committed in the open.\"\"\"\n\nGITHUB_[REDACTED] chars redacted]\"\nDATABASE_PASSWORD"
+      },
+      "blocking": false
+    },
+    {
+      "check_id": "secrets.scan",
+      "adversary": "SECURITY",
+      "category": "security",
+      "title": "Credential-shaped github_token in tests/test_cli.py",
+      "severity": "BLOCKER",
+      "confidence": "HIGH",
+      "summary": "A string matching the github_token credential format appears at tests/test_cli.py:322. The path suggests a fixture, so this may be intentional test data.",
+      "evidence": "/ \"src\" / \"config.py\").write_text(\n        config.replace('\"ghp_...[40 chars redacted]\"', 'os.environ[\"GIT",
+      "recommended_remediation": "Remove the value from the tree, rotate it if it was ever real, and load it from the environment or a secret store instead.",
+      "location": "tests/test_cli.py:322",
+      "rule": "secrets.github_token",
+      "state": "ACCEPTED_RISK",
+      "reproduction": {
+        "summary": "Re-read the file and match the same pattern.",
+        "requires_service": false,
+        "notes": "",
+        "steps": [
+          {
+            "description": "Search tests/test_cli.py for the github_token pattern.",
+            "kind": "file_probe",
+            "payload": {
+              "path": "tests/test_cli.py",
+              "pattern": "gh[pousr]_[A-Za-z0-9]{30,}"
+            },
+            "expect": {
+              "matches": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": "The same authored fixture value appears in tests/test_cli.py, where a test asserts that removing it moves the finding to VERIFIED_FIXED.",
+      "id": "HP-SEC-0002",
+      "fingerprint": "0f4e411246a7cea6a39f168dead8ef5f4335b389ea329c3286dda36d6b4c339a",
+      "first_seen_run": "hp-20260911-135533-80faec93e9d9",
+      "first_seen_commit": "4884ed92becf0f466843303a03f1fbdd3db6d42a",
+      "last_seen_run": "hp-20260911-140448-54eed6120948",
+      "detail": {
+        "file": "tests/test_cli.py",
+        "line": 322,
+        "kind": "github_token",
+        "pattern": "gh[pousr]_[A-Za-z0-9]{30,}",
+        "severity": "BLOCKER",
+        "looks_like_fixture": true,
+        "excerpt": "/ \"src\" / \"config.py\").write_text(\n        config.replace('\"ghp_...[40 chars redacted]\"', 'os.environ[\"GIT"
+      },
+      "blocking": false
+    },
+    {
+      "check_id": "secrets.scan",
+      "adversary": "SECURITY",
+      "category": "security",
+      "title": "Credential-shaped assigned_credential in tests/test_contracts.py",
+      "severity": "LOW",
+      "confidence": "HIGH",
+      "summary": "A string matching the assigned_credential credential format appears at tests/test_contracts.py:285. The path suggests a fixture, so this may be intentional test data.",
+      "evidence": "36,\n        \"[REDACTED]\",\n        'pass...[31 chars redacted]',\n    ],\n)\ndef test",
+      "recommended_remediation": "Remove the value from the tree, rotate it if it was ever real, and load it from the environment or a secret store instead.",
+      "location": "tests/test_contracts.py:285",
+      "rule": "secrets.assigned_credential",
+      "state": "ACCEPTED_RISK",
+      "reproduction": {
+        "summary": "Re-read the file and match the same pattern.",
+        "requires_service": false,
+        "notes": "",
+        "steps": [
+          {
+            "description": "Search tests/test_contracts.py for the assigned_credential pattern.",
+            "kind": "file_probe",
+            "payload": {
+              "path": "tests/test_contracts.py",
+              "pattern": "(?i)\\b(?:password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token)\\b\\s*[:=]\\s*[\\\"']([^\\\"'\\s]{8,})[\\\"']"
+            },
+            "expect": {
+              "matches": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": "An assigned-credential pattern inside a parametrised redaction test in tests/test_contracts.py; the value is a literal used to prove redaction works.",
+      "id": "HP-SEC-0003",
+      "fingerprint": "17fe2f27f08fb7f2ccb08c936f4f3211ebe35ac53f6346b99282321a78c95726",
+      "first_seen_run": "hp-20260911-135533-80faec93e9d9",
+      "first_seen_commit": "4884ed92becf0f466843303a03f1fbdd3db6d42a",
+      "last_seen_run": "hp-20260911-140448-54eed6120948",
+      "detail": {
+        "file": "tests/test_contracts.py",
+        "line": 285,
+        "kind": "assigned_credential",
+        "pattern": "(?i)\\b(?:password|passwd|api[_-]?key|secret[_-]?key|access[_-]?token)\\b\\s*[:=]\\s*[\\\"']([^\\\"'\\s]{8,})[\\\"']",
+        "severity": "HIGH",
+        "looks_like_fixture": true,
+        "excerpt": "36,\n        \"[REDACTED]\",\n        'pass...[31 chars redacted]',\n    ],\n)\ndef test"
+      },
+      "blocking": false
+    },
+    {
+      "check_id": "docs.claims.absolutes",
+      "adversary": "OPERATOR",
+      "category": "other",
+      "title": "34 absolute documentation claims are unverified",
+      "severity": "INFORMATIONAL",
+      "confidence": "CONFIRMED",
+      "summary": "The documentation asserts these without qualification. Each one is a promise a single counterexample breaks, and this evaluation did not independently establish any of them: README.md:46 | `PROVEN` | 0 | Every acceptance criterion was satisfied, no unresolved finding sits abov; README.md:48 | `REQUIRES_HUMAN` | 20 | The evidence cannot safely support an autonomous decision |; README.md:91 Four of these are not passes and none of them is silent. Every check also records; README.md:93 never reads like a clean result.; README.md:122 howlproof accept HP-SEC-0001 --reason \"Authored fixture data; the value was never valid.\"; README.md:128 keeps appearing in every report. There is no way to make one disappear quietly.",
+      "evidence": "[\n  {\n    \"file\": \"README.md\",\n    \"line\": 46,\n    \"claim\": \"| `PROVEN` | 0 | Every acceptance criterion was satisfied, no unresolved finding sits above the permitted threshold, and enough checks actually executed to justify saying so |\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 48,\n    \"claim\": \"| `REQUIRES_HUMAN` | 20 | The evidence cannot safely support an autonomous decision |\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 91,\n    \"claim\": \"Four of these are not passes and none of them is silent. Every check also records\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 93,\n    \"claim\": \"never reads like a clean result.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 122,\n    \"claim\": \"howlproof accept HP-SEC-0001 --reason \\\"Authored fixture data; the value was never valid.\\\"\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 128,\n    \"claim\": \"keeps appearing in every report. There is no way to make one disappear quietly.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 139,\n    \"claim\": \"state the finding was raised against, because an unchanged artifact cannot have\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 144,\n    \"claim\": \"A statement that a defect was repaired never produces `VERIFIED_FIXED`. Only a\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 153,\n    \"claim\": \"environment.json  every tool probed, and why an absent one is absent\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 163,\n    \"claim\": \"`howlproof inspect <bundle>` re-reads the bundle and recomputes every hash in its\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 208,\n    \"claim\": \"failure, never a silent skip. Any active exclusion prevents `PROVEN` and an\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 221,\n    \"claim\": \"and written into the workspace copy, never the artifact.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 232,\n    \"claim\": \"1. Evaluators never receive a writable handle to the artifact. The tree is\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 233,\n    \"claim\": \"materialised into a workspace copy and every command runs there.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 256,\n    \"claim\": \"Every handoff carries `authority: ADVISORY`. HowlProof issues verdicts; HowlPlane\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 268,\n    \"claim\": \"deserves and a finding from it is never `CONFIRMED`.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 278,\n    \"claim\": \"- **HowlProof is not an autonomous repair agent.** It never edits the artifact it\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 313,\n    \"claim\": \"- [Evaluators](docs/evaluators.md) \\u2014 every check, what it establishes and what it does not\"\n  },\n  {\n    \"file\": \"ROADMAP.md\",\n    \"line\": 38,\n    \"claim\": \"- Cross-artifact regression: replaying every `VERIFIED_FIXED` reproduction across\"\n  },\n  {\n    \"file\": \"docs/contract.md\",\n    \"line\": 35,\n    \"claim\": \"**Evaluators cannot write to the artifact.** `Target.prepare` materialises the\"\n  }\n]",
+      "recommended_remediation": "Qualify the claim, or add a check that would fail if it stopped being true.",
+      "location": null,
+      "rule": "docs.claims.unverified_absolute",
+      "state": "FOUND",
+      "reproduction": {
+        "summary": "Re-run docs.claims against the artifact.",
+        "requires_service": false,
+        "notes": "This observation is made by the evaluator, not by a replayable command. Use `howlproof verify-fix` to re-verify it.",
+        "steps": [
+          {
+            "description": "Re-scan the declared documentation for unqualified absolute claims.",
+            "kind": "reevaluate",
+            "payload": {
+              "evaluator": "docs.claims"
+            },
+            "expect": {
+              "finding_present": true
+            }
+          }
+        ]
+      },
+      "resolution_reason": null,
+      "id": "HP-OPS-0002",
+      "fingerprint": "238708c63d0faaaeb93f67a03ca6ef07cc9a7bf0b6f4a82ab7ca78b7486023b3",
+      "first_seen_run": "hp-20260911-140448-54eed6120948",
+      "first_seen_commit": "1b67d003e70c13af05a0e25407f497d6802c1270",
+      "last_seen_run": "hp-20260911-140448-54eed6120948",
+      "detail": {},
+      "blocking": false
+    }
+  ],
+  "unresolved_risks": [],
+  "limitations": [
+    "deps.audit was SKIPPED: a dependency audit queries a remote advisory database and network access was not granted with --allow-network; no vulnerability was checked for and none is implied to be absent",
+    "markup.escaping was NOT_APPLICABLE: the artifact declares no markup sources to analyse",
+    "http.authz was NOT_APPLICABLE: the artifact declares no service, so there is nothing to reach",
+    "web.dom_injection was NOT_APPLICABLE: the artifact declares no injection payloads to attempt",
+    "cli.destructive was NOT_APPLICABLE: the artifact declares no destructive subcommands to inspect"
+  ],
+  "notes": [
+    "no service is declared, so live adversaries have nothing to attack"
+  ],
+  "validation_modes": {
+    "REAL": [
+      "python.lint",
+      "python.types",
+      "python.tests",
+      "python.build",
+      "release.version",
+      "sast.bandit",
+      "secrets.scan",
+      "ci.supplychain",
+      "docs.claims.absolutes",
+      "web.links",
+      "web.metadata",
+      "web.responsive"
+    ],
+    "SIMULATED": [],
+    "SKIPPED": [
+      "deps.audit"
+    ],
+    "UNAVAILABLE": [],
+    "NOT_APPLICABLE": [
+      "markup.escaping",
+      "http.authz",
+      "web.dom_injection",
+      "cli.destructive"
+    ],
+    "ERROR": []
+  }
+}

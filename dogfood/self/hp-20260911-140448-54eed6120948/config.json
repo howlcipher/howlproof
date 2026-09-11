@@ -1,0 +1,105 @@
+{
+  "source": "howlproof.yaml",
+  "schema_version": 1,
+  "artifact": "howlproof",
+  "description": "Independent red-team QA, falsification and evidence for the Howl ecosystem. Evaluated against itself.",
+  "profiles": [
+    "python",
+    "security",
+    "documentation",
+    "web"
+  ],
+  "adversaries": [
+    "FUNCTIONAL",
+    "SECURITY",
+    "RELIABILITY",
+    "AI",
+    "OPERATOR"
+  ],
+  "blocking_severity": "HIGH",
+  "acceptance": [
+    {
+      "id": "AC-01",
+      "requirement": "checks_pass",
+      "checks": [
+        "python.tests",
+        "python.types",
+        "python.lint",
+        "python.build"
+      ],
+      "optional": false
+    },
+    {
+      "id": "AC-02",
+      "requirement": "max_findings",
+      "limit": 0,
+      "min_severity": "HIGH",
+      "adversary": "SECURITY",
+      "optional": false
+    },
+    {
+      "id": "AC-03",
+      "requirement": "tool_required",
+      "tools": [
+        "python3"
+      ],
+      "optional": false
+    },
+    {
+      "id": "AC-04",
+      "requirement": "no_regressions",
+      "optional": false
+    },
+    {
+      "id": "AC-05",
+      "requirement": "coverage_floor",
+      "min_conclusive_fraction": 0.6,
+      "optional": false
+    },
+    {
+      "id": "AC-06",
+      "requirement": "checks_pass",
+      "checks": [
+        "ci.supplychain",
+        "release.version"
+      ],
+      "optional": false
+    }
+  ],
+  "exclusions": [],
+  "include_ignored": [],
+  "service": null,
+  "api": null,
+  "web": {
+    "root": "docs",
+    "pages": [
+      "index.html"
+    ],
+    "viewports": [
+      375,
+      768,
+      1440
+    ],
+    "require_skip_link": true,
+    "canonical_prefix": "https://howlcipher.github.io/howlproof/"
+  },
+  "markup": null,
+  "injection": null,
+  "cli": {
+    "command": [
+      ".howlproof-venv/bin/howlproof"
+    ],
+    "help_flag": "--help",
+    "destructive_subcommands": [],
+    "needs_python_env": true
+  },
+  "ai": null,
+  "docs": {
+    "claim_sources": [
+      "README.md",
+      "ROADMAP.md",
+      "docs/*.md"
+    ],
+    "synced_pairs": []
+  }
+}

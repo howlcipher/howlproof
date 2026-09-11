@@ -1,0 +1,22 @@
+{
+  "observed": {
+    "index.html": {
+      "title": "HowlProof | Red-Team QA for Autonomous Engineering",
+      "description": "HowlProof is the independent red-team QA layer of the Howl ecosystem: adversarial evaluation, reproducible findings, evidence bundles and defensible verdicts.",
+      "canonical": "https://howlcipher.github.io/howlproof/",
+      "og": {
+        "og:type": "website",
+        "og:site_name": "HowlProof",
+        "og:title": "HowlProof | Red-Team QA for Autonomous Engineering",
+        "og:description": "Most QA asks whether the software works. HowlProof tries to prove that it doesn",
+        "og:url": "https://howlcipher.github.io/howlproof/",
+        "og:image": "https://howlcipher.github.io/howlproof/social-preview.png",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:image:alt": "HowlProof verdict model and adversarial evaluation loop"
+      },
+      "h1_count": 1
+    }
+  },
+  "problems": []
+}
