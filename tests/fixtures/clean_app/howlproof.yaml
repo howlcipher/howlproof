@@ -1,10 +1,11 @@
 schema_version: 1
 artifact: clean-fixture
 description: The same shapes as the vulnerable fixture, done correctly.
-profiles: [security, documentation, web]
+profiles: [security, documentation, web, api, ai, reliability, cli.contract]
 acceptance:
   - {id: AC-01, requirement: max_findings, min_severity: HIGH, limit: 0}
   - {id: AC-02, requirement: checks_pass, checks: [secrets.scan, ci.supplychain]}
+  - {id: AC-03, requirement: checks_pass, checks: [http.authz.state_without_authority]}
 markup:
   sources: ["src/*.js"]
   sink_functions: [setHTML, innerHTML]
@@ -17,3 +18,56 @@ web:
   root: docs
   pages: [index.html]
   canonical_prefix: https://example.invalid/clean/
+
+service:
+  base_url: http://127.0.0.1:8732
+  start:
+    - python3
+    - server.py
+  ready_path: /api/health
+  ready_method: GET
+  ready_timeout_seconds: 20
+
+api:
+  endpoints:
+    - /api/items
+  mutating_endpoint: /api/items
+  mutating_body:
+    id: repeated
+  authority_probes:
+    - name: state_without_authority
+      description: >-
+        A privileged transition attempted with no authority at all. The service is
+        required to refuse it.
+      method: POST
+      path: /api/state
+      body:
+        state: EXECUTING
+      expect_status: 403
+      expect_body_contains: AUTHORITY_DENIED
+
+ai:
+  entrypoint:
+    - python3
+    - agent.py
+
+cli:
+  command:
+    - python3
+    - cli.py
+  help_flag: --help
+
+injection:
+  app_root: app
+  page: index.html
+  marker: __howlproof_injection
+  seed_request: POST /api/seed
+  settle_ms: 1200
+  payloads:
+    - name: item_id_js_string
+      description: >-
+        An identifier carrying a single quote, placed in the file the seed endpoint
+        reads, to see whether the interface renders it as data or parses it as code.
+      file: data/items.json
+      pointer: /items/0/id
+      value: "A-1'); window.__howlproof_injection=1; ('"

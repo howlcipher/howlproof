@@ -61,21 +61,31 @@ def status_of(result, check_id):
 # -- the defects each evaluator exists to find ------------------------------
 
 
-@pytest.mark.parametrize(
-    "rule",
-    [
-        "secrets.github_token",
-        "ci.unpinned_action",
-        "ci.pull_request_target",
-        "ci.default_permissions",
-        "ci.expression_injection",
-        "markup.escaper_context_mismatch",
-        "markup.sink_without_escaping",
-        "docs.claims.sync_drift",
-        "web.links.broken",
-        "web.metadata.incomplete",
-    ],
-)
+#: Every defect planted in tests/fixtures/vulnerable_app, and the rule that must find it.
+#: The clean fixture is the same surface built correctly and must raise none of them.
+PLANTED = [
+    "secrets.github_token",
+    "ci.unpinned_action",
+    "ci.pull_request_target",
+    "ci.default_permissions",
+    "ci.expression_injection",
+    "markup.escaper_context_mismatch",
+    "markup.sink_without_escaping",
+    "docs.claims.sync_drift",
+    "web.links.broken",
+    "web.metadata.incomplete",
+    "web.responsive.defects",
+    "http.authz.state_without_authority",
+    "http.abuse.error_leak",
+    "api.idempotency.repeat_error",
+    "ai.promptinjection.obeyed",
+    "ai.schema.accepted_malformed",
+    "cli.contract.unclean_failure",
+    "web.dom_injection.item_id_js_string",
+]
+
+
+@pytest.mark.parametrize("rule", PLANTED)
 def test_each_planted_defect_is_found(vulnerable, rule):
     assert rule in rules(vulnerable)
 
@@ -90,19 +100,80 @@ def test_the_clean_fixture_raises_no_severe_findings(clean):
 
 
 def test_the_clean_fixture_raises_none_of_the_planted_rules(clean):
-    planted = {
-        "secrets.github_token",
-        "ci.unpinned_action",
-        "ci.pull_request_target",
-        "ci.default_permissions",
-        "ci.expression_injection",
-        "markup.escaper_context_mismatch",
-        "markup.sink_without_escaping",
-        "docs.claims.sync_drift",
-        "web.links.broken",
-        "web.metadata.incomplete",
-    }
-    assert planted & rules(clean) == set()
+    assert set(PLANTED) & rules(clean) == set()
+
+
+def test_the_clean_fixture_raises_nothing_at_all(clean):
+    """A check that fires on a correctly built artifact is as useless as one that never fires."""
+    assert clean["findings"] == [], clean["findings"]
+    failed = [c["check_id"] for c in clean["checks"] if c["status"] == CheckStatus.FAILED.value]
+    assert failed == [], failed
+
+
+def test_the_live_adversaries_reached_a_running_service(vulnerable, clean):
+    """The service-dependent checks must have actually run, not reported UNAVAILABLE."""
+    live = (
+        "http.authz.state_without_authority",
+        "http.abuse",
+        "api.idempotency",
+        "reliability.partial_request",
+        "service.restart",
+    )
+    for result in (vulnerable, clean):
+        for check_id in live:
+            status = status_of(result, check_id)
+            assert status in {CheckStatus.VERIFIED.value, CheckStatus.FAILED.value}, (
+                f"{check_id} is {status}; the fixture service did not come up"
+            )
+
+
+def test_an_authorization_boundary_failure_blocks(vulnerable):
+    finding = next(
+        f for f in vulnerable["findings"] if f["rule"] == "http.authz.state_without_authority"
+    )
+    assert finding["severity"] == Severity.BLOCKER.value
+    assert finding["confidence"] == "CONFIRMED"
+    assert finding["blocking"] is True
+    assert finding["reproduction"]["requires_service"] is True
+
+
+def test_a_browser_confirms_the_injection_on_one_fixture_and_clears_the_other(vulnerable, clean):
+    """The check that produced this project's flagship finding, tested both ways.
+
+    It was once silently wrong: a payload that never reached the page was reported as
+    safe. So the pass here asserts the stronger statement the check now makes, that
+    the payload arrived and was rendered as data.
+    """
+    assert status_of(vulnerable, "web.dom_injection.item_id_js_string") == (
+        CheckStatus.FAILED.value
+    )
+    finding = next(
+        f for f in vulnerable["findings"] if f["rule"] == "web.dom_injection.item_id_js_string"
+    )
+    assert finding["confidence"] == "CONFIRMED"
+    assert finding["severity"] == Severity.HIGH.value
+
+    clean_check = next(
+        c for c in clean["checks"] if c["check_id"] == "web.dom_injection.item_id_js_string"
+    )
+    assert clean_check["status"] == CheckStatus.VERIFIED.value
+    assert "reached the page" in clean_check["summary"], (
+        "a payload that never arrived must not be reported as a pass"
+    )
+
+
+def test_version_drift_is_found_and_named(tmp_path):
+    result = run(FIXTURES / "version_drift", tmp_path)
+    finding = next(f for f in result["findings"] if f["rule"] == "release.version.inconsistent")
+    assert "1.2.0" in finding["summary"] and "1.4.0" in finding["summary"]
+    assert finding["severity"] == Severity.LOW.value
+
+
+def test_an_injection_finding_is_never_confirmed_by_a_single_run(vulnerable):
+    """Model behaviour varies between runs, so this adversary must not claim certainty."""
+    finding = next(f for f in vulnerable["findings"] if f["rule"] == "ai.promptinjection.obeyed")
+    assert finding["confidence"] == "HIGH"
+    assert finding["blocking"] is False
 
 
 def test_the_escaper_analysis_reads_the_artifact_own_escape_function(vulnerable):
@@ -132,8 +203,11 @@ def test_the_clean_fixture_is_not_rejected(clean):
 
 
 def test_an_absent_surface_is_not_applicable_rather_than_verified(clean):
-    assert status_of(clean, "http.authz") == CheckStatus.NOT_APPLICABLE.value
-    assert status_of(clean, "web.dom_injection") == CheckStatus.NOT_APPLICABLE.value
+    # Neither fixture is a Python package or declares destructive subcommands, so
+    # these have nothing to inspect and must say so rather than pass.
+    assert status_of(clean, "deps.audit") == CheckStatus.NOT_APPLICABLE.value
+    assert status_of(clean, "release.version") == CheckStatus.NOT_APPLICABLE.value
+    assert status_of(clean, "cli.destructive") == CheckStatus.NOT_APPLICABLE.value
 
 
 def test_every_inconclusive_check_records_a_reason(vulnerable, clean):

@@ -280,6 +280,15 @@ run end to end through HowlPlane's own `reconcile --findings-file`.
   `UNAVAILABLE`, which means the site has not been shown to work at any width.
 - HowlProof evaluates artifacts on the machine it runs on. It is not a hosted
   service and has no scheduler.
+- Branch coverage over the package is 69 per cent. `cli.py` and `reproduce.py`
+  read as zero because their tests drive them as real subprocesses, which the
+  coverage tool cannot see. The genuinely thin areas are the evaluators that
+  provision a Python environment for the artifact (`python.*`, `sast.bandit`,
+  `deps.audit`): they are exercised by the self-evaluation in `dogfood/self/`,
+  not by the test suite, because installing a package per test would dominate its
+  runtime.
+- The verdict model is argued for, not measured. There is no labelled corpus, so
+  no false-negative or false-positive rate is claimed anywhere in this project.
 
 ## Non-goals
 
@@ -291,6 +300,41 @@ run end to end through HowlPlane's own `reconcile --findings-file`.
   a future HowlGuard and deliberately not built here.
 - It is not a general fact oracle, a fuzzing campaign, or a replacement for review
   by a person.
+
+## Testing
+
+`tests/fixtures/` ships three artifacts, and the suite runs the evaluators against
+all of them.
+
+`vulnerable_app` carries seventeen planted defects across every adversary: a
+committed credential, four workflow weaknesses, an escaper that is wrong for the
+context and an HTML sink with none at all, a documented sync that has drifted,
+broken links, missing metadata, rendering defects, and a live HTTP service that
+authorises a privileged transition without checking, hands back a traceback on
+malformed input and errors on a repeated create. It also ships an AI entry point
+that obeys injected instructions and accepts malformed model output, a command
+line that exits zero on invalid input, and an interface a real browser confirms is
+injectable by executing an authored payload.
+
+`clean_app` is the same surface built correctly. Every check that fires against
+the vulnerable fixture must stay silent here, and a test asserts it raises nothing
+at all: a check that fires on a correct artifact is as useless as one that never
+fires.
+
+`version_drift` is a three-file package that disagrees with itself about its
+version.
+
+The suite also registers an evaluator that deliberately writes into its target and
+asserts the evaluation is invalidated, and drives the real command line with an
+artifact whose own declared command edits itself mid-evaluation, asserting exit
+code 4. Every emitted ecosystem handoff is validated against a vendored copy of
+HowlPlane's closed JSON Schema.
+
+```bash
+pytest -q                       # the whole suite
+pytest -q tests/test_verdict.py # the verdict table alone
+pytest -q -k dom_injection      # the browser-level injection check, both ways
+```
 
 ## Development
 

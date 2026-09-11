@@ -1,0 +1,9 @@
+# A tiny artifact whose declared versions disagree, so release.version has
+# something to find. Evaluated with `--profile release.version` alone, so no
+# environment is provisioned and the test stays fast.
+schema_version: 1
+artifact: version-drift-fixture
+description: An artifact that disagrees with itself about which version it is.
+profiles: [release.version]
+acceptance:
+  - {id: AC-01, requirement: max_findings, min_severity: LOW, limit: 0}
