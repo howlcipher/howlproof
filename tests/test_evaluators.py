@@ -288,6 +288,22 @@ def test_a_modified_original_is_detected(tmp_path):
     assert "README.md (modified)" in handle.changed_paths()
 
 
+def test_exists_answers_about_files_and_is_dir_about_directories(tmp_path):
+    """Conflating the two sent the static analyser over the whole workspace.
+
+    `exists("src")` is False for a directory, so a check asking it whether a source
+    tree was present fell through to analysing everything, including the environment
+    the evaluation had just provisioned for the artifact.
+    """
+    target = tmp_path / "artifact"
+    shutil.copytree(CLEAN, target)
+    handle = Target.prepare(target, tmp_path / "workspace")
+    assert handle.exists("README.md") is True
+    assert handle.exists("src") is False
+    assert handle.is_dir("src") is True
+    assert handle.is_dir("README.md") is False
+
+
 def test_reads_cannot_escape_the_workspace(tmp_path):
     target = tmp_path / "artifact"
     shutil.copytree(CLEAN, target)

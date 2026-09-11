@@ -159,7 +159,8 @@ class PythonLint(_PythonCommand):
 
     id = "python.lint"
     module = "ruff"
-    tail = ("check", ".")
+    # Excluding the provisioned environment keeps the result about the artifact.
+    tail = ("check", ".", "--exclude", pyenv.VENV_DIR)
     category = "simplicity"
     severity = Severity.LOW
     limitation = "style and a narrow set of correctness lints, not program behaviour"

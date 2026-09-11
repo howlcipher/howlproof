@@ -221,7 +221,11 @@ class Target:
     # -- read-only access -------------------------------------------------
 
     def exists(self, relative: str) -> bool:
+        """True for a file. Use `is_dir` for a directory; this deliberately says no."""
         return self._resolve(relative).is_file()
+
+    def is_dir(self, relative: str) -> bool:
+        return self._resolve(relative).is_dir()
 
     def read_text(self, relative: str, limit: int = 4_000_000) -> str:
         path = self._resolve(relative)

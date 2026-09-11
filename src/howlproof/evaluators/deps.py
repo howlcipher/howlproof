@@ -135,9 +135,25 @@ class StaticAnalysis(Evaluator):
                     )
                 ]
             )
-        source = "src" if context.target.exists("src") else "."
+        # Analyse the artifact's own source. `exists` is file-only, so asking it about a
+        # directory quietly fell through to ".", which walked the environment this
+        # evaluation had just provisioned: slow, and it would attribute a dependency's
+        # code to the artifact under evaluation.
+        source = "src" if context.target.is_dir("src") else "."
         result = context.target.run(
-            [env.python, "-m", "bandit", "-r", source, "-ll", "-f", "json"], timeout=900
+            [
+                env.python,
+                "-m",
+                "bandit",
+                "-r",
+                source,
+                "-ll",
+                "-f",
+                "json",
+                "-x",
+                f"./{pyenv.VENV_DIR},./.venv,./node_modules",
+            ],
+            timeout=900,
         )
         ref = context.save_evidence(self.id, "bandit.txt", transcript(result.to_dict()))
         limitation = (
