@@ -2,30 +2,10 @@
   "artifacts": {
     "howlproof": {
       "counters": {
-        "OPS": 2,
+        "OPS": 1,
         "SEC": 3
       },
       "findings": {
-        "07664a7e8d38e6a970705cdcf0dcde79c5f042435585a006cc26efe5fe5fbdb1": {
-          "adversary": "OPERATOR",
-          "first_seen_commit": "4884ed92becf0f466843303a03f1fbdd3db6d42a",
-          "first_seen_run": "hp-20260911-135533-80faec93e9d9",
-          "first_seen_tree_digest": "b0a5d9a34895b70583dcf3d47324b8098f44cb096d74e3d4918964ab214c4e84",
-          "history": [
-            {
-              "at": "2026-09-11T13:58:31.596404+00:00",
-              "note": "first observed",
-              "run_id": "hp-20260911-135533-80faec93e9d9",
-              "state": "FOUND"
-            }
-          ],
-          "id": "HP-OPS-0001",
-          "last_seen_run": "hp-20260911-135932-7cea77f39152",
-          "last_seen_tree_digest": "e5ff72848aa3f2e78647e46c1edba3e48b60c55c85503b1f149c8fd35a688434",
-          "severity": "INFORMATIONAL",
-          "state": "FOUND",
-          "title": "32 absolute documentation claims are unverified"
-        },
         "0f4e411246a7cea6a39f168dead8ef5f4335b389ea329c3286dda36d6b4c339a": {
           "adversary": "SECURITY",
           "first_seen_commit": "4884ed92becf0f466843303a03f1fbdd3db6d42a",
@@ -46,8 +26,8 @@
             }
           ],
           "id": "HP-SEC-0002",
-          "last_seen_run": "hp-20260911-140448-54eed6120948",
-          "last_seen_tree_digest": "13013bda9c82c62556ab70df0c9b50cb78ebcdbb242e3f38999516db89a5a09b",
+          "last_seen_run": "hp-20260911-231258-3096f226df40",
+          "last_seen_tree_digest": "c06c9d8323c59eb7c7afed08f268c3eb8be889a1232d554f68c43f1474846951",
           "resolution_reason": "The same authored fixture value appears in tests/test_cli.py, where a test asserts that removing it moves the finding to VERIFIED_FIXED.",
           "severity": "BLOCKER",
           "state": "ACCEPTED_RISK",
@@ -73,32 +53,12 @@
             }
           ],
           "id": "HP-SEC-0003",
-          "last_seen_run": "hp-20260911-140448-54eed6120948",
-          "last_seen_tree_digest": "13013bda9c82c62556ab70df0c9b50cb78ebcdbb242e3f38999516db89a5a09b",
+          "last_seen_run": "hp-20260911-231258-3096f226df40",
+          "last_seen_tree_digest": "c06c9d8323c59eb7c7afed08f268c3eb8be889a1232d554f68c43f1474846951",
           "resolution_reason": "An assigned-credential pattern inside a parametrised redaction test in tests/test_contracts.py; the value is a literal used to prove redaction works.",
           "severity": "LOW",
           "state": "ACCEPTED_RISK",
           "title": "Credential-shaped assigned_credential in tests/test_contracts.py"
-        },
-        "238708c63d0faaaeb93f67a03ca6ef07cc9a7bf0b6f4a82ab7ca78b7486023b3": {
-          "adversary": "OPERATOR",
-          "first_seen_commit": "1b67d003e70c13af05a0e25407f497d6802c1270",
-          "first_seen_run": "hp-20260911-140448-54eed6120948",
-          "first_seen_tree_digest": "13013bda9c82c62556ab70df0c9b50cb78ebcdbb242e3f38999516db89a5a09b",
-          "history": [
-            {
-              "at": "2026-09-11T14:07:55.553138+00:00",
-              "note": "first observed",
-              "run_id": "hp-20260911-140448-54eed6120948",
-              "state": "FOUND"
-            }
-          ],
-          "id": "HP-OPS-0002",
-          "last_seen_run": "hp-20260911-140448-54eed6120948",
-          "last_seen_tree_digest": "13013bda9c82c62556ab70df0c9b50cb78ebcdbb242e3f38999516db89a5a09b",
-          "severity": "INFORMATIONAL",
-          "state": "FOUND",
-          "title": "34 absolute documentation claims are unverified"
         },
         "b72549eff9c7b62eb55915d449a755f0c8d83d167fcd50434a46349bbeb34278": {
           "adversary": "SECURITY",
@@ -120,12 +80,32 @@
             }
           ],
           "id": "HP-SEC-0001",
-          "last_seen_run": "hp-20260911-140448-54eed6120948",
-          "last_seen_tree_digest": "13013bda9c82c62556ab70df0c9b50cb78ebcdbb242e3f38999516db89a5a09b",
+          "last_seen_run": "hp-20260911-231258-3096f226df40",
+          "last_seen_tree_digest": "c06c9d8323c59eb7c7afed08f268c3eb8be889a1232d554f68c43f1474846951",
           "resolution_reason": "Authored fixture data in tests/fixtures/vulnerable_app, which exists so the secret scanner has something to find. The value was never a valid credential.",
           "severity": "BLOCKER",
           "state": "ACCEPTED_RISK",
           "title": "Credential-shaped github_token in tests/fixtures/vulnerable_app/src/config.py"
+        },
+        "e64762a2ff594f6d1d6ad7b7985bc3bc36fff4cac3a43b83c3a9d95ad630f3e8": {
+          "adversary": "OPERATOR",
+          "first_seen_commit": "e49fd5e9465f0606baeb8e7924c1b34b2dce4c7d",
+          "first_seen_run": "hp-20260911-185858-09a6d218cb5c",
+          "first_seen_tree_digest": "5e41c7453b6768d7e4a5190e6cb0635db698925b3574cdeaee7f3b791f52eb3f",
+          "history": [
+            {
+              "at": "2026-09-11T19:01:27.203790+00:00",
+              "note": "first observed",
+              "run_id": "hp-20260911-185858-09a6d218cb5c",
+              "state": "FOUND"
+            }
+          ],
+          "id": "HP-OPS-0001",
+          "last_seen_run": "hp-20260911-231258-3096f226df40",
+          "last_seen_tree_digest": "c06c9d8323c59eb7c7afed08f268c3eb8be889a1232d554f68c43f1474846951",
+          "severity": "INFORMATIONAL",
+          "state": "FOUND",
+          "title": "51 absolute documentation claims are unverified"
         }
       }
     }

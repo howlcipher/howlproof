@@ -1,8 +1,0 @@
-argv: ['.howlproof-venv/bin/python', '-m', 'ruff', 'check', '.']
-exit_code: 0
-
---- stdout ---
-All checks passed!
-
-
---- stderr ---

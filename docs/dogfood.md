@@ -144,7 +144,7 @@ from "never arrived".
 
 ## HowlProof
 
-**Run** `hp-20260911-140448-54eed6120948` · **artifact** commit `1b67d003` ·
+**Run** `hp-20260911-231258-3096f226df40` · **artifact** commit `a50b9ac8` ·
 **verdict** `CONDITIONALLY_PROVEN` · **bundle** [`dogfood/self/`](../dogfood/self)
 
 HowlProof evaluates itself under the `python`, `security`, `documentation` and
@@ -156,13 +156,18 @@ that its judgment of itself is impartial.
 | | |
 | --- | --- |
 | Acceptance criteria satisfied | 6 of 6 |
-| Checks | 11 verified, 1 failed, 1 skipped, 0 unavailable, 4 not applicable, 0 errored |
+| Checks | 13 verified, 1 failed, 0 skipped, 0 unavailable, 4 not applicable, 0 errored |
+| Validation mode | 14 real, 4 not applicable |
 | Findings | 4, of which 0 blocking |
 
-`CONDITIONALLY_PROVEN` rather than `PROVEN`, for reasons the result names: a
-dependency audit was `SKIPPED` because network access was not granted, and four
-checks did not apply because HowlProof declares no markup sources, no service, no
-injection payloads and no destructive subcommands. None of that is a pass.
+Run with `--allow-network`, so the dependency audit actually queried the advisory
+database rather than reporting `SKIPPED`.
+
+`CONDITIONALLY_PROVEN` rather than `PROVEN`, for the reason the result names: four
+checks did not apply, because HowlProof declares no markup sources, no service, no
+injection payloads and no destructive subcommands. Not applicable is not a pass,
+and a verdict that ignored four unexamined surfaces would be claiming more than the
+run established.
 
 `secrets.scan` is `FAILED` and stays that way. It finds three credential-shaped
 strings, all of them authored fixture data that exists so the scanner has
@@ -203,7 +208,7 @@ Nothing arranged this. It is the strongest evidence available that the guard hol
 against real concurrent mutation and not only against the evaluator that the test
 suite plants for it, and it is worth more than the test because nobody designed it.
 
-### Two defects self-evaluation found
+### Four defects self-evaluation found
 
 1. **Workspace containment rejected the interpreter the evaluation provisions.**
    Path containment resolved symlinks before checking, and a virtual environment
@@ -213,6 +218,16 @@ suite plants for it, and it is worth more than the test because nobody designed 
 2. **The bundle integrity index hashed decoded text.** Screenshots were read with
    replacement characters and hashed as strings, so two different images could hash
    alike. It hashes bytes, and a test plants two PNGs that differ only in bytes.
+3. **The static analyser walked the environment it had just provisioned.**
+   `Target.exists` answers about files, so `exists("src")` was False for a source
+   directory and the check fell through to scanning everything, including the virtual
+   environment created for the artifact. Slow, and worse: a finding in a dependency's
+   code would have been attributed to the artifact under evaluation. Found by
+   watching a run sit on `bandit -r .` for minutes.
+4. **One finding had two identifiers.** The ledger held `HP-OPS-0001` for "32
+   absolute documentation claims are unverified" and `HP-OPS-0002` for "34", because
+   the summary quoted a changing sample and the fingerprint moved with it. Findings
+   that summarise a set now take their identity from the rule alone.
 
 ### Reproducing these runs
 

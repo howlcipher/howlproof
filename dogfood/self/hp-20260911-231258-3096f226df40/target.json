@@ -1,0 +1,11 @@
+{
+  "root": "/run/media/system/tallgeese/dev/howlproof",
+  "is_git": true,
+  "commit": "a50b9ac8b62e31d6934196e5f8cabf4b1da7f2cd",
+  "branch": "main",
+  "dirty": false,
+  "file_count": 249,
+  "oversized_files_not_copied": [],
+  "tree_digest_before": "c06c9d8323c59eb7c7afed08f268c3eb8be889a1232d554f68c43f1474846951",
+  "tree_digest_after": "c06c9d8323c59eb7c7afed08f268c3eb8be889a1232d554f68c43f1474846951"
+}

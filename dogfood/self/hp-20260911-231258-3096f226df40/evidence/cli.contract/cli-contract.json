@@ -1,0 +1,74 @@
+[
+  {
+    "case": "no_arguments",
+    "argv": [
+      ".howlproof-venv/bin/howlproof"
+    ],
+    "exit_code": 2,
+    "duration_ms": 346,
+    "timed_out": false,
+    "stdout": "",
+    "stderr": "usage: howlproof [-h] [--version]\n                 {evaluate,validate,profiles,doctor,inspect,explain,report,findings,reproduce,verify-fix,accept,compare,handoff} ...\nhowlproof: error: the following arguments are required: command\n"
+  },
+  {
+    "case": "unknown_subcommand",
+    "argv": [
+      ".howlproof-venv/bin/howlproof",
+      "definitely-not-a-command"
+    ],
+    "exit_code": 2,
+    "duration_ms": 354,
+    "timed_out": false,
+    "stdout": "",
+    "stderr": "usage: howlproof [-h] [--version]\n                 {evaluate,validate,profiles,doctor,inspect,explain,report,findings,reproduce,verify-fix,accept,compare,handoff} ...\nhowlproof: error: argument command: invalid choice: 'definitely-not-a-command' (choose from evaluate, validate, profiles, doctor, inspect, explain, report, findings, reproduce, verify-fix, accept, compare, handoff)\n"
+  },
+  {
+    "case": "unknown_flag",
+    "argv": [
+      ".howlproof-venv/bin/howlproof",
+      "--definitely-not-a-flag"
+    ],
+    "exit_code": 2,
+    "duration_ms": 317,
+    "timed_out": false,
+    "stdout": "",
+    "stderr": "usage: howlproof [-h] [--version]\n                 {evaluate,validate,profiles,doctor,inspect,explain,report,findings,reproduce,verify-fix,accept,compare,handoff} ...\nhowlproof: error: the following arguments are required: command\n"
+  },
+  {
+    "case": "empty_string_argument",
+    "argv": [
+      ".howlproof-venv/bin/howlproof",
+      ""
+    ],
+    "exit_code": 2,
+    "duration_ms": 288,
+    "timed_out": false,
+    "stdout": "",
+    "stderr": "usage: howlproof [-h] [--version]\n                 {evaluate,validate,profiles,doctor,inspect,explain,report,findings,reproduce,verify-fix,accept,compare,handoff} ...\nhowlproof: error: argument command: invalid choice: '' (choose from evaluate, validate, profiles, doctor, inspect, explain, report, findings, reproduce, verify-fix, accept, compare, handoff)\n"
+  },
+  {
+    "case": "path_that_does_not_exist",
+    "argv": [
+      ".howlproof-venv/bin/howlproof",
+      "evaluate",
+      "/nonexistent/path/for/howlproof"
+    ],
+    "exit_code": 2,
+    "duration_ms": 526,
+    "timed_out": false,
+    "stdout": "",
+    "stderr": "{\"error\": \"target is not a directory: /nonexistent/path/for/howlproof\"}\n"
+  },
+  {
+    "case": "help",
+    "argv": [
+      ".howlproof-venv/bin/howlproof",
+      "--help"
+    ],
+    "exit_code": 0,
+    "duration_ms": 342,
+    "timed_out": false,
+    "stdout": "usage: howlproof [-h] [--version]\n                 {evaluate,validate,profiles,doctor,inspect,explain,report,findings,reproduce,verify-fix,accept,compare,handoff} ...\n\nIndependent red-team QA for the Howl ecosystem. HowlProof judges artifacts and\nproduces evidence; it never repairs the artifact it is judging.\n\npositional arguments:\n  {evaluate,validate,profiles,doctor,inspect,explain,report,findings,reproduce,verify-fix,accept,compare,handoff}\n    evaluate            challenge an artifact and issue a verdict\n    validate            strictly validate an evaluation contract\n    profiles            list or show evaluation profiles\n    doctor              report which tooling is actually available\n    inspect             re-verify a bundle's integrity and print its result\n    explain             show why a bundle reached its verdict\n    report              print a bundle's report\n    findings            list findings from a bundle or the ledger\n    reproduce           re-execute a finding's recorded steps\n    verify-fix          re-run the evaluator that raised a finding against a\n                        changed artifact\n    accept              record a decision to live with a finding, with a\n                        reason that stays attached\n    compare             compare two evaluations of the same artifact\n    handoff             write a sibling component's file contract\n\noptions:\n  -h, --help            show this help message and exit\n  --version             show program's version number and exit\n",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,140 @@
+{
+  "checked": 56,
+  "broken": [],
+  "external": [
+    "https://github.com/howlcipher/howlproof",
+    "https://github.com/howlcipher/howlproof#limitations",
+    "https://github.com/howlcipher/howlproof#quick-start",
+    "https://github.com/howlcipher/howlproof/blob/main/LICENSE",
+    "https://github.com/howlcipher/howlproof/blob/main/ROADMAP.md",
+    "https://github.com/howlcipher/howlproof/blob/main/docs/contract.md",
+    "https://github.com/howlcipher/howlproof/blob/main/docs/dogfood.md",
+    "https://github.com/howlcipher/howlproof/blob/main/docs/ecosystem.md",
+    "https://github.com/howlcipher/howlproof/blob/main/docs/evaluators.md",
+    "https://github.com/howlcipher/howlproof/tree/main/dogfood/howlboard",
+    "https://howlcipher.github.io/howl/",
+    "https://howlcipher.github.io/howl/ecosystem.html",
+    "https://howlcipher.github.io/howlboard/",
+    "https://howlcipher.github.io/howlchangeops/",
+    "https://howlcipher.github.io/howlcreate/",
+    "https://howlcipher.github.io/howldream/",
+    "https://howlcipher.github.io/howlframe/",
+    "https://howlcipher.github.io/howlnotes/",
+    "https://howlcipher.github.io/howlplane/",
+    "https://howlcipher.github.io/howlproof/",
+    "https://howlcipher.github.io/howlrelay/",
+    "https://howlcipher.github.io/howlwriter/"
+  ],
+  "external_results": [
+    {
+      "url": "https://github.com/howlcipher/howlproof",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://github.com/howlcipher/howlproof#limitations",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://github.com/howlcipher/howlproof#quick-start",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://github.com/howlcipher/howlproof/blob/main/LICENSE",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://github.com/howlcipher/howlproof/blob/main/ROADMAP.md",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://github.com/howlcipher/howlproof/blob/main/docs/contract.md",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://github.com/howlcipher/howlproof/blob/main/docs/dogfood.md",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://github.com/howlcipher/howlproof/blob/main/docs/ecosystem.md",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://github.com/howlcipher/howlproof/blob/main/docs/evaluators.md",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://github.com/howlcipher/howlproof/tree/main/dogfood/howlboard",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howl/",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howl/ecosystem.html",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howlboard/",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howlchangeops/",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howlcreate/",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howldream/",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howlframe/",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howlnotes/",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howlplane/",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howlproof/",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howlrelay/",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "url": "https://howlcipher.github.io/howlwriter/",
+      "status": 200,
+      "error": ""
+    }
+  ]
+}

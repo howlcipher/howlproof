@@ -1,0 +1,56 @@
+{
+  "schema": "howlproof.handoff/v1",
+  "authority": "ADVISORY",
+  "run_id": "hp-20260911-231258-3096f226df40",
+  "artifact": "howlproof",
+  "commit": "a50b9ac8b62e31d6934196e5f8cabf4b1da7f2cd",
+  "branch": "main",
+  "tree_digest": "c06c9d8323c59eb7c7afed08f268c3eb8be889a1232d554f68c43f1474846951",
+  "verdict": "CONDITIONALLY_PROVEN",
+  "deciding_rule": "conditional",
+  "criteria_satisfied": 6,
+  "criteria_total": 6,
+  "blocking_finding_ids": [],
+  "finding_ids": [
+    "HP-SEC-0001",
+    "HP-SEC-0002",
+    "HP-SEC-0003",
+    "HP-OPS-0001"
+  ],
+  "unresolved_risks": [],
+  "limitations": [
+    "markup.escaping was NOT_APPLICABLE: the artifact declares no markup sources to analyse",
+    "http.authz was NOT_APPLICABLE: the artifact declares no service, so there is nothing to reach",
+    "web.dom_injection was NOT_APPLICABLE: the artifact declares no injection payloads to attempt",
+    "cli.destructive was NOT_APPLICABLE: the artifact declares no destructive subcommands to inspect"
+  ],
+  "validation_modes": {
+    "REAL": [
+      "python.lint",
+      "python.types",
+      "python.tests",
+      "python.build",
+      "release.version",
+      "sast.bandit",
+      "deps.audit",
+      "secrets.scan",
+      "ci.supplychain",
+      "docs.claims.absolutes",
+      "web.links",
+      "web.metadata",
+      "web.responsive",
+      "cli.contract"
+    ],
+    "SIMULATED": [],
+    "SKIPPED": [],
+    "UNAVAILABLE": [],
+    "NOT_APPLICABLE": [
+      "markup.escaping",
+      "http.authz",
+      "web.dom_injection",
+      "cli.destructive"
+    ],
+    "ERROR": []
+  },
+  "note": "Advisory only. HowlProof does not promote, merge, deploy or approve. Promotion decisions belong to HowlPlane and HowlChangeOps."
+}
