@@ -400,7 +400,7 @@
                         A finding moves <code>FOUND → REPRODUCED → REMEDIATION_REQUESTED → RETESTED → VERIFIED_FIXED</code>, and only a re-execution moves it to the last state. <code>verify-fix</code> compares the artifact's tree digest against the state the finding was raised at and refuses to answer when they match, because an unchanged artifact cannot have been repaired. When the evaluator that raised the finding cannot run against the changed artifact, the finding's absence is reported as inconclusive rather than as a fix.
                     </p>
                     <p>
-                        <code>CONFIRMED</code> confidence is reserved for defects that were directly observed, and the model refuses to construct one without a recorded reproduction. Only a <code>CONFIRMED</code> finding at or above the blocking severity can reject an artifact. A severe finding that was not reproduced routes to <span class="verdict verdict-human">REQUIRES_HUMAN</span> instead.
+                        <code>CONFIRMED</code> confidence is reserved for defects that were directly observed, and the model refuses to construct one without a recorded reproduction. A finding on its own can only reject an artifact when it is both at or above the blocking severity and <code>CONFIRMED</code>; a severe finding that was not reproduced routes to <span class="verdict verdict-human">REQUIRES_HUMAN</span> instead. A violated acceptance criterion rejects on its own terms, whether or not any finding was raised.
                     </p>
                 </div>
             </section>

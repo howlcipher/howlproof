@@ -111,9 +111,12 @@ shifts.
 
 `CONFIRMED` confidence is reserved for findings whose defect was directly
 observed, and the model refuses to construct one without a recorded reproduction.
-Only a `CONFIRMED` finding at or above the blocking severity can reject an
-artifact; a severe finding that was not reproduced routes to `REQUIRES_HUMAN`
-instead.
+
+A finding on its own can only reject an artifact when it is both at or above the
+blocking severity and `CONFIRMED`. A severe finding that was not reproduced
+routes to `REQUIRES_HUMAN` instead, unless something earlier in the derivation
+already decided: a violated acceptance criterion rejects regardless of whether any
+finding was raised.
 
 ## Accepting a finding
 
