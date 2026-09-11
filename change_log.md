@@ -35,7 +35,12 @@ checked for substance, the finding stops blocking, and it stays in the ledger an
 in every report. There is no way to dismiss one quietly.
 
 Ecosystem integration is by documented file contract into schemas HowlPlane,
-HowlBoard and HowlRelay already read, so no sibling component changes. There is
-no HowlChangeOps ingest path for an external verdict and the handoff for it says
-so plainly rather than implying one exists. HowlGuard is not built; only the
-boundary is written down.
+HowlBoard and HowlRelay already read, so no sibling component changes. Those
+contracts are tested rather than asserted: every emitted document is validated
+against a vendored copy of HowlPlane's closed JSON Schema. Two of the three
+emitters failed that test when it was first written, inventing fields their
+readers reject, and were corrected. The findings handoff was additionally run end
+to end through HowlPlane's own reconcile command, which accepted it. There is no
+HowlChangeOps ingest path for an external verdict and the handoff for it says so
+plainly rather than implying one exists. HowlGuard is not built; only the boundary
+is written down.

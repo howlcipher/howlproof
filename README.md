@@ -256,6 +256,12 @@ and no sibling component requires a change to consume them.
 Every handoff carries `authority: ADVISORY`. HowlProof issues verdicts; HowlPlane
 decides what to do about them and HowlChangeOps owns promotion and rollback.
 
+These are tested rather than asserted. `tests/test_handoff.py` validates every
+emitted document against a vendored copy of HowlPlane's published JSON Schema,
+which is closed and rejects unknown fields. Two of the three emitters failed that
+test when it was first written and were corrected; the `plane` handoff was also
+run end to end through HowlPlane's own `reconcile --findings-file`.
+
 ## Limitations
 
 - Milestone one. Experimental, not production-ready.

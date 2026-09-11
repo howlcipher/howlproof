@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ai.verification_plan/v1",
+  "title": "Verification Plan Schema",
+  "description": "Schema for deterministic verification plans and executed step outcomes.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "ai.verification_plan/v1",
+      "description": "Identifies the schema and version this document conforms to."
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "command": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "array", "items": { "type": "string" } }
+            ]
+          },
+          "category": {
+            "type": "string",
+            "enum": ["build", "lint", "repository_hygiene", "unit_test", "integration_test", "security_check", "policy_check", "custom"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["claimed", "tested", "observed", "verified", "failed", "skipped"]
+          },
+          "exit_code": {
+            "type": ["integer", "null"]
+          },
+          "stdout": {
+            "type": ["string", "null"]
+          },
+          "stderr": {
+            "type": ["string", "null"]
+          },
+          "duration_seconds": {
+            "type": ["number", "null"]
+          },
+          "interpreter": {
+            "type": ["string", "null"]
+          },
+          "required": {
+            "type": "boolean"
+          }
+        },
+        "required": ["step_id", "name", "command", "category", "status", "required"],
+        "additionalProperties": false
+      }
+    },
+    "overall_status": {
+      "type": "string",
+      "enum": ["unverified", "passed", "failed", "partial"]
+    }
+  },
+  "required": ["schema", "task_id", "steps", "overall_status"],
+  "additionalProperties": false
+}

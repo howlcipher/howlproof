@@ -480,7 +480,8 @@ def test_the_verification_plan_preserves_the_original_status(rejected):
     assert plan["schema"] == "ai.verification_plan/v1"
     assert plan["overall_status"] in {"unverified", "passed", "failed", "partial"}
     skipped = [step for step in plan["steps"] if step["status"] == "skipped"]
-    assert any("[howlproof status" in step["notes"] for step in skipped)
+    assert any("[howlproof status" in step["stderr"] for step in skipped)
+    assert all("step_id" in step and "required" in step for step in plan["steps"])
 
 
 def test_an_unknown_handoff_target_is_a_usage_error(rejected):

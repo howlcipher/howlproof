@@ -18,6 +18,29 @@ HowlBoard's domain model and import tool; the Howl hub's site and manifest.
 | HowlWriter | Writing, citation and provenance | Unrelated surface; would be an artifact, not an integration |
 | Howl | Installer and canonical Pages hub | Proof is not in the default installer manifest |
 
+## These contracts are tested, not asserted
+
+Every document HowlProof emits is validated in its own test suite against a
+vendored copy of HowlPlane's published JSON Schema, in `tests/ecosystem_schemas/`.
+Those schemas are closed: they set `additionalProperties: false` and reject a
+document carrying a field they do not define.
+
+When that test was first written, two of the three emitters failed it. The
+evidence-entry emitter invented `artifact_path` and `summary`; the
+verification-plan emitter omitted the required `step_id` and `required` fields and
+added a `notes` field the schema does not have. Both would have been rejected by
+their reader. Both were corrected.
+
+The `plane` handoff was additionally run end to end through HowlPlane's own
+`reconcile --findings-file`, which accepted it and produced a reconciliation
+report attributing findings to `howlproof-security` and `howlproof-operator`.
+
+One behaviour is worth knowing. HowlProof's finding status is an **input hint**;
+HowlPlane's reconciliation re-derives confirmation from agreement between
+reviewers, so a finding HowlProof marks `confirmed` appears in that report as a
+single-reviewer finding rather than a confirmed one. That is HowlPlane's semantics
+and HowlProof does not try to override it.
+
 ## Why the integrations are files
 
 HowlPlane's control-plane architecture is explicitly frozen: new framework
@@ -53,8 +76,10 @@ a non-empty reason.
 
 `--for verification-plan` writes `ai.verification_plan/v1`. That schema's status
 enum has no value meaning "the tool was not installed", so `UNAVAILABLE`,
-`NOT_APPLICABLE` and `ERROR` all map to `skipped` and the original status is
-preserved in each step's notes. The mapping is lossy and the document says so.
+`NOT_APPLICABLE` and `ERROR` all map to `skipped`. The step shape is closed and has
+no field for a note, so the original HowlProof status is prefixed onto the step's
+`stderr` rather than dropped or smuggled into an invented key. The mapping is
+lossy and every affected step says which status it really had.
 
 ### HowlBoard
 

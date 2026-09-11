@@ -16,7 +16,13 @@ from typing import Any
 
 import yaml
 
-from howlproof.model import REVIEW_FINDING_SEVERITY, REVIEW_FINDING_STATUS, FindingState, Severity
+from howlproof.evidence import AUTHORITY
+from howlproof.model import (
+    REVIEW_FINDING_SEVERITY,
+    REVIEW_FINDING_STATUS,
+    FindingState,
+    Severity,
+)
 
 REVIEW_FINDING_SCHEMA = "ai.review_finding/v1"
 EVIDENCE_ENTRY_SCHEMA = "ai.evidence_entry/v1"
@@ -83,22 +89,34 @@ def render(result: dict[str, Any], target: str) -> tuple[str, str]:
 
 
 def verification_plan(result: dict[str, Any]) -> dict[str, Any]:
-    """An ai.verification_plan/v1 document describing what actually ran."""
+    """An ai.verification_plan/v1 document describing what actually ran.
+
+    The schema is closed and its step shape is fixed, so nothing is invented here.
+    Where a HowlProof concept has no field of its own, it goes into one the schema
+    already defines rather than into a new key the consumer would reject.
+    """
+    required_checks = _required_checks(result)
     steps = []
-    for check in result["checks"]:
+    for index, check in enumerate(result["checks"], start=1):
         status = STEP_STATUS.get(check["status"], "skipped")
         note = check["reason"] or check["summary"]
         if check["status"] in {"UNAVAILABLE", "NOT_APPLICABLE", "ERROR"}:
+            # This vocabulary has no word for "the tool was not installed". The
+            # distinction is preserved in a field the schema does define.
             note = f"[howlproof status {check['status']}] {note}"
         steps.append(
             {
+                "step_id": f"hp-{index:03d}",
                 "name": check["check_id"],
-                "category": STEP_CATEGORY.get(check["check_id"].split(".")[0], "custom")
-                if check["check_id"] not in STEP_CATEGORY
-                else STEP_CATEGORY[check["check_id"]],
-                "status": status,
                 "command": check["checker"],
-                "notes": note,
+                "category": STEP_CATEGORY.get(
+                    check["check_id"],
+                    STEP_CATEGORY.get(check["check_id"].split(".")[0], "custom"),
+                ),
+                "status": status,
+                "stderr": note,
+                "duration_seconds": round(check.get("duration_ms", 0) / 1000, 3),
+                "required": check["check_id"] in required_checks,
             }
         )
     statuses = {step["status"] for step in steps}
@@ -115,13 +133,22 @@ def verification_plan(result: dict[str, Any]) -> dict[str, Any]:
         "task_id": result["run_id"],
         "overall_status": overall,
         "steps": steps,
-        "notes": (
-            f"Produced by HowlProof {result['version']} as advisory evidence. The HowlProof "
-            f"verdict was {result['verdict']}. UNAVAILABLE, NOT_APPLICABLE and ERROR checks are "
-            "reported here as `skipped` because this schema has no distinct value for them; the "
-            "original status is preserved in each step's notes."
-        ),
     }
+
+
+def _required_checks(result: dict[str, Any]) -> set[str]:
+    """Checks a non-optional acceptance criterion depends on."""
+    required: set[str] = set()
+    for criterion in result.get("criteria", []):
+        if criterion.get("requirement") != "checks_pass" or criterion.get("optional"):
+            continue
+        evidence = criterion.get("evidence") or {}
+        required.update(evidence.get("verified") or [])
+        required.update(evidence.get("failed") or [])
+        required.update(evidence.get("inconclusive") or {})
+        required.update(evidence.get("not_applicable") or [])
+        required.update(evidence.get("missing") or [])
+    return required
 
 
 def _plane_findings(result: dict[str, Any]) -> str:
@@ -163,6 +190,13 @@ def _plane_findings(result: dict[str, Any]) -> str:
 
 
 def _evidence_entries(result: dict[str, Any]) -> str:
+    """ai.evidence_entry/v1 lines.
+
+    That schema is closed, so HowlProof's own vocabulary travels inside the object
+    fields it already provides rather than as new keys. An entry carrying an unknown
+    field is rejected by its reader, which would make the integration a claim rather
+    than a contract.
+    """
     blocking = [f for f in result["findings"] if f.get("blocking")]
     timestamp = result["completed_at"]
     entries = [
@@ -173,20 +207,61 @@ def _evidence_entries(result: dict[str, Any]) -> str:
             "agent_id": "howlproof",
             "action": "verification_executed",
             "timestamp": timestamp,
-            "result": "failed"
-            if result["verdict"] in {"REJECT"}
-            else "passed"
-            if result["verdict"] == "PROVEN"
-            else "partial",
+            "result": (
+                "failed"
+                if result["verdict"] == "REJECT"
+                else "passed"
+                if result["verdict"] == "PROVEN"
+                else "partial"
+            ),
             "defect_type": "verification_caught_defect" if blocking else None,
             "risk_level": "HIGH" if blocking else "LOW",
-            "artifact_path": result.get("path", ""),
-            "summary": (
-                f"HowlProof verdict {result['verdict']} for {result['artifact']} at "
-                f"{result['target'].get('commit', 'unknown commit')[:12]}: "
-                f"{result['counts']['criteria_satisfied']}/{result['counts']['criteria_total']} "
-                f"acceptance criteria satisfied, {len(blocking)} blocking findings."
-            ),
+            "repository": result["artifact"],
+            "artifact": result.get("path", ""),
+            "control_plane_caught_defect": bool(blocking),
+            # This schema types findings_summary as integers and verification_summary
+            # as strings. Structured detail goes in metadata, which is open.
+            "verification_summary": {
+                "verdict": result["verdict"],
+                "deciding_rule": result["deciding_rule"],
+                "criteria": (
+                    f"{result['counts']['criteria_satisfied']}/"
+                    f"{result['counts']['criteria_total']} satisfied"
+                ),
+                "checks": (
+                    f"{result['counts']['verified']} verified, "
+                    f"{result['counts']['failed']} failed, "
+                    f"{result['counts']['skipped']} skipped, "
+                    f"{result['counts']['unavailable']} unavailable, "
+                    f"{result['counts']['not_applicable']} not applicable, "
+                    f"{result['counts']['errored']} errored"
+                ),
+                "validation_modes": "; ".join(
+                    f"{mode}: {len(names)}" for mode, names in result["validation_modes"].items()
+                ),
+                "limitations": " | ".join(result["limitations"]) or "none recorded",
+            },
+            "findings_summary": {
+                "total": len(result["findings"]),
+                "blocking": len(blocking),
+                **{
+                    f"severity_{key.lower()}": value
+                    for key, value in result["counts"]["by_severity"].items()
+                },
+                **{
+                    f"adversary_{key.lower()}": value
+                    for key, value in result["counts"]["by_adversary"].items()
+                },
+            },
+            "metadata": {
+                "commit": result["target"].get("commit", ""),
+                "run_id": result["run_id"],
+                "howlproof_version": result["version"],
+                "authority": AUTHORITY,
+                "counts": result["counts"],
+                "validation_modes": result["validation_modes"],
+                "limitations": result["limitations"],
+            },
         }
     ]
     for finding in result["findings"]:
@@ -201,9 +276,21 @@ def _evidence_entries(result: dict[str, Any]) -> str:
                 "result": "failed" if finding.get("blocking") else "partial",
                 "defect_type": "review_caught_defect",
                 "risk_level": finding["severity"],
-                "artifact_path": finding["location"] or result.get("path", ""),
-                "summary": f"{finding['id']} ({finding['severity']}, {finding['state']}): "
-                f"{finding['title']}",
+                "repository": result["artifact"],
+                "artifact": finding["location"] or result.get("path", ""),
+                "findings_summary": {"total": 1, "blocking": int(bool(finding.get("blocking")))},
+                "metadata": {
+                    "run_id": result["run_id"],
+                    "finding_id": finding["id"],
+                    "title": finding["title"],
+                    "severity": finding["severity"],
+                    "confidence": finding["confidence"],
+                    "state": finding["state"],
+                    "adversary": finding["adversary"],
+                    "blocking": bool(finding.get("blocking")),
+                    "fingerprint": finding["fingerprint"],
+                    "authority": AUTHORITY,
+                },
             }
         )
     return "".join(json.dumps(entry) + "\n" for entry in entries)

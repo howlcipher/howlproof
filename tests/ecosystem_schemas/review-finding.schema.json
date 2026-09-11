@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ai.review_finding/v1",
+  "title": "Review Finding Schema",
+  "description": "Structured review finding and reconciliation schema.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "ai.review_finding/v1",
+      "description": "Identifies the schema and version this document conforms to."
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewer_role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["blocker", "high", "medium", "low", "informational"]
+    },
+    "category": {
+      "type": "string",
+      "enum": ["correctness", "regression", "security", "test_gap", "architecture", "simplicity", "other"]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "component": {
+      "type": ["string", "null"]
+    },
+    "claim": {
+      "type": ["string", "null"]
+    },
+    "location": {
+      "type": ["string", "null"]
+    },
+    "evidence": {
+      "type": ["string", "null"]
+    },
+    "suggested_fix": {
+      "type": ["string", "null"]
+    },
+    "related_finding_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "redundancy_status": {
+      "type": "string",
+      "enum": ["independent", "duplicate", "overlapping"]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "confirmed",
+        "likely",
+        "disputed",
+        "false_positive",
+        "out_of_scope",
+        "requires_human_judgment"
+      ]
+    },
+    "resolution_reason": {
+      "type": ["string", "null"]
+    }
+  },
+  "required": [
+    "schema",
+    "id",
+    "reviewer_role",
+    "title",
+    "severity",
+    "category",
+    "description",
+    "status"
+  ],
+  "additionalProperties": false
+}
