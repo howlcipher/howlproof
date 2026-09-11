@@ -12,6 +12,8 @@ import re
 import socket
 import sys
 import threading
+import urllib.error
+import urllib.request
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -705,16 +707,25 @@ class _QuietHandler(SimpleHTTPRequestHandler):
 
 
 def _probe_external(urls: list[str]) -> list[dict[str, Any]]:
-    results = []
+    """Fetch published destinations to see whether a reader would reach them.
+
+    This deliberately does not go through `service.request`, which refuses any host
+    that is not this machine. That refusal protects the attack path: HowlProof probes
+    artifacts an operator started locally, never a remote host. Reading a public URL
+    to check a link is a different act, and it only happens with --allow-network.
+    """
+    results: list[dict[str, Any]] = []
     for url in urls[:100]:
         if not url.startswith(("http://", "https://")):
             continue
-        base, _, path = url.partition("/")[0], "", ""
-        parts = url.split("/", 3)
-        base = "/".join(parts[:3])
-        path = "/" + (parts[3] if len(parts) > 3 else "")
-        response = request(base, "GET", path, timeout=10)
-        results.append({"url": url, "status": response.status, "error": response.error})
+        call = urllib.request.Request(url, method="GET", headers={"User-Agent": "howlproof"})
+        try:
+            with urllib.request.urlopen(call, timeout=15) as response:  # nosec B310
+                results.append({"url": url, "status": response.status, "error": ""})
+        except urllib.error.HTTPError as error:
+            results.append({"url": url, "status": error.code, "error": ""})
+        except (urllib.error.URLError, OSError, ValueError) as error:
+            results.append({"url": url, "status": 0, "error": f"{type(error).__name__}: {error}"})
     return results
 
 

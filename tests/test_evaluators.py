@@ -288,6 +288,25 @@ def test_a_modified_original_is_detected(tmp_path):
     assert "README.md (modified)" in handle.changed_paths()
 
 
+def test_external_link_checking_is_separate_from_the_attack_path(tmp_path):
+    """Reading a public URL and attacking a host are different acts.
+
+    The request helper refuses any host that is not this machine, which is right for
+    the attack path and wrong for checking whether a published link resolves. Applying
+    it to both made web.links ERROR on any site that links outward.
+    """
+    from howlproof.evaluators.web import _probe_external
+    from howlproof.service import request
+
+    with pytest.raises(ValueError, match="outside this machine"):
+        request("https://example.invalid", "GET", "/")
+
+    # The link probe reaches its own failure mode rather than the guard's.
+    results = _probe_external(["https://127.0.0.1:1/definitely-not-listening"])
+    assert results and results[0]["status"] == 0
+    assert "outside this machine" not in results[0]["error"]
+
+
 def test_exists_answers_about_files_and_is_dir_about_directories(tmp_path):
     """Conflating the two sent the static analyser over the whole workspace.
 
