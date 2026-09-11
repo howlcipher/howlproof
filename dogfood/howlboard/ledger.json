@@ -1,0 +1,193 @@
+{
+  "artifacts": {
+    "howlboard": {
+      "counters": {
+        "OPS": 2,
+        "SEC": 7
+      },
+      "findings": {
+        "0d69e57f51c7077dae7865695d627b65d74f6669679081393ea35b7851ba59da": {
+          "adversary": "SECURITY",
+          "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+          "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "first_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "history": [
+            {
+              "at": "2026-09-11T13:39:22.519387+00:00",
+              "note": "first observed",
+              "run_id": "hp-20260911-133826-ddbaef4e94e2",
+              "state": "FOUND"
+            }
+          ],
+          "id": "HP-SEC-0005",
+          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "severity": "MEDIUM",
+          "state": "FOUND",
+          "title": "`set_html` builds markup from an interpolated value in frontend/app.howl"
+        },
+        "20016dcc6c09e36c5a72693c29e0e76df0d22a0b2af7d10f86497440f9532b73": {
+          "adversary": "SECURITY",
+          "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+          "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "first_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "history": [
+            {
+              "at": "2026-09-11T13:39:22.519380+00:00",
+              "note": "first observed",
+              "run_id": "hp-20260911-133826-ddbaef4e94e2",
+              "state": "FOUND"
+            }
+          ],
+          "id": "HP-SEC-0004",
+          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "severity": "MEDIUM",
+          "state": "FOUND",
+          "title": ".github/workflows/ci.yml declares no GITHUB_TOKEN permissions"
+        },
+        "3297963530bad58f953ce51c3d30518780f9f52b7afd87bf35b84980a7625292": {
+          "adversary": "SECURITY",
+          "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+          "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "first_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "history": [
+            {
+              "at": "2026-09-11T13:39:22.519350+00:00",
+              "note": "first observed",
+              "run_id": "hp-20260911-133826-ddbaef4e94e2",
+              "state": "FOUND"
+            }
+          ],
+          "id": "HP-SEC-0002",
+          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "severity": "MEDIUM",
+          "state": "FOUND",
+          "title": "actions/setup-go is pinned to a mutable reference"
+        },
+        "40590dd024dddb5d326f447365c1813bbe490ea763f6e9e9b9ec30305b398ef3": {
+          "adversary": "OPERATOR",
+          "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+          "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "first_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "history": [
+            {
+              "at": "2026-09-11T13:39:22.519408+00:00",
+              "note": "first observed",
+              "run_id": "hp-20260911-133826-ddbaef4e94e2",
+              "state": "FOUND"
+            }
+          ],
+          "id": "HP-OPS-0001",
+          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "severity": "MEDIUM",
+          "state": "FOUND",
+          "title": "The published site fails rendered checks at declared widths"
+        },
+        "5d5ee9a1951e4859c8fc37f9b33cb60a023b9d4c66b7b17921809d7ac6803e39": {
+          "adversary": "SECURITY",
+          "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+          "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "first_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "history": [
+            {
+              "at": "2026-09-11T13:39:22.519359+00:00",
+              "note": "first observed",
+              "run_id": "hp-20260911-133826-ddbaef4e94e2",
+              "state": "FOUND"
+            }
+          ],
+          "id": "HP-SEC-0003",
+          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "severity": "MEDIUM",
+          "state": "FOUND",
+          "title": "actions/setup-python is pinned to a mutable reference"
+        },
+        "62b8f17135527be3c62bd82abeb061a5b5d2d2ac2fb051dbb69df989f142ad7b": {
+          "adversary": "SECURITY",
+          "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+          "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "first_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "history": [
+            {
+              "at": "2026-09-11T13:39:22.519400+00:00",
+              "note": "first observed",
+              "run_id": "hp-20260911-133826-ddbaef4e94e2",
+              "state": "FOUND"
+            }
+          ],
+          "id": "HP-SEC-0007",
+          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "severity": "HIGH",
+          "state": "FOUND",
+          "title": "Stored data executes as script in the interface: mission_id_js_string"
+        },
+        "98ae02d8885b642b9c4874904680a49471b8b6043b10a77ac74af0bebb5aa57c": {
+          "adversary": "SECURITY",
+          "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+          "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "first_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "history": [
+            {
+              "at": "2026-09-11T13:39:22.519394+00:00",
+              "note": "first observed",
+              "run_id": "hp-20260911-133826-ddbaef4e94e2",
+              "state": "FOUND"
+            }
+          ],
+          "id": "HP-SEC-0006",
+          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "severity": "HIGH",
+          "state": "FOUND",
+          "title": "`esc` does not escape the single quote but is used inside a JavaScript string literal"
+        },
+        "cbdef474f2456fd666c9c0093695ab1ea6772a7bc5ddd8dacdf0231fe0f69c13": {
+          "adversary": "OPERATOR",
+          "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+          "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "first_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "history": [
+            {
+              "at": "2026-09-11T13:39:22.519414+00:00",
+              "note": "first observed",
+              "run_id": "hp-20260911-133826-ddbaef4e94e2",
+              "state": "FOUND"
+            }
+          ],
+          "id": "HP-OPS-0002",
+          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "severity": "INFORMATIONAL",
+          "state": "FOUND",
+          "title": "18 absolute documentation claims are unverified"
+        },
+        "f7b8fe437cef56aebbaf43416e9a39ed4a9a9bee65fffde2e5ff8a1e1bf81d75": {
+          "adversary": "SECURITY",
+          "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+          "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "first_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "history": [
+            {
+              "at": "2026-09-11T13:39:22.519322+00:00",
+              "note": "first observed",
+              "run_id": "hp-20260911-133826-ddbaef4e94e2",
+              "state": "FOUND"
+            }
+          ],
+          "id": "HP-SEC-0001",
+          "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+          "last_seen_tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+          "severity": "MEDIUM",
+          "state": "FOUND",
+          "title": "actions/checkout is pinned to a mutable reference"
+        }
+      }
+    }
+  },
+  "schema": "howlproof.ledger/v1"
+}

@@ -1,0 +1,7 @@
+name: ai
+description: >-
+  Indirect prompt injection and structured-response handling. NOT_APPLICABLE unless the
+  artifact declares an AI entry point.
+evaluators:
+  - ai.promptinjection
+  - ai.schema

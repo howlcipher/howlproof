@@ -1,0 +1,40 @@
+{
+  "summary": "Write the payload into the seed file, seed the running service, load index.html and read window.__howlproof_injection.",
+  "requires_service": true,
+  "notes": "",
+  "steps": [
+    {
+      "description": "Set /missions/0/id in data/fixtures/missions.json to the authored payload",
+      "kind": "file_probe",
+      "payload": {
+        "path": "data/fixtures/missions.json",
+        "pointer": "/missions/0/id",
+        "value": "HF-412'); window.__howlproof_injection=1; ('"
+      },
+      "expect": {
+        "matches": true
+      }
+    },
+    {
+      "description": "POST /api/seed",
+      "kind": "http_request",
+      "payload": {
+        "method": "POST",
+        "path": "/api/seed",
+        "body": {}
+      },
+      "expect": {}
+    },
+    {
+      "description": "Load frontend/index.html in a browser and read window.__howlproof_injection",
+      "kind": "command",
+      "payload": {
+        "marker": "__howlproof_injection",
+        "page": "index.html"
+      },
+      "expect": {
+        "marker_set": true
+      }
+    }
+  ]
+}

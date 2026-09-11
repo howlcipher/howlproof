@@ -1,0 +1,40 @@
+{
+  "check_id": "ci.supplychain",
+  "adversary": "SECURITY",
+  "category": "security",
+  "title": ".github/workflows/ci.yml declares no GITHUB_TOKEN permissions",
+  "severity": "MEDIUM",
+  "confidence": "HIGH",
+  "summary": "Without an explicit `permissions:` block the workflow inherits the repository default, which may grant write access to contents, packages and more than the job needs.",
+  "evidence": "no top-level or per-job `permissions:` key",
+  "recommended_remediation": "Add `permissions: {contents: read}` and widen only where required.",
+  "location": ".github/workflows/ci.yml:1",
+  "rule": "ci.default_permissions",
+  "state": "FOUND",
+  "reproduction": {
+    "summary": "Re-read the workflow and match the same construct.",
+    "requires_service": false,
+    "notes": "",
+    "steps": [
+      {
+        "description": "Inspect .github/workflows/ci.yml at line 1.",
+        "kind": "file_probe",
+        "payload": {
+          "path": ".github/workflows/ci.yml",
+          "pattern": "jobs:"
+        },
+        "expect": {
+          "matches": true
+        }
+      }
+    ]
+  },
+  "resolution_reason": null,
+  "id": "HP-SEC-0004",
+  "fingerprint": "20016dcc6c09e36c5a72693c29e0e76df0d22a0b2af7d10f86497440f9532b73",
+  "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+  "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "detail": {},
+  "blocking": false
+}

@@ -1,0 +1,6 @@
+name: release
+description: Version agreement and the supply chain that publishes the artifact.
+evaluators:
+  - release.version
+  - ci.supplychain
+  - python.build

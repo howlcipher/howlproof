@@ -1,0 +1,12 @@
+name: code
+description: The artifact own build, lint, type and test gates, reported honestly.
+evaluators:
+  - python.lint
+  - python.types
+  - python.tests
+  - python.build
+  - go.fmt
+  - go.vet
+  - go.test
+  - cli.contract
+  - release.version

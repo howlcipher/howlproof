@@ -1,0 +1,82 @@
+# HowlProof's own evaluation contract.
+#
+# An adversary that will not be judged by its own standard is not an adversary.
+# This file is what `howlproof evaluate .` reads, and the dogfood bundle under
+# dogfood/self/ is the result of running it.
+
+schema_version: 1
+artifact: howlproof
+description: >-
+  Independent red-team QA, falsification and evidence for the Howl ecosystem.
+  Evaluated against itself.
+
+profiles:
+  - python
+  - security
+  - documentation
+  - web
+
+adversaries:
+  - FUNCTIONAL
+  - SECURITY
+  - RELIABILITY
+  - AI
+  - OPERATOR
+
+blocking_severity: HIGH
+
+acceptance:
+  - id: AC-01
+    requirement: checks_pass
+    checks:
+      - python.tests
+      - python.types
+      - python.lint
+      - python.build
+
+  - id: AC-02
+    requirement: max_findings
+    adversary: SECURITY
+    min_severity: HIGH
+    limit: 0
+
+  - id: AC-03
+    requirement: tool_required
+    tools:
+      - python3
+
+  - id: AC-04
+    requirement: no_regressions
+
+  - id: AC-05
+    requirement: coverage_floor
+    min_conclusive_fraction: 0.6
+
+  - id: AC-06
+    requirement: checks_pass
+    checks:
+      - secrets.scan
+      - ci.supplychain
+      - release.version
+
+cli:
+  command:
+    - .howlproof-venv/bin/howlproof
+  help_flag: --help
+  needs_python_env: true
+
+docs:
+  claim_sources:
+    - README.md
+    - ROADMAP.md
+    - docs/*.md
+
+web:
+  root: docs
+  pages:
+    - index.html
+  viewports:
+    - 375
+    - 768
+    - 1440
+  canonical_prefix: https://howlcipher.github.io/howlproof/

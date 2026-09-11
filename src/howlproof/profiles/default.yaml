@@ -1,0 +1,32 @@
+name: default
+description: >-
+  A broad pass over whatever surfaces the artifact declares. Evaluators that find no
+  surface report NOT_APPLICABLE rather than passing vacuously.
+evaluators:
+  - secrets.scan
+  - ci.supplychain
+  - release.version
+  - docs.claims
+  - python.lint
+  - python.types
+  - python.tests
+  - go.fmt
+  - go.vet
+  - go.test
+  - cli.contract
+  - cli.destructive
+  - markup.escaping
+  - web.links
+  - web.metadata
+  - web.responsive
+  - ai.promptinjection
+  - ai.schema
+  - sast.bandit
+  - deps.audit
+  - http.authz
+  - http.abuse
+  - web.dom_injection
+  - api.idempotency
+  - reliability.partial_request
+  - service.restart
+  - reliability.corrupt_store

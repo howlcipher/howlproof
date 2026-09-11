@@ -1,0 +1,50 @@
+{
+  "check_id": "markup.escaping",
+  "adversary": "SECURITY",
+  "category": "security",
+  "title": "`esc` does not escape the single quote but is used inside a JavaScript string literal",
+  "severity": "HIGH",
+  "confidence": "HIGH",
+  "summary": "`esc` escapes \", &, <, > and not the single quote (defined at frontend/mission_view.howl:64). At frontend/mission_view.howl:134 its output is placed inside a single-quoted JavaScript string in an event-handler attribute. The HTML parser decodes the attribute before JavaScript parses it, so a single quote in the value terminates the string literal and everything after it becomes code. Escaping the double quote prevents breaking out of the attribute; it does not prevent breaking out of the string.",
+  "evidence": "tton type=\\\"button\\\" class=\\\"mission-row s-\" (call esc st) \"\\\"\"\n              \" onclick=\\\"window.open_mission('\" (call esc id) \"')\\\">\") \"\"))",
+  "recommended_remediation": "Escape the single quote in the escape function, or stop embedding values in handler attributes and bind the listener in code instead. Escaping for HTML text is not sufficient for a JavaScript context.",
+  "location": "frontend/mission_view.howl:134",
+  "rule": "markup.escaper_context_mismatch",
+  "state": "FOUND",
+  "reproduction": {
+    "summary": "Re-read the source and match the same construction.",
+    "requires_service": false,
+    "notes": "",
+    "steps": [
+      {
+        "description": "Inspect frontend/mission_view.howl around line 134.",
+        "kind": "file_probe",
+        "payload": {
+          "path": "frontend/mission_view.howl",
+          "pattern": "onclick=\\\""
+        },
+        "expect": {
+          "matches": true
+        }
+      }
+    ]
+  },
+  "resolution_reason": null,
+  "id": "HP-SEC-0006",
+  "fingerprint": "98ae02d8885b642b9c4874904680a49471b8b6043b10a77ac74af0bebb5aa57c",
+  "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+  "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "detail": {
+    "file": "frontend/mission_view.howl",
+    "line": 134,
+    "rule": "markup.escaper_context_mismatch",
+    "severity": "HIGH",
+    "title": "`esc` does not escape the single quote but is used inside a JavaScript string literal",
+    "summary": "`esc` escapes \", &, <, > and not the single quote (defined at frontend/mission_view.howl:64). At frontend/mission_view.howl:134 its output is placed inside a single-quoted JavaScript string in an event-handler attribute. The HTML parser decodes the attribute before JavaScript parses it, so a single quote in the value terminates the string literal and everything after it becomes code. Escaping the double quote prevents breaking out of the attribute; it does not prevent breaking out of the string.",
+    "evidence": "tton type=\\\"button\\\" class=\\\"mission-row s-\" (call esc st) \"\\\"\"\n              \" onclick=\\\"window.open_mission('\" (call esc id) \"')\\\">\") \"\"))",
+    "pattern": "onclick=\\\"",
+    "remediation": "Escape the single quote in the escape function, or stop embedding values in handler attributes and bind the listener in code instead. Escaping for HTML text is not sufficient for a JavaScript context."
+  },
+  "blocking": false
+}

@@ -1,0 +1,40 @@
+{
+  "check_id": "ci.supplychain",
+  "adversary": "SECURITY",
+  "category": "security",
+  "title": "actions/checkout is pinned to a mutable reference",
+  "severity": "MEDIUM",
+  "confidence": "HIGH",
+  "summary": ".github/workflows/ci.yml runs actions/checkout at `v4`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+  "evidence": "uses: actions/checkout@v4",
+  "recommended_remediation": "Pin the action to a full 40-character commit SHA and record the intended version in a comment.",
+  "location": ".github/workflows/ci.yml:15",
+  "rule": "ci.unpinned_action",
+  "state": "FOUND",
+  "reproduction": {
+    "summary": "Re-read the workflow and match the same construct.",
+    "requires_service": false,
+    "notes": "",
+    "steps": [
+      {
+        "description": "Inspect .github/workflows/ci.yml at line 15.",
+        "kind": "file_probe",
+        "payload": {
+          "path": ".github/workflows/ci.yml",
+          "pattern": "actions/checkout@v4"
+        },
+        "expect": {
+          "matches": true
+        }
+      }
+    ]
+  },
+  "resolution_reason": null,
+  "id": "HP-SEC-0001",
+  "fingerprint": "f7b8fe437cef56aebbaf43416e9a39ed4a9a9bee65fffde2e5ff8a1e1bf81d75",
+  "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+  "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "detail": {},
+  "blocking": false
+}

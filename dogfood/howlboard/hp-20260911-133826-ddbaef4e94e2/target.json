@@ -1,0 +1,11 @@
+{
+  "root": "/run/media/system/tallgeese/dev/howlboard",
+  "is_git": true,
+  "commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+  "branch": "chore/ecosystem-drawer-sync-howldream",
+  "dirty": false,
+  "file_count": 38,
+  "oversized_files_not_copied": [],
+  "tree_digest_before": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+  "tree_digest_after": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece"
+}

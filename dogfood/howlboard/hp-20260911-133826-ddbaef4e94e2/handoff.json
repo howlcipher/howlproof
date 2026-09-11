@@ -1,0 +1,77 @@
+{
+  "schema": "howlproof.handoff/v1",
+  "authority": "ADVISORY",
+  "run_id": "hp-20260911-133826-ddbaef4e94e2",
+  "artifact": "howlboard",
+  "commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+  "branch": "chore/ecosystem-drawer-sync-howldream",
+  "tree_digest": "e5a9f72056de205553608976777a8601cdcdf23c606f34de491700a9d0cafece",
+  "verdict": "REJECT",
+  "deciding_rule": "blocking_evidence",
+  "criteria_satisfied": 6,
+  "criteria_total": 7,
+  "blocking_finding_ids": [
+    "HP-SEC-0007"
+  ],
+  "finding_ids": [
+    "HP-SEC-0001",
+    "HP-SEC-0002",
+    "HP-SEC-0003",
+    "HP-SEC-0004",
+    "HP-SEC-0005",
+    "HP-SEC-0006",
+    "HP-SEC-0007",
+    "HP-OPS-0001",
+    "HP-OPS-0002"
+  ],
+  "unresolved_risks": [
+    "HP-SEC-0001 (MEDIUM): .github/workflows/ci.yml runs actions/checkout at `v4`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+    "HP-SEC-0002 (MEDIUM): .github/workflows/ci.yml runs actions/setup-go at `v5`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+    "HP-SEC-0003 (MEDIUM): .github/workflows/ci.yml runs actions/setup-python at `v5`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+    "HP-SEC-0004 (MEDIUM): Without an explicit `permissions:` block the workflow inherits the repository default, which may grant write access to contents, packages and more than the job needs.",
+    "HP-SEC-0005 (MEDIUM): A call to `set_html` assembles HTML containing an interpolated value and no escape function appears in the surrounding expression.",
+    "HP-SEC-0006 (HIGH): `esc` escapes \", &, <, > and not the single quote (defined at frontend/mission_view.howl:64). At frontend/mission_view.howl:134 its output is placed inside a single-quoted JavaScript string in an event-handler attribute. The HTML parser decodes the attribute before JavaScript parses it, so a single quote in the value terminates the string literal and everything after it becomes code. Escaping the double quote prevents breaking out of the attribute; it does not prevent breaking out of the string.",
+    "HP-SEC-0007 (HIGH): A mission identifier carrying a single quote, placed in the fixture the seed endpoint loads. Identifiers created through the API are server assigned, but seeded and ledger-imported records keep whatever identifier the source document carried.. A value placed at /missions/0/id in data/fixtures/missions.json and loaded through the artifact's own seed path set `window.__howlproof_injection` when the interface rendered it, which means the value was parsed as code rather than displayed as text.",
+    "HP-OPS-0001 (MEDIUM): index.html@375: the document scrolls horizontally"
+  ],
+  "limitations": [
+    "sast.bandit was UNAVAILABLE: the artifact has no pyproject.toml to install",
+    "deps.audit was NOT_APPLICABLE: the artifact declares no Python dependencies to audit",
+    "cli.destructive was NOT_APPLICABLE: the artifact declares no destructive subcommands to inspect",
+    "release.version was NOT_APPLICABLE: the artifact has no pyproject.toml declaring a version",
+    "reliability.corrupt_store observed a simulation, not the real dependency"
+  ],
+  "validation_modes": {
+    "REAL": [
+      "secrets.scan",
+      "ci.supplychain",
+      "markup.escaping",
+      "http.authz.execute_without_approval",
+      "http.authz.execute_with_expired_approval",
+      "web.dom_injection.mission_id_js_string",
+      "http.abuse",
+      "api.idempotency",
+      "reliability.partial_request",
+      "web.links",
+      "web.metadata",
+      "web.responsive",
+      "docs.claims.absolutes",
+      "docs.claims.sync",
+      "service.restart"
+    ],
+    "SIMULATED": [
+      "reliability.corrupt_store"
+    ],
+    "SKIPPED": [],
+    "UNAVAILABLE": [
+      "sast.bandit"
+    ],
+    "NOT_APPLICABLE": [
+      "deps.audit",
+      "cli.destructive",
+      "release.version"
+    ],
+    "ERROR": []
+  },
+  "note": "Advisory only. HowlProof does not promote, merge, deploy or approve. Promotion decisions belong to HowlPlane and HowlChangeOps."
+}

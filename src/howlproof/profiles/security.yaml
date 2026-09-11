@@ -1,0 +1,12 @@
+name: security
+description: >-
+  The defensive security adversary. Bounded, authorised probes against an artifact the
+  operator owns; it ships no general exploitation tooling.
+evaluators:
+  - secrets.scan
+  - ci.supplychain
+  - markup.escaping
+  - sast.bandit
+  - deps.audit
+  - http.authz
+  - web.dom_injection

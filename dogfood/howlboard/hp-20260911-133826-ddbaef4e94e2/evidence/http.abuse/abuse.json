@@ -1,0 +1,162 @@
+[
+  {
+    "case": "malformed_json",
+    "response": {
+      "status": 200,
+      "elapsed_ms": 1,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+        "Content-Length": "1767",
+        "Connection": "close"
+      },
+      "body": "{\"missions\":[{\"envelope_status\":\"ENVELOPE_ABSENT\",\"executor\":\"\",\"id\":\"CO-118\",\"outcome\":\"\",\"priority\":\"NORMAL\",\"project\":\"HowlChangeOps\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"AWAITING_APPROVAL\",\"title\":\"Widen approval TTL for long-running release windows\",\"updated_at\":1789043252},{\"envelope_status\":\"DENIED_BY_ENVELOPE\",\"executor\":\"\",\"id\":\"HB-051\",\"outcome\":\"task_closed\",\"priority\":\"LOW\",\"project\":\"HowlBoard\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"CLOSED\",\"title\":\"Add contributor activity heatmap to the dashboard\",\"updated_at\":1788619052},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412'); window.__howlproof_injection=1; ('\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"agy\",\"id\":\"HP-207\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"COMPLETED\",\"title\":\"Restore provider failover after local runtime timeout\",\"updated_at\":1788890852},{\"envelope_status\":\"ENVELOPE_EXPIRED\",\"executor\":\"\",\"id\":\"INFRA-233\",\"outcome\":\"\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"CRITICAL\",\"state\":\"BLOCKED\",\"title\":\"Rotate the release signing key on the build host\",\"updated_at\":1788937652}]}\n",
+      "error": ""
+    }
+  },
+  {
+    "case": "empty_body",
+    "response": {
+      "status": 200,
+      "elapsed_ms": 1,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+        "Content-Length": "1767",
+        "Connection": "close"
+      },
+      "body": "{\"missions\":[{\"envelope_status\":\"ENVELOPE_ABSENT\",\"executor\":\"\",\"id\":\"CO-118\",\"outcome\":\"\",\"priority\":\"NORMAL\",\"project\":\"HowlChangeOps\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"AWAITING_APPROVAL\",\"title\":\"Widen approval TTL for long-running release windows\",\"updated_at\":1789043252},{\"envelope_status\":\"DENIED_BY_ENVELOPE\",\"executor\":\"\",\"id\":\"HB-051\",\"outcome\":\"task_closed\",\"priority\":\"LOW\",\"project\":\"HowlBoard\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"CLOSED\",\"title\":\"Add contributor activity heatmap to the dashboard\",\"updated_at\":1788619052},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412'); window.__howlproof_injection=1; ('\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"agy\",\"id\":\"HP-207\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"COMPLETED\",\"title\":\"Restore provider failover after local runtime timeout\",\"updated_at\":1788890852},{\"envelope_status\":\"ENVELOPE_EXPIRED\",\"executor\":\"\",\"id\":\"INFRA-233\",\"outcome\":\"\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"CRITICAL\",\"state\":\"BLOCKED\",\"title\":\"Rotate the release signing key on the build host\",\"updated_at\":1788937652}]}\n",
+      "error": ""
+    }
+  },
+  {
+    "case": "wrong_content_type",
+    "response": {
+      "status": 200,
+      "elapsed_ms": 1,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+        "Content-Length": "1767",
+        "Connection": "close"
+      },
+      "body": "{\"missions\":[{\"envelope_status\":\"ENVELOPE_ABSENT\",\"executor\":\"\",\"id\":\"CO-118\",\"outcome\":\"\",\"priority\":\"NORMAL\",\"project\":\"HowlChangeOps\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"AWAITING_APPROVAL\",\"title\":\"Widen approval TTL for long-running release windows\",\"updated_at\":1789043252},{\"envelope_status\":\"DENIED_BY_ENVELOPE\",\"executor\":\"\",\"id\":\"HB-051\",\"outcome\":\"task_closed\",\"priority\":\"LOW\",\"project\":\"HowlBoard\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"CLOSED\",\"title\":\"Add contributor activity heatmap to the dashboard\",\"updated_at\":1788619052},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412'); window.__howlproof_injection=1; ('\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"agy\",\"id\":\"HP-207\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"COMPLETED\",\"title\":\"Restore provider failover after local runtime timeout\",\"updated_at\":1788890852},{\"envelope_status\":\"ENVELOPE_EXPIRED\",\"executor\":\"\",\"id\":\"INFRA-233\",\"outcome\":\"\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"CRITICAL\",\"state\":\"BLOCKED\",\"title\":\"Rotate the release signing key on the build host\",\"updated_at\":1788937652}]}\n",
+      "error": ""
+    }
+  },
+  {
+    "case": "array_instead_of_object",
+    "response": {
+      "status": 200,
+      "elapsed_ms": 0,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+        "Content-Length": "1767",
+        "Connection": "close"
+      },
+      "body": "{\"missions\":[{\"envelope_status\":\"ENVELOPE_ABSENT\",\"executor\":\"\",\"id\":\"CO-118\",\"outcome\":\"\",\"priority\":\"NORMAL\",\"project\":\"HowlChangeOps\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"AWAITING_APPROVAL\",\"title\":\"Widen approval TTL for long-running release windows\",\"updated_at\":1789043252},{\"envelope_status\":\"DENIED_BY_ENVELOPE\",\"executor\":\"\",\"id\":\"HB-051\",\"outcome\":\"task_closed\",\"priority\":\"LOW\",\"project\":\"HowlBoard\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"CLOSED\",\"title\":\"Add contributor activity heatmap to the dashboard\",\"updated_at\":1788619052},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412'); window.__howlproof_injection=1; ('\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"agy\",\"id\":\"HP-207\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"COMPLETED\",\"title\":\"Restore provider failover after local runtime timeout\",\"updated_at\":1788890852},{\"envelope_status\":\"ENVELOPE_EXPIRED\",\"executor\":\"\",\"id\":\"INFRA-233\",\"outcome\":\"\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"CRITICAL\",\"state\":\"BLOCKED\",\"title\":\"Rotate the release signing key on the build host\",\"updated_at\":1788937652}]}\n",
+      "error": ""
+    }
+  },
+  {
+    "case": "null_body",
+    "response": {
+      "status": 200,
+      "elapsed_ms": 0,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+        "Content-Length": "1767",
+        "Connection": "close"
+      },
+      "body": "{\"missions\":[{\"envelope_status\":\"ENVELOPE_ABSENT\",\"executor\":\"\",\"id\":\"CO-118\",\"outcome\":\"\",\"priority\":\"NORMAL\",\"project\":\"HowlChangeOps\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"AWAITING_APPROVAL\",\"title\":\"Widen approval TTL for long-running release windows\",\"updated_at\":1789043252},{\"envelope_status\":\"DENIED_BY_ENVELOPE\",\"executor\":\"\",\"id\":\"HB-051\",\"outcome\":\"task_closed\",\"priority\":\"LOW\",\"project\":\"HowlBoard\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"CLOSED\",\"title\":\"Add contributor activity heatmap to the dashboard\",\"updated_at\":1788619052},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412'); window.__howlproof_injection=1; ('\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"agy\",\"id\":\"HP-207\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"COMPLETED\",\"title\":\"Restore provider failover after local runtime timeout\",\"updated_at\":1788890852},{\"envelope_status\":\"ENVELOPE_EXPIRED\",\"executor\":\"\",\"id\":\"INFRA-233\",\"outcome\":\"\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"CRITICAL\",\"state\":\"BLOCKED\",\"title\":\"Rotate the release signing key on the build host\",\"updated_at\":1788937652}]}\n",
+      "error": ""
+    }
+  },
+  {
+    "case": "deep_nesting",
+    "response": {
+      "status": 200,
+      "elapsed_ms": 0,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+        "Content-Length": "1767",
+        "Connection": "close"
+      },
+      "body": "{\"missions\":[{\"envelope_status\":\"ENVELOPE_ABSENT\",\"executor\":\"\",\"id\":\"CO-118\",\"outcome\":\"\",\"priority\":\"NORMAL\",\"project\":\"HowlChangeOps\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"AWAITING_APPROVAL\",\"title\":\"Widen approval TTL for long-running release windows\",\"updated_at\":1789043252},{\"envelope_status\":\"DENIED_BY_ENVELOPE\",\"executor\":\"\",\"id\":\"HB-051\",\"outcome\":\"task_closed\",\"priority\":\"LOW\",\"project\":\"HowlBoard\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"CLOSED\",\"title\":\"Add contributor activity heatmap to the dashboard\",\"updated_at\":1788619052},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412'); window.__howlproof_injection=1; ('\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"agy\",\"id\":\"HP-207\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"COMPLETED\",\"title\":\"Restore provider failover after local runtime timeout\",\"updated_at\":1788890852},{\"envelope_status\":\"ENVELOPE_EXPIRED\",\"executor\":\"\",\"id\":\"INFRA-233\",\"outcome\":\"\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"CRITICAL\",\"state\":\"BLOCKED\",\"title\":\"Rotate the release signing key on the build host\",\"updated_at\":1788937652}]}\n",
+      "error": ""
+    }
+  },
+  {
+    "case": "oversized_body",
+    "response": {
+      "status": 200,
+      "elapsed_ms": 0,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+        "Content-Length": "1767",
+        "Connection": "close"
+      },
+      "body": "{\"missions\":[{\"envelope_status\":\"ENVELOPE_ABSENT\",\"executor\":\"\",\"id\":\"CO-118\",\"outcome\":\"\",\"priority\":\"NORMAL\",\"project\":\"HowlChangeOps\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"AWAITING_APPROVAL\",\"title\":\"Widen approval TTL for long-running release windows\",\"updated_at\":1789043252},{\"envelope_status\":\"DENIED_BY_ENVELOPE\",\"executor\":\"\",\"id\":\"HB-051\",\"outcome\":\"task_closed\",\"priority\":\"LOW\",\"project\":\"HowlBoard\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"CLOSED\",\"title\":\"Add contributor activity heatmap to the dashboard\",\"updated_at\":1788619052},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412'); window.__howlproof_injection=1; ('\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"agy\",\"id\":\"HP-207\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"COMPLETED\",\"title\":\"Restore provider failover after local runtime timeout\",\"updated_at\":1788890852},{\"envelope_status\":\"ENVELOPE_EXPIRED\",\"executor\":\"\",\"id\":\"INFRA-233\",\"outcome\":\"\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"CRITICAL\",\"state\":\"BLOCKED\",\"title\":\"Rotate the release signing key on the build host\",\"updated_at\":1788937652}]}\n",
+      "error": ""
+    }
+  },
+  {
+    "case": "liveness_after_abuse",
+    "response": {
+      "status": 200,
+      "elapsed_ms": 0,
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+        "Content-Length": "1767",
+        "Connection": "close"
+      },
+      "body": "{\"missions\":[{\"envelope_status\":\"ENVELOPE_ABSENT\",\"executor\":\"\",\"id\":\"CO-118\",\"outcome\":\"\",\"priority\":\"NORMAL\",\"project\":\"HowlChangeOps\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"AWAITING_APPROVAL\",\"title\":\"Widen approval TTL for long-running release windows\",\"updated_at\":1789043252},{\"envelope_status\":\"DENIED_BY_ENVELOPE\",\"executor\":\"\",\"id\":\"HB-051\",\"outcome\":\"task_closed\",\"priority\":\"LOW\",\"project\":\"HowlBoard\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"CLOSED\",\"title\":\"Add contributor activity heatmap to the dashboard\",\"updated_at\":1788619052},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"claude_code\",\"id\":\"HF-412'); window.__howlproof_injection=1; ('\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlFrame\",\"provenance\":\"DEMO\",\"risk_level\":\"MEDIUM\",\"state\":\"COMPLETED\",\"title\":\"Reject unknown opcodes in bytecode UnmarshalJSON\",\"updated_at\":1788793652},{\"envelope_status\":\"DELEGATED_AUTHORITY_ALLOW\",\"executor\":\"agy\",\"id\":\"HP-207\",\"outcome\":\"task_completed\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"HIGH\",\"state\":\"COMPLETED\",\"title\":\"Restore provider failover after local runtime timeout\",\"updated_at\":1788890852},{\"envelope_status\":\"ENVELOPE_EXPIRED\",\"executor\":\"\",\"id\":\"INFRA-233\",\"outcome\":\"\",\"priority\":\"HIGH\",\"project\":\"HowlPlane\",\"provenance\":\"DEMO\",\"risk_level\":\"CRITICAL\",\"state\":\"BLOCKED\",\"title\":\"Rotate the release signing key on the build host\",\"updated_at\":1788937652}]}\n",
+      "error": ""
+    }
+  },
+  {
+    "case": "unknown_route",
+    "response": {
+      "status": 404,
+      "elapsed_ms": 0,
+      "headers": {
+        "Content-Type": "text/plain; charset=utf-8",
+        "X-Content-Type-Options": "nosniff",
+        "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+        "Content-Length": "19",
+        "Connection": "close"
+      },
+      "body": "404 page not found\n",
+      "error": ""
+    }
+  }
+]

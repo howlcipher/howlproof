@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="HowlProof is the independent red-team QA layer of the Howl ecosystem: adversarial evaluation, reproducible findings, evidence bundles and defensible verdicts.">
+    <link rel="canonical" href="https://howlcipher.github.io/howlproof/">
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="HowlProof">
+    <meta property="og:title" content="HowlProof | Red-Team QA for Autonomous Engineering">
+    <meta property="og:description" content="Most QA asks whether the software works. HowlProof tries to prove that it doesn't. Adversarial evaluation, reproducible findings and defensible verdicts.">
+    <meta property="og:url" content="https://howlcipher.github.io/howlproof/">
+    <meta property="og:image" content="https://howlcipher.github.io/howlproof/social-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="HowlProof verdict model and adversarial evaluation loop">
+
+    <!-- Twitter Card Metadata -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HowlProof | Red-Team QA for Autonomous Engineering">
+    <meta name="twitter:description" content="Most QA asks whether the software works. HowlProof tries to prove that it doesn't.">
+    <meta name="twitter:image" content="https://howlcipher.github.io/howlproof/social-preview.png">
+    <meta name="twitter:image:alt" content="HowlProof verdict model and adversarial evaluation loop">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "HowlProof",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "POSIX, Linux, macOS",
+      "description": "Independent red-team QA, falsification and evidence layer for the Howl ecosystem. Adversarial evaluation, reproducible findings, evidence bundles and defensible verdicts.",
+      "url": "https://howlcipher.github.io/howlproof/",
+      "softwareVersion": "0.1.0",
+      "author": {
+        "@type": "Person",
+        "name": "William Elias",
+        "url": "https://howlcipher.github.io/william_elias/"
+      },
+      "isPartOf": {
+        "@type": "SoftwareApplication",
+        "name": "Howl Autonomous Software Engineering Ecosystem",
+        "url": "https://howlcipher.github.io/howl/"
+      }
+    }
+    </script>
+
+    <title>HowlProof | Red-Team QA for Autonomous Engineering</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate icon" type="image/png" href="favicon.png">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <!-- Ecosystem Slide-out Drawer Overlay -->
+    <div id="eco-drawer-overlay" class="eco-drawer-overlay" aria-hidden="true"></div>
+
+    <!-- Ecosystem Slide-out Drawer Panel -->
+    <aside id="eco-drawer" class="eco-drawer" aria-label="Howl Ecosystem Directory" aria-hidden="true">
+        <div class="drawer-header">
+            <div class="drawer-title">HOWL // ECOSYSTEM DIRECTORY</div>
+            <button id="eco-drawer-close" class="btn-drawer-close" type="button" aria-label="Close ecosystem directory">[✕ CLOSE]</button>
+        </div>
+        <div class="drawer-body">
+            <a href="https://howlcipher.github.io/howl/" class="drawer-node-card">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWL // HUB</span>
+                    <span class="node-card-role">[PORTAL]</span>
+                </div>
+                <div class="node-card-desc">Central ecosystem portal, architectural blueprint, and cross-project governance map.</div>
+            </a>
+
+            <a href="https://howlcipher.github.io/howlproof/" class="drawer-node-card active-hub">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWLPROOF</span>
+                    <span class="node-card-role" style="color: var(--color-red);">[RED-TEAM QA]</span>
+                </div>
+                <div class="node-card-desc">Independent adversarial evaluation, falsification, reproducible findings, and evidence for verdicts.</div>
+            </a>
+
+            <a href="https://howlcipher.github.io/howlcreate/" class="drawer-node-card">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWLCREATE</span>
+                    <span class="node-card-role" style="color: var(--color-amber);">[IDEATION]</span>
+                </div>
+                <div class="node-card-desc">Computational creativity, open-ended problem exploration, reframing, and concept lineage.</div>
+            </a>
+
+            <a href="https://howlcipher.github.io/howldream/" class="drawer-node-card">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWLDREAM</span>
+                    <span class="node-card-role" style="color: var(--color-khaki);">[CONTROLLED DIVERGENCE]</span>
+                </div>
+                <div class="node-card-desc">Controlled divergent experiments, hallucination testing, failure analysis, and scoped verification.</div>
+            </a>
+
+            <a href="https://howlcipher.github.io/howlframe/" class="drawer-node-card">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWLFRAME</span>
+                    <span class="node-card-role" style="color: var(--color-magenta);">[VM &amp; COMPILER]</span>
+                </div>
+                <div class="node-card-desc">AI-native reasoning language, typed intermediate representation, and sandboxed bytecode VM.</div>
+            </a>
+
+            <a href="https://howlcipher.github.io/howlplane/" class="drawer-node-card">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWLPLANE</span>
+                    <span class="node-card-role" style="color: var(--color-blue);">[CONTROL PLANE]</span>
+                </div>
+                <div class="node-card-desc">Engineering control plane with deterministic routing, adversarial review, and human gates.</div>
+            </a>
+
+            <a href="https://howlcipher.github.io/howlchangeops/" class="drawer-node-card">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWLCHANGEOPS</span>
+                    <span class="node-card-role" style="color: var(--color-red);">[RELEASE AUTHORITY]</span>
+                </div>
+                <div class="node-card-desc">Governed release controller enforcing cryptographic human approvals and bounded Git mutations.</div>
+            </a>
+
+            <a href="https://howlcipher.github.io/howlrelay/" class="drawer-node-card">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWLRELAY</span>
+                    <span class="node-card-role" style="color: var(--color-cyan);">[CONTINUITY]</span>
+                </div>
+                <div class="node-card-desc">Persistent asynchronous work coordination, durable journals, and resumable execution handoffs.</div>
+            </a>
+
+            <a href="https://howlcipher.github.io/howlboard/" class="drawer-node-card">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWLBOARD</span>
+                    <span class="node-card-role" style="color: var(--color-amber);">[EVALUATION SURFACE]</span>
+                </div>
+                <div class="node-card-desc">Observation console and full-stack deterministic mission state machine application.</div>
+            </a>
+
+            <a href="https://howlcipher.github.io/howlnotes/" class="drawer-node-card">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWLNOTES</span>
+                    <span class="node-card-role" style="color: var(--color-cyan);">[KNOWLEDGE]</span>
+                </div>
+                <div class="node-card-desc">Engineering knowledge notebook and full-stack dogfood consumer of native persistent storage.</div>
+            </a>
+
+            <a href="https://howlcipher.github.io/howlwriter/" class="drawer-node-card">
+                <div class="node-card-top">
+                    <span class="node-card-name">HOWLWRITER</span>
+                    <span class="node-card-role" style="color: var(--color-magenta);">[PROSE]</span>
+                </div>
+                <div class="node-card-desc">Writing control system for voice preservation, deterministic style linting, and review.</div>
+            </a>
+        </div>
+        <div class="drawer-footer">
+            <span>● 11 ECOSYSTEM NODES</span>
+            <span>AUTH // HOWL 2026</span>
+        </div>
+    </aside>
+
+    <div class="layout-container">
+        <header class="site-header">
+            <div class="header-top">
+                <div class="header-brand">
+                    <a href="https://howlcipher.github.io/howlproof/" class="brand-sig">HOWL <span>//</span> PROOF</a>
+                    <span class="subsystem-tag">SYS_ID: HPRF-VERIFY-09</span>
+                </div>
+                <div class="header-actions">
+                    <button id="eco-menu-toggle" class="btn-eco-toggle" type="button" aria-expanded="false" aria-controls="eco-drawer" aria-label="Toggle Howl Ecosystem Directory">
+                        <span aria-hidden="true">☰</span> [ECOSYSTEM]
+                    </button>
+                    <button id="theme-toggle" class="btn-theme-toggle" type="button" aria-pressed="false">
+                        <span aria-hidden="true">☾</span> [DARK_MODE]
+                    </button>
+                    <a href="https://github.com/howlcipher/howlproof" class="btn-tech btn-tech-primary" target="_blank" rel="noreferrer">
+                        [ GITHUB REPO ]
+                    </a>
+                </div>
+            </div>
+
+            <!-- In-Page Section Navigation -->
+            <nav class="section-nav" aria-label="Page sections">
+                <span class="section-nav-label">READ_PATH:</span>
+                <a href="#philosophy">01_Philosophy</a>
+                <a href="#adversaries">02_Adversaries</a>
+                <a href="#loop">03_TheLoop</a>
+                <a href="#verdicts">04_Verdicts</a>
+                <a href="#evidence">05_Evidence</a>
+                <a href="#independence">06_Independence</a>
+                <a href="#ecosystem">07_Ecosystem</a>
+                <a href="#getting-started">08_QuickStart</a>
+            </nav>
+        </header>
+
+        <main id="main-content">
+            <!-- Hero Panel -->
+            <section class="hero-panel" aria-labelledby="main-title">
+                <div class="hero-banner">
+                    <span>SPEC_VER // 0.1.0 (EXPERIMENTAL, MILESTONE ONE)</span>
+                    <span>ARCHITECTURE: INDEPENDENT ADVERSARIAL EVALUATION &amp; EVIDENCE</span>
+                </div>
+                <div class="hero-body">
+                    <div class="hero-header-block">
+                        <p class="hero-kicker">// red-team qa / falsification / reproducible findings / defensible verdicts</p>
+                        <h1 id="main-title" class="hero-title">HowlProof <span class="jp-sub">ハウルプルーフ // 2026</span></h1>
+                        <p class="hero-lead">
+                            Red-team QA for autonomous engineering. Most QA asks whether the software works. HowlProof tries to prove that it doesn't, and only reports a pass when the evidence can carry one.
+                        </p>
+                    </div>
+
+                    <div class="axiom-card" role="region" aria-label="Governing Principle" style="border-left-color: var(--color-red);">
+                        <strong style="color: var(--color-red);">AXIOM // HOWLPROOF JUDGES. IT DOES NOT REPAIR THE ARTIFACT IT IS JUDGING.</strong> The builder and the verifier stay separate. A finding is routed back through HowlPlane to whoever owns the artifact, and HowlProof re-evaluates independently once the repair exists.
+                    </div>
+
+                    <div class="hero-actions">
+                        <a href="https://github.com/howlcipher/howlproof#quick-start" class="btn-tech btn-tech-primary">
+                            [ RUN AN EVALUATION ]
+                        </a>
+                        <a href="#evidence" class="btn-tech">
+                            [ SEE A REAL VERDICT ]
+                        </a>
+                        <a href="https://github.com/howlcipher/howlproof" class="btn-tech" target="_blank" rel="noreferrer">
+                            [ VIEW ON GITHUB ]
+                        </a>
+                    </div>
+
+                    <!-- Verdict summary panel -->
+                    <div class="hero-diagram-wrap">
+                        <div class="diagram-header">
+                            <span>VERDICT_MODEL // FIVE OUTCOMES, ONE ORDERED DERIVATION</span>
+                            <span>EXIT CODES 0 / 10 / 20 / 30 / 40</span>
+                        </div>
+                        <div class="adversary-grid">
+                            <div class="adversary-card verdict-card proven">
+                                <div class="adversary-name">Exit 0</div>
+                                <p class="adversary-question"><span class="verdict verdict-proven">PROVEN</span></p>
+                                <p class="small">Criteria satisfied, nothing unresolved above the threshold, and enough checks actually ran.</p>
+                            </div>
+                            <div class="adversary-card verdict-card conditional">
+                                <div class="adversary-name">Exit 10</div>
+                                <p class="adversary-question"><span class="verdict verdict-conditional">CONDITIONALLY_PROVEN</span></p>
+                                <p class="small">Passed, with every exclusion and limitation named in the result.</p>
+                            </div>
+                            <div class="adversary-card verdict-card human">
+                                <div class="adversary-name">Exit 20</div>
+                                <p class="adversary-question"><span class="verdict verdict-human">REQUIRES_HUMAN</span></p>
+                                <p class="small">The evidence cannot safely support an autonomous decision.</p>
+                            </div>
+                            <div class="adversary-card verdict-card reject">
+                                <div class="adversary-name">Exit 30</div>
+                                <p class="adversary-question"><span class="verdict verdict-reject">REJECT</span></p>
+                                <p class="small">Evidence demonstrates a violation. The artifact does not advance.</p>
+                            </div>
+                            <div class="adversary-card verdict-card insufficient">
+                                <div class="adversary-name">Exit 40</div>
+                                <p class="adversary-question"><span class="verdict verdict-insufficient">INSUFFICIENT_EVIDENCE</span></p>
+                                <p class="small">The evaluation that ran could not decide, so nothing is claimed.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 01 Philosophy -->
+            <section class="tech-panel" id="philosophy" aria-labelledby="philosophy-heading">
+                <div class="tech-header">
+                    <span class="sec-id">01</span>
+                    <h2 id="philosophy-heading">Traditional QA asks whether it passes. HowlProof asks how it fails.</h2>
+                </div>
+                <div class="tech-body">
+                    <div class="grid-2col">
+                        <div>
+                            <h3>The gap this fills</h3>
+                            <p>
+                                HowlBoard states the problem in its own domain model: a <code>claimed</code> result is one an agent asserted and nothing independently confirmed. The ecosystem could turn intent into code, route it, govern it and render it. Nothing in it was a dedicated adversary whose job is to try to prove the result wrong.
+                            </p>
+                            <p>
+                                HowlProof is that component. It challenges an artifact, tries to falsify it, captures reproducible evidence, and issues a verdict that says exactly what was and was not established.
+                            </p>
+                        </div>
+                        <div>
+                            <h3>A pass must mean more than exit zero</h3>
+                            <p>
+                                A check that could not run is not a check that succeeded. HowlProof distinguishes six outcomes, and four of them are not passes. Every one that is not a pass records a reason, and every check records what it does <strong>not</strong> establish.
+                            </p>
+                            <ul class="status-list">
+                                <li class="pass"><code>VERIFIED</code> — it ran and the artifact behaved</li>
+                                <li class="fail"><code>FAILED</code> — it ran and the artifact did not</li>
+                                <li class="unknown"><code>SKIPPED</code> — deliberately not run, with a reason</li>
+                                <li class="unknown"><code>UNAVAILABLE</code> — the tooling was absent, with a reason</li>
+                                <li class="unknown"><code>NOT_APPLICABLE</code> — no such surface, with a reason</li>
+                                <li class="unknown"><code>ERROR</code> — the evaluator failed, which is evidence about the evaluator</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <caption>Two different questions</caption>
+                            <thead>
+                                <tr><th scope="col">Traditional QA</th><th scope="col">HowlProof</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Does this pass?</td><td>How can this fail, and can I prove the failure?</td></tr>
+                                <tr><td>A green run means done</td><td>A green run means the checks that ran, ran</td></tr>
+                                <tr><td>A skipped check is invisible</td><td>A skipped check is a recorded limitation that weakens the verdict</td></tr>
+                                <tr><td>Fixes what it finds</td><td>Reports what it finds, and re-verifies the repair somebody else made</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 02 Adversaries -->
+            <section class="tech-panel" id="adversaries" aria-labelledby="adversaries-heading">
+                <div class="tech-header">
+                    <span class="sec-id">02</span>
+                    <h2 id="adversaries-heading">Five adversaries, five different questions</h2>
+                </div>
+                <div class="tech-body">
+                    <p>
+                        Each adversary owns a family of checks. An evaluation selects them by profile, and any that finds no matching surface reports <code>NOT_APPLICABLE</code> rather than passing vacuously.
+                    </p>
+                    <div class="adversary-grid">
+                        <article class="adversary-card">
+                            <div class="adversary-name">Functional</div>
+                            <p class="adversary-question">What input, state or sequence makes this behave incorrectly?</p>
+                            <ul>
+                                <li>Malformed, oversized and wrongly-typed request bodies</li>
+                                <li>Command-line misuse that must fail cleanly and non-zero</li>
+                                <li>The artifact's own build, lint, type and test gates</li>
+                            </ul>
+                        </article>
+                        <article class="adversary-card">
+                            <div class="adversary-name">Security</div>
+                            <p class="adversary-question">Where does the trust boundary not hold, and what can reach across it?</p>
+                            <ul>
+                                <li>Authorization probes: requests the artifact is documented to refuse</li>
+                                <li>Escaping analysed against the context each value lands in</li>
+                                <li>Browser-level injection, committed credentials, supply-chain hygiene</li>
+                            </ul>
+                        </article>
+                        <article class="adversary-card">
+                            <div class="adversary-name">Reliability</div>
+                            <p class="adversary-question">What happens when a dependency, a restart or the stored state goes wrong?</p>
+                            <ul>
+                                <li>Restart and recovery, with state persistence observed</li>
+                                <li>Truncated and invalid connections</li>
+                                <li>Corrupted persistent state, labelled <code>SIMULATED</code> because the fault is injected</li>
+                            </ul>
+                        </article>
+                        <article class="adversary-card">
+                            <div class="adversary-name">AI</div>
+                            <p class="adversary-question">Can untrusted text become instruction, or malformed output become a trusted value?</p>
+                            <ul>
+                                <li>Indirect prompt injection through a declared entry point</li>
+                                <li>Structured responses that are truncated or carry authority fields</li>
+                                <li><code>NOT_APPLICABLE</code> unless the artifact declares an AI surface</li>
+                            </ul>
+                        </article>
+                        <article class="adversary-card">
+                            <div class="adversary-name">Operator</div>
+                            <p class="adversary-question">What would a careful person get wrong, and what does the documentation promise that the code does not do?</p>
+                            <ul>
+                                <li>Absolute claims collected from the documentation and challenged</li>
+                                <li>Files documented as kept in sync, compared</li>
+                                <li>Destructive commands with no guard; rendered pages at 375, 768 and 1440</li>
+                            </ul>
+                        </article>
+                    </div>
+                    <p class="small">
+                        Security evaluation is defensive and bounded. Requests are refused unless the destination is this machine, external network access is opt-in, and no exploitation tooling ships with the package.
+                        <a href="https://github.com/howlcipher/howlproof/blob/main/docs/evaluators.md">Every check, and what each one does not establish</a>
+                    </p>
+                </div>
+            </section>
+
+            <!-- 03 The loop -->
+            <section class="tech-panel" id="loop" aria-labelledby="loop-heading">
+                <div class="tech-header">
+                    <span class="sec-id">03</span>
+                    <h2 id="loop-heading">Build, challenge, fix elsewhere, challenge again</h2>
+                </div>
+                <div class="tech-body">
+                    <div class="loop">
+                        <div class="loop-step"><strong>01 // BUILD</strong>An artifact exists, produced by whoever owns it.</div>
+                        <div class="loop-step"><strong>02 // ATTACK ASSUMPTIONS</strong>The adversaries run against a read-only copy, never the artifact itself.</div>
+                        <div class="loop-step"><strong>03 // FINDINGS</strong>Each defect gets a durable identifier, a severity, evidence and a reproduction.</div>
+                        <div class="loop-step elsewhere"><strong>04 // FIX ELSEWHERE</strong>HowlPlane routes remediation to the builder. HowlProof never repairs.</div>
+                        <div class="loop-step"><strong>05 // RETEST</strong><code>verify-fix</code> refuses when the artifact is unchanged, and re-runs the evaluator when it is not.</div>
+                        <div class="loop-step"><strong>06 // EVIDENCE</strong>A sealed bundle with an integrity index over every file it contains.</div>
+                        <div class="loop-step"><strong>07 // VERDICT</strong>Derived by ordered rules, with the deciding rule recorded.</div>
+                        <div class="loop-return">↺ the next change starts the loop again, and a fixed finding that returns is recorded as REGRESSED</div>
+                    </div>
+
+                    <h3>A statement that a defect was fixed is not evidence that it was</h3>
+                    <p>
+                        A finding moves <code>FOUND → REPRODUCED → REMEDIATION_REQUESTED → RETESTED → VERIFIED_FIXED</code>, and only a re-execution moves it to the last state. <code>verify-fix</code> compares the artifact's tree digest against the state the finding was raised at and refuses to answer when they match, because an unchanged artifact cannot have been repaired. When the evaluator that raised the finding cannot run against the changed artifact, the finding's absence is reported as inconclusive rather than as a fix.
+                    </p>
+                    <p>
+                        <code>CONFIRMED</code> confidence is reserved for defects that were directly observed, and the model refuses to construct one without a recorded reproduction. Only a <code>CONFIRMED</code> finding at or above the blocking severity can reject an artifact. A severe finding that was not reproduced routes to <span class="verdict verdict-human">REQUIRES_HUMAN</span> instead.
+                    </p>
+                </div>
+            </section>
+
+            <!-- 04 Verdicts -->
+            <section class="tech-panel" id="verdicts" aria-labelledby="verdicts-heading">
+                <div class="tech-header">
+                    <span class="sec-id">04</span>
+                    <h2 id="verdicts-heading">Verdicts, and what each one is willing to claim</h2>
+                </div>
+                <div class="tech-body">
+                    <div class="table-wrap">
+                        <table class="verdict-table">
+                            <caption>The derivation is ordered and the first rule that fires decides</caption>
+                            <thead>
+                                <tr><th scope="col">Verdict</th><th scope="col">Exit</th><th scope="col">What it means</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="verdict verdict-proven">PROVEN</span></td><td>0</td>
+                                    <td>Every acceptance criterion was satisfied, no unresolved finding sits at or above the blocking severity, and enough checks produced a conclusive result to justify saying so.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="verdict verdict-conditional">CONDITIONALLY_PROVEN</span></td><td>10</td>
+                                    <td>Passed subject to documented exclusions, environment limitations or unresolved non-blocking findings. Each one is named in the result rather than folded into the pass.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="verdict verdict-human">REQUIRES_HUMAN</span></td><td>20</td>
+                                    <td>A severe finding was not reproduced, an evaluator asked for judgment, or an exclusion has expired. The evidence cannot safely support an autonomous decision.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="verdict verdict-reject">REJECT</span></td><td>30</td>
+                                    <td>A blocking criterion was violated, or a reproduced finding sits at or above the blocking severity.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="verdict verdict-insufficient">INSUFFICIENT_EVIDENCE</span></td><td>40</td>
+                                    <td>A criterion rested on a check that never ran, coverage fell below the declared floor, the artifact declares no criteria at all, or the artifact changed during its own evaluation.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        <span class="verdict verdict-insufficient">INSUFFICIENT_EVIDENCE</span> is the point of the whole design. An evaluation where required tooling was missing has not shown the artifact is bad. It has also not shown it is good, and saying so is the only honest option available.
+                    </p>
+                    <p class="small">
+                        Exit codes are distinct per verdict so a pipeline can branch without parsing output, alongside <code>2</code> for a usage error, <code>3</code> for an internal fault and <code>4</code> when the artifact changed during its own evaluation. <code>--fail-under</code> collapses them for a pipeline that only wants pass or fail.
+                    </p>
+                </div>
+            </section>
+
+            <!-- 05 Evidence -->
+            <section class="tech-panel" id="evidence" aria-labelledby="evidence-heading">
+                <div class="tech-header">
+                    <span class="sec-id">05</span>
+                    <h2 id="evidence-heading">A real verdict, from a real evaluation</h2>
+                </div>
+                <div class="tech-body">
+                    <p>
+                        This is the committed dogfood evaluation of <a href="https://howlcipher.github.io/howlboard/">HowlBoard</a>, run on 11 September 2026 against commit <code>56246a9b</code>. The bundle it produced is in the repository and can be re-verified with <code>howlproof inspect</code>. Nothing on this page is an invented figure.
+                    </p>
+
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">[RESULT // hp-20260911-133826-ddbaef4e94e2]</span>
+                            <span class="subsystem-tag">ARTIFACT: HOWLBOARD</span>
+                        </div>
+<pre><code>HOWLPROOF RESULT
+
+Artifact: howlboard
+Commit:   56246a9b47b0fe0b829756069fa70764a42c7213
+Run:      hp-20260911-133826-ddbaef4e94e2
+
+Verdict:  REJECT  [blocking_evidence]
+
+Acceptance criteria: 6 / 7 satisfied
+Checks: 12 verified, 4 failed, 0 skipped, 1 unavailable, 3 n/a, 0 errored
+
+  security     7 finding(s)
+  operator     2 finding(s)
+
+Blocking findings:
+  HP-SEC-0007  HIGH   Stored data executes as script in the interface
+
+Why:
+  - AC-01 violated: 2 security findings at or above HIGH, limit 0
+  - HP-SEC-0007 (HIGH, reproduction confirmed)</code></pre>
+                    </div>
+
+                    <div class="grid-2col">
+                        <div>
+                            <h3>What the evaluation established</h3>
+                            <p>
+                                HowlBoard's architecture document claims that authority is computed on every read and that a mission cannot enter <code>EXECUTING</code> without live delegated authority. Both claims were probed directly and both held: a transition attempted with no approval, and one attempted with an approval minted already expired, were each refused with <code>403 AUTHORITY_DENIED</code>.
+                            </p>
+                            <p>
+                                The same document states that escaping "is applied to every interpolated value". It is. The finding is that the escaper is adequate for HTML text and inadequate for the context one of those values lands in.
+                            </p>
+                        </div>
+                        <div>
+                            <h3>HP-SEC-0007, and how it was confirmed</h3>
+                            <p>
+                                HowlBoard's escape function handles <code>&amp;</code>, <code>&lt;</code>, <code>&gt;</code> and <code>&quot;</code> but not the single quote, while one of its call sites places the escaped value inside a single-quoted JavaScript string in an event-handler attribute. Escaping the double quote prevents breaking out of the attribute; it does not prevent breaking out of the string.
+                            </p>
+                            <p>
+                                Static analysis raised that at <code>HIGH</code> confidence. A real browser then loaded HowlBoard's own compiled interface against a locally started instance, with an authored identifier placed in the fixture its seed endpoint reads, and the value executed. That is what moved the finding to <code>CONFIRMED</code>, and a confirmed finding at <code>HIGH</code> is what produced the rejection.
+                            </p>
+                        </div>
+                    </div>
+
+                    <h3>Every check is separable by how it was validated</h3>
+                    <p>
+                        The result document keeps <code>REAL</code>, <code>SIMULATED</code>, <code>SKIPPED</code>, <code>UNAVAILABLE</code>, <code>NOT_APPLICABLE</code> and <code>ERROR</code> apart rather than reporting a count of "passed". In this run nineteen checks observed the real artifact, one was simulated (persistent state was corrupted deliberately, and the artifact refused to start with a diagnostic, which is the correct behaviour), one was unavailable because HowlBoard is not a Python package, and three did not apply.
+                    </p>
+
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">[BUNDLE // WHAT A RUN LEAVES BEHIND]</span>
+                            <span class="subsystem-tag">SCHEMA: howlproof.run/v1</span>
+                        </div>
+<pre><code>proof/hp-20260911-133826-ddbaef4e94e2/
+  manifest.json     authority ADVISORY, implementation hash, file hashes over every file
+  target.json       repo, commit, branch, dirty, tree digest before and after
+  environment.json  every tool probed, and why an absent one is absent
+  checks.jsonl      each check with its checker version, status, mode and limitation
+  findings/HP-SEC-0007.json
+  reproductions/HP-SEC-0007/steps.json
+  evidence/web.dom_injection/mission_id_js_string.json
+  evidence/web.responsive/index-375.png
+  result.json       verdict, deciding rule, criteria table
+  result.md         the same, for a human
+  handoff.json      advisory, for HowlPlane and HowlRelay</code></pre>
+                    </div>
+                    <p class="small">
+                        <a href="https://github.com/howlcipher/howlproof/tree/main/dogfood/howlboard">Inspect the committed bundle</a> ·
+                        <a href="https://github.com/howlcipher/howlproof/blob/main/docs/dogfood.md">Read the full dogfood record, including what was not established</a>
+                    </p>
+                </div>
+            </section>
+
+            <!-- 06 Independence -->
+            <section class="tech-panel" id="independence" aria-labelledby="independence-heading">
+                <div class="tech-header">
+                    <span class="sec-id">06</span>
+                    <h2 id="independence-heading">The verifier is not the builder</h2>
+                </div>
+                <div class="tech-body">
+                    <div class="boundary-panel">
+                        <p class="boundary-claim">HowlProof does not fix the artifact it evaluates.</p>
+                        <p>
+                            A component that can both condemn and repair has an incentive to condemn what it can fix and overlook what it cannot, and its verdicts stop being independent evidence. The separation is the product, so it is enforced in code rather than promised in documentation.
+                        </p>
+                        <ul>
+                            <li>Evaluators never receive a writable handle to the artifact. The tree is materialised into a workspace copy and every command runs there.</li>
+                            <li>The artifact's file set and contents are digested before the evaluation and re-discovered afterwards. Any modification, addition or removal raises a blocking integrity finding, forces <span class="verdict verdict-insufficient">INSUFFICIENT_EVIDENCE</span> and exits <code>4</code>.</li>
+                            <li>Evidence is written outside the artifact by default, because an evaluator that leaves files in its subject has changed the thing it was measuring.</li>
+                        </ul>
+                        <p class="small">
+                            The test suite registers an evaluator that deliberately writes into its target and asserts the evaluation is invalidated rather than reported as a pass. If the guard regresses, that test fails.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 07 Ecosystem -->
+            <section class="tech-panel" id="ecosystem" aria-labelledby="ecosystem-heading">
+                <div class="tech-header">
+                    <span class="sec-id">07</span>
+                    <h2 id="ecosystem-heading">Where HowlProof sits</h2>
+                </div>
+                <div class="tech-body">
+                    <p>
+                        Integrations are files, written in schemas the ecosystem already reads, so no sibling component changes to consume them. Every handoff carries <code>authority: ADVISORY</code>: HowlProof issues verdicts, <a href="https://howlcipher.github.io/howlplane/">HowlPlane</a> decides what to do about them, and <a href="https://howlcipher.github.io/howlchangeops/">HowlChangeOps</a> owns promotion and rollback.
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <caption>Documented file contracts, not native API integrations</caption>
+                            <thead>
+                                <tr><th scope="col">Handoff</th><th scope="col">Emits</th><th scope="col">Read by</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code>--for plane</code></td><td><code>ai.review_finding/v1</code></td><td>HowlPlane's <code>reconcile --findings-file</code></td></tr>
+                                <tr><td><code>--for board</code></td><td><code>ai.evidence_entry/v1</code></td><td><a href="https://howlcipher.github.io/howlboard/">HowlBoard</a>, through HowlPlane's evidence ledger</td></tr>
+                                <tr><td><code>--for relay</code></td><td>Markdown under recognised headings</td><td><a href="https://howlcipher.github.io/howlrelay/">HowlRelay</a>'s continuity collector</td></tr>
+                                <tr><td><code>--for verification-plan</code></td><td><code>ai.verification_plan/v1</code></td><td>HowlPlane's verification artifacts</td></tr>
+                                <tr><td><code>--for changeops</code></td><td>A human-readable advisory</td><td>Nothing. HowlChangeOps has no ingest path for an external verdict, and the file says so</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="grid-2col">
+                        <div>
+                            <h3>HowlProof is not HowlChangeOps</h3>
+                            <p>
+                                They are adjacent and easily confused. HowlProof asks whether an artifact can be demonstrated untrustworthy and produces evidence. HowlChangeOps asks whether a change is authorised to happen and can be undone, and owns the release boundary.
+                            </p>
+                            <p>
+                                A ChangeOps approval over an unverified artifact is a governed mistake. A HowlProof verdict with no ChangeOps gate is an ungoverned success. Both are needed and neither substitutes for the other.
+                            </p>
+                        </div>
+                        <div>
+                            <h3>HowlGuard is a boundary, not a plan</h3>
+                            <p>
+                                A future HowlGuard would ask whether the ecosystem's security posture has changed in a way that requires new evaluation. That is continuous and ecosystem-scoped; HowlProof is episodic and artifact-scoped.
+                            </p>
+                            <p>
+                                They are deliberately not the same component: an evaluator that maintains a standing opinion about its subject stops evaluating it freshly. Nothing of HowlGuard is implemented here.
+                            </p>
+                        </div>
+                    </div>
+                    <p class="small">
+                        <a href="https://github.com/howlcipher/howlproof/blob/main/docs/ecosystem.md">Full boundary documentation</a> ·
+                        <a href="https://howlcipher.github.io/howl/ecosystem.html">Explore the Howl ecosystem</a> ·
+                        HowlProof is not included in the default Howl installer manifest.
+                    </p>
+                </div>
+            </section>
+
+            <!-- 08 Quick start -->
+            <section class="tech-panel" id="getting-started" aria-labelledby="start-heading">
+                <div class="tech-header">
+                    <span class="sec-id">08</span>
+                    <h2 id="start-heading">Evaluate something</h2>
+                </div>
+                <div class="tech-body">
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">[QUICKSTART // LOCAL, NO CREDENTIALS]</span>
+                            <span class="subsystem-tag">PYTHON &gt;= 3.11</span>
+                        </div>
+<pre><code>git clone https://github.com/howlcipher/howlproof.git
+cd howlproof
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -e .
+
+howlproof doctor
+howlproof evaluate tests/fixtures/vulnerable_app --evidence-root /tmp/proof
+howlproof findings /tmp/proof
+howlproof report /tmp/proof</code></pre>
+                    </div>
+                    <p>
+                        <code>tests/fixtures/vulnerable_app</code> is a deliberately defective artifact shipped with the package. The evaluation exits <code>30</code> and raises findings for a committed credential, four workflow weaknesses, an escaper that is wrong for the context it is used in, a documented sync that has drifted, and broken links. Its neighbour <code>tests/fixtures/clean_app</code> is the same shapes built correctly, and is not rejected.
+                    </p>
+                    <p class="small">
+                        Milestone one. Experimental, not production-ready. The verdict model is argued for rather than measured: there is no labelled corpus yet, so no claim about detection rate appears anywhere in this project.
+                        <a href="https://github.com/howlcipher/howlproof/blob/main/ROADMAP.md">Roadmap</a> ·
+                        <a href="https://github.com/howlcipher/howlproof/blob/main/docs/contract.md">The contract</a> ·
+                        <a href="https://github.com/howlcipher/howlproof#limitations">Limitations</a>
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-telemetry">
+                <div class="status-indicator">
+                    <span class="status-dot" aria-hidden="true" style="background: var(--color-red); box-shadow: 0 0 6px var(--color-red);"></span>
+                    <span>SYS_STATUS: ACTIVE // HOWLPROOF-EVALUATION-NODE</span>
+                </div>
+                <div><a href="https://github.com/howlcipher/howlproof/blob/main/LICENSE" style="color: var(--color-cyan); text-decoration: underline;">MIT LICENSE</a> // HOWL 2026</div>
+            </div>
+            <div class="footer-links">
+                <nav class="footer-nav" aria-label="Ecosystem Links">
+                    <a href="https://howlcipher.github.io/howl/">Howl Hub</a>
+                    <a href="https://howlcipher.github.io/howl/ecosystem.html">Ecosystem</a>
+                    <a href="https://howlcipher.github.io/howlcreate/">HowlCreate</a>
+                    <a href="https://howlcipher.github.io/howldream/">HowlDream</a>
+                    <a href="https://howlcipher.github.io/howlframe/">HowlFrame</a>
+                    <a href="https://howlcipher.github.io/howlplane/">HowlPlane</a>
+                    <a href="https://howlcipher.github.io/howlchangeops/">HowlChangeOps</a>
+                    <a href="https://howlcipher.github.io/howlrelay/">HowlRelay</a>
+                    <a href="https://howlcipher.github.io/howlnotes/">HowlNotes</a>
+                    <a href="https://howlcipher.github.io/howlboard/">HowlBoard</a>
+                    <a href="https://howlcipher.github.io/howlwriter/">HowlWriter</a>
+                </nav>
+                <a href="#main-content">[ BACK TO TOP ]</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+name: web
+description: >-
+  The published interface, covering references, discovery metadata and rendered
+  behaviour at the declared widths.
+evaluators:
+  - web.links
+  - web.metadata
+  - web.responsive
+  - markup.escaping
+  - web.dom_injection

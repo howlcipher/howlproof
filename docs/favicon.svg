@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="HowlProof">
+  <rect width="64" height="64" rx="4" fill="#14191C"/>
+  <rect x="2" y="2" width="60" height="60" rx="3" fill="none" stroke="#353B3D" stroke-width="2"/>
+  <rect x="6" y="6" width="52" height="14" fill="#102A43"/>
+  <line x1="6" y1="20" x2="58" y2="20" stroke="#D94732" stroke-width="2"/>
+  <polygon points="12,28 52,28 48,56 16,56" fill="#1B2226" stroke="#D94732" stroke-width="1.5"/>
+  <path d="M20 42 L28 50 L44 34" fill="none" stroke="#28B7D8" stroke-width="4" stroke-linecap="square"/>
+  <circle cx="10" cy="13" r="2.5" fill="#D94732"/>
+</svg>

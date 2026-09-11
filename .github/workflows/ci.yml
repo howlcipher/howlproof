@@ -1,0 +1,92 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    name: Verify (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12', '3.13', '3.14']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install --upgrade pip setuptools
+      - run: pip install -e '.[dev]'
+      - run: ruff format --check src tests scripts
+      - run: ruff check src tests scripts
+      - run: flake8 src tests scripts --max-line-length=100 --extend-ignore=E203,W503
+      - run: mypy
+      - run: pytest -q
+      - run: python scripts/build_evaluator_docs.py --check
+      - run: howlproof --version
+      - run: howlproof doctor
+      - run: howlproof profiles
+      - run: howlproof validate howlproof.yaml
+      # The shipped fixtures pin the verdict model to real exit codes: a defective
+      # artifact must be rejected, a clean one must not be, and an artifact that
+      # declares no contract must never reach zero.
+      - name: A defective artifact is rejected with exit 30
+        run: |
+          set +e
+          howlproof evaluate tests/fixtures/vulnerable_app --evidence-root /tmp/proof-reject
+          code=$?
+          set -e
+          test "$code" -eq 30 || { echo "expected exit 30, got $code"; exit 1; }
+      - name: A clean artifact is not rejected
+        run: |
+          howlproof evaluate tests/fixtures/clean_app --evidence-root /tmp/proof-clean \
+            --fail-under CONDITIONALLY_PROVEN
+      - name: An artifact with no contract cannot reach zero
+        run: |
+          mkdir -p /tmp/bare && printf '# Nothing declared\n' > /tmp/bare/README.md
+          set +e
+          howlproof evaluate /tmp/bare --profile documentation --evidence-root /tmp/proof-bare
+          code=$?
+          set -e
+          test "$code" -eq 40 || { echo "expected exit 40, got $code"; exit 1; }
+      - name: The bundle re-verifies and the handoffs render
+        run: |
+          set +e
+          howlproof inspect /tmp/proof-reject
+          set -e
+          howlproof report /tmp/proof-reject > /dev/null
+          howlproof handoff /tmp/proof-reject --for plane > /dev/null
+          howlproof handoff /tmp/proof-reject --for board > /dev/null
+          howlproof handoff /tmp/proof-reject --for relay > /dev/null
+          howlproof handoff /tmp/proof-reject --for changeops > /dev/null
+          howlproof handoff /tmp/proof-reject --for verification-plan > /dev/null
+      - run: python -m build
+      - run: bandit -r src -ll
+      - run: pip-audit --skip-editable
+
+  pages-qa:
+    name: Rendered site QA
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: pip install -e '.[dev]'
+      - run: python -m playwright install --with-deps chromium
+      - run: python scripts/test_seo.py
+      - run: python scripts/check_site.py
+      # HowlProof evaluating its own published site through its own web adversary.
+      - name: Evaluate the site with howlproof itself
+        run: |
+          set +e
+          howlproof evaluate . --profile web --evidence-root /tmp/proof-site
+          code=$?
+          set -e
+          test "$code" -ne 30 || { echo "howlproof rejects its own site"; exit 1; }
+          howlproof report /tmp/proof-site

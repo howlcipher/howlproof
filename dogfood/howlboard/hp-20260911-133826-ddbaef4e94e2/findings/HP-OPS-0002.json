@@ -1,0 +1,39 @@
+{
+  "check_id": "docs.claims.absolutes",
+  "adversary": "OPERATOR",
+  "category": "other",
+  "title": "18 absolute documentation claims are unverified",
+  "severity": "INFORMATIONAL",
+  "confidence": "CONFIRMED",
+  "summary": "The documentation asserts these without qualification. Each one is a promise a single counterexample breaks, and this evaluation did not independently establish any of them: README.md:17 JavaScript backend. There is no hand-written server code and no hand-written; README.md:27 - **Authority is derived on every read, never replayed from storage.** An; README.md:29 once it lapses, and a mission cannot enter `EXECUTING` without live delegated; README.md:33 its own status with an explicit note, never folded into `passed`.; README.md:34 - **Demo data is labelled.** Every record carries `provenance`. Hand-authored; README.md:84 the mission lifecycle, every invalid state transition, authority expiry,",
+  "evidence": "[\n  {\n    \"file\": \"README.md\",\n    \"line\": 17,\n    \"claim\": \"JavaScript backend. There is no hand-written server code and no hand-written\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 27,\n    \"claim\": \"- **Authority is derived on every read, never replayed from storage.** An\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 29,\n    \"claim\": \"once it lapses, and a mission cannot enter `EXECUTING` without live delegated\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 33,\n    \"claim\": \"its own status with an explicit note, never folded into `passed`.\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 34,\n    \"claim\": \"- **Demo data is labelled.** Every record carries `provenance`. Hand-authored\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 84,\n    \"claim\": \"the mission lifecycle, every invalid state transition, authority expiry,\"\n  },\n  {\n    \"file\": \"README.md\",\n    \"line\": 136,\n    \"claim\": \"- [Domain model](docs/domain_model.md) \\u2014 every field mapped to its ecosystem source\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 38,\n    \"claim\": \"through the same module as the product is the reason it cannot drift from it \\u2014\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 41,\n    \"claim\": \"**Authority is computed, not stored.** `envelope_status` runs on every read and\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 45,\n    \"claim\": \"prevent. The cost is that authority cannot be cached; at this scale that is\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 66,\n    \"claim\": \"**Ledger import is offline and separate.** 232,000 ledger entries cannot be\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 73,\n    \"claim\": \"exposes query parameters, path parameters or request headers. Every addressable\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 80,\n    \"claim\": \"and applied to every interpolated value. Verified against an injection attempt\"\n  },\n  {\n    \"file\": \"docs/architecture.md\",\n    \"line\": 88,\n    \"claim\": \"| `database` | every `store_*` operation |\"\n  },\n  {\n    \"file\": \"docs/domain_model.md\",\n    \"line\": 3,\n    \"claim\": \"Every term below already existed somewhere in the Howl ecosystem. HowlBoard\"\n  },\n  {\n    \"file\": \"docs/domain_model.md\",\n    \"line\": 45,\n    \"claim\": \"(`src/control_plane/authority_envelope.py`), **derived on every read**:\"\n  },\n  {\n    \"file\": \"docs/domain_model.md\",\n    \"line\": 125,\n    \"claim\": \"is contract-tested: `claimed` must never be reported as `passed`.\"\n  },\n  {\n    \"file\": \"docs/domain_model.md\",\n    \"line\": 133,\n    \"claim\": \"`PURSUE` / `REJECT` / `DEFER` / `REQUIRES_HUMAN` / `NO_VALUABLE_ACTION`. None of\"\n  }\n]",
+  "recommended_remediation": "Qualify the claim, or add a check that would fail if it stopped being true.",
+  "location": null,
+  "rule": "docs.claims.unverified_absolute",
+  "state": "FOUND",
+  "reproduction": {
+    "summary": "Re-run docs.claims against the artifact.",
+    "requires_service": false,
+    "notes": "This observation is made by the evaluator, not by a replayable command. Use `howlproof verify-fix` to re-verify it.",
+    "steps": [
+      {
+        "description": "Re-scan the declared documentation for unqualified absolute claims.",
+        "kind": "reevaluate",
+        "payload": {
+          "evaluator": "docs.claims"
+        },
+        "expect": {
+          "finding_present": true
+        }
+      }
+    ]
+  },
+  "resolution_reason": null,
+  "id": "HP-OPS-0002",
+  "fingerprint": "cbdef474f2456fd666c9c0093695ab1ea6772a7bc5ddd8dacdf0231fe0f69c13",
+  "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+  "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "detail": {},
+  "blocking": false
+}

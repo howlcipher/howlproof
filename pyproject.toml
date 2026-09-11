@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "howlproof"
+version = "0.1.0"
+description = "Independent red-team QA, falsification and evidence for the Howl ecosystem."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = ["pydantic>=2.10,<3", "PyYAML>=6.0.2,<7"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "pytest-cov>=6", "ruff>=0.11", "flake8>=7", "mypy>=1.15", "types-PyYAML", "build>=1.2", "pip-audit>=2.9", "bandit>=1.8", "playwright>=1.50"]
+
+[project.scripts]
+howlproof = "howlproof.cli:main"
+
+[project.entry-points."howlproof.evaluators"]
+builtin = "howlproof.evaluators:register"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+howlproof = ["profiles/*.yaml", "fixtures/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+files = ["src/howlproof"]
+check_untyped_defs = true
+
+[tool.bandit]
+exclude_dirs = ["tests"]

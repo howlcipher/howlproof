@@ -1,0 +1,6 @@
+name: go
+description: Go formatting, vet and tests.
+evaluators:
+  - go.fmt
+  - go.vet
+  - go.test

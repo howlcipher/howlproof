@@ -1,0 +1,10 @@
+name: python
+description: Python packaging, typing, linting and tests in a freshly provisioned environment.
+evaluators:
+  - python.lint
+  - python.types
+  - python.tests
+  - python.build
+  - release.version
+  - sast.bandit
+  - deps.audit

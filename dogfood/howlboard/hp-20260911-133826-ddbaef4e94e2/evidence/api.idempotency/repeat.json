@@ -1,0 +1,32 @@
+{
+  "first": {
+    "status": 201,
+    "elapsed_ms": 3,
+    "headers": {
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+      "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+      "Content-Length": "402",
+      "Connection": "close"
+    },
+    "body": "{\"authority\":{\"decision\":\"REQUIRE_APPROVAL\",\"gates\":[]},\"created_at\":1789133912,\"description\":\"\",\"evidence\":[],\"execution\":{},\"executor\":\"\",\"id\":\"HB-1\",\"outcome\":\"\",\"plan\":[],\"priority\":\"NORMAL\",\"project\":\"howlproof\",\"provenance\":\"OPERATOR\",\"reasoning\":{},\"risk_level\":\"LOW\",\"state\":\"CREATED\",\"task_class\":\"unclassified\",\"title\":\"HowlProof idempotency probe\",\"updated_at\":1789133912,\"verification\":[]}\n",
+    "error": ""
+  },
+  "second": {
+    "status": 201,
+    "elapsed_ms": 3,
+    "headers": {
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+      "Date": "Fri, 11 Sep 2026 13:38:32 GMT",
+      "Content-Length": "402",
+      "Connection": "close"
+    },
+    "body": "{\"authority\":{\"decision\":\"REQUIRE_APPROVAL\",\"gates\":[]},\"created_at\":1789133912,\"description\":\"\",\"evidence\":[],\"execution\":{},\"executor\":\"\",\"id\":\"HB-2\",\"outcome\":\"\",\"plan\":[],\"priority\":\"NORMAL\",\"project\":\"howlproof\",\"provenance\":\"OPERATOR\",\"reasoning\":{},\"risk_level\":\"LOW\",\"state\":\"CREATED\",\"task_class\":\"unclassified\",\"title\":\"HowlProof idempotency probe\",\"updated_at\":1789133912,\"verification\":[]}\n",
+    "error": ""
+  }
+}

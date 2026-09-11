@@ -1,0 +1,9 @@
+name: reliability
+description: >-
+  Failure, restart and corruption behaviour. The service-disrupting checks run last so
+  they cannot disturb the evidence gathered before them.
+evaluators:
+  - api.idempotency
+  - reliability.partial_request
+  - service.restart
+  - reliability.corrupt_store

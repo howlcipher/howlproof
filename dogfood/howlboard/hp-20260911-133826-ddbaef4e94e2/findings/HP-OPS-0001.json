@@ -1,0 +1,39 @@
+{
+  "check_id": "web.responsive",
+  "adversary": "OPERATOR",
+  "category": "other",
+  "title": "The published site fails rendered checks at declared widths",
+  "severity": "MEDIUM",
+  "confidence": "CONFIRMED",
+  "summary": "index.html@375: the document scrolls horizontally",
+  "evidence": "[\n  {\n    \"page\": \"index.html\",\n    \"width\": 375,\n    \"why\": \"the document scrolls horizontally\"\n  }\n]",
+  "recommended_remediation": "Correct the layout or markup so each width renders without these defects.",
+  "location": null,
+  "rule": "web.responsive.defects",
+  "state": "FOUND",
+  "reproduction": {
+    "summary": "Re-run web.responsive against the artifact.",
+    "requires_service": false,
+    "notes": "This observation is made by the evaluator, not by a replayable command. Use `howlproof verify-fix` to re-verify it.",
+    "steps": [
+      {
+        "description": "Render the declared pages again at each declared width.",
+        "kind": "reevaluate",
+        "payload": {
+          "evaluator": "web.responsive"
+        },
+        "expect": {
+          "finding_present": true
+        }
+      }
+    ]
+  },
+  "resolution_reason": null,
+  "id": "HP-OPS-0001",
+  "fingerprint": "40590dd024dddb5d326f447365c1813bbe490ea763f6e9e9b9ec30305b398ef3",
+  "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+  "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "detail": {},
+  "blocking": false
+}

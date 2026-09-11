@@ -1,0 +1,7 @@
+name: documentation
+description: Absolute claims, files documented as synchronised, and operator-facing guards.
+evaluators:
+  - docs.claims
+  - cli.destructive
+  - web.links
+  - release.version

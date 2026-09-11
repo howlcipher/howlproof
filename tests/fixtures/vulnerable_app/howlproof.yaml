@@ -1,0 +1,19 @@
+schema_version: 1
+artifact: vulnerable-fixture
+description: A deliberately defective artifact used to prove the evaluators find things.
+profiles: [security, documentation, web]
+acceptance:
+  - {id: AC-01, requirement: max_findings, min_severity: HIGH, limit: 0}
+  - {id: AC-02, requirement: checks_pass, checks: [secrets.scan, ci.supplychain]}
+markup:
+  sources: ["src/*.js"]
+  sink_functions: [setHTML, innerHTML]
+  escape_functions: [esc]
+docs:
+  claim_sources: [README.md]
+  synced_pairs:
+    - [docs/data.json, src/data.json]
+web:
+  root: docs
+  pages: [index.html]
+  canonical_prefix: https://example.invalid/vulnerable/

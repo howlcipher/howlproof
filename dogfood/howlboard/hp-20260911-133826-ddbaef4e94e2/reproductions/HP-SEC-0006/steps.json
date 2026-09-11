@@ -1,0 +1,18 @@
+{
+  "summary": "Re-read the source and match the same construction.",
+  "requires_service": false,
+  "notes": "",
+  "steps": [
+    {
+      "description": "Inspect frontend/mission_view.howl around line 134.",
+      "kind": "file_probe",
+      "payload": {
+        "path": "frontend/mission_view.howl",
+        "pattern": "onclick=\\\""
+      },
+      "expect": {
+        "matches": true
+      }
+    }
+  ]
+}

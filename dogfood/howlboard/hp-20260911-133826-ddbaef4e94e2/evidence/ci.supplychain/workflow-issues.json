@@ -1,0 +1,46 @@
+[
+  {
+    "file": ".github/workflows/ci.yml",
+    "line": 15,
+    "rule": "ci.unpinned_action",
+    "severity": "MEDIUM",
+    "title": "actions/checkout is pinned to a mutable reference",
+    "summary": ".github/workflows/ci.yml runs actions/checkout at `v4`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+    "evidence": "uses: actions/checkout@v4",
+    "needle": "actions/checkout@v4",
+    "remediation": "Pin the action to a full 40-character commit SHA and record the intended version in a comment."
+  },
+  {
+    "file": ".github/workflows/ci.yml",
+    "line": 18,
+    "rule": "ci.unpinned_action",
+    "severity": "MEDIUM",
+    "title": "actions/setup-go is pinned to a mutable reference",
+    "summary": ".github/workflows/ci.yml runs actions/setup-go at `v5`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+    "evidence": "uses: actions/setup-go@v5",
+    "needle": "actions/setup-go@v5",
+    "remediation": "Pin the action to a full 40-character commit SHA and record the intended version in a comment."
+  },
+  {
+    "file": ".github/workflows/ci.yml",
+    "line": 23,
+    "rule": "ci.unpinned_action",
+    "severity": "MEDIUM",
+    "title": "actions/setup-python is pinned to a mutable reference",
+    "summary": ".github/workflows/ci.yml runs actions/setup-python at `v5`, a tag or branch the action's owner can repoint at any time. A compromised or retagged action executes with this workflow's token.",
+    "evidence": "uses: actions/setup-python@v5",
+    "needle": "actions/setup-python@v5",
+    "remediation": "Pin the action to a full 40-character commit SHA and record the intended version in a comment."
+  },
+  {
+    "file": ".github/workflows/ci.yml",
+    "line": 1,
+    "rule": "ci.default_permissions",
+    "severity": "MEDIUM",
+    "title": ".github/workflows/ci.yml declares no GITHUB_TOKEN permissions",
+    "summary": "Without an explicit `permissions:` block the workflow inherits the repository default, which may grant write access to contents, packages and more than the job needs.",
+    "evidence": "no top-level or per-job `permissions:` key",
+    "needle": "jobs:",
+    "remediation": "Add `permissions: {contents: read}` and widen only where required."
+  }
+]

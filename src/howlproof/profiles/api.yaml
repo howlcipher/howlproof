@@ -1,0 +1,7 @@
+name: api
+description: A running HTTP surface, its refusals and its behaviour under malformed input.
+evaluators:
+  - http.authz
+  - http.abuse
+  - api.idempotency
+  - reliability.partial_request

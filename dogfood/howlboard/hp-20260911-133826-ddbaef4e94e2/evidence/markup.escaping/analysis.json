@@ -1,0 +1,46 @@
+{
+  "sources": [
+    "docs/demo.howl",
+    "frontend/app.howl",
+    "frontend/mission_view.howl"
+  ],
+  "escape_coverage": {
+    "esc": {
+      "defined_in": "frontend/mission_view.howl",
+      "line": 64,
+      "escapes": [
+        "\"",
+        "&",
+        "<",
+        ">"
+      ],
+      "missing": [
+        "'"
+      ]
+    }
+  },
+  "issues": [
+    {
+      "file": "frontend/app.howl",
+      "line": 201,
+      "rule": "markup.sink_without_escaping",
+      "severity": "MEDIUM",
+      "title": "`set_html` builds markup from an interpolated value in frontend/app.howl",
+      "summary": "A call to `set_html` assembles HTML containing an interpolated value and no escape function appears in the surrounding expression.",
+      "evidence": "set_html (dom_query \"#feed\") (str_join (list html \"</div>\") \"\"))\n          )\n        )\n      )\n    )\n  )\n\n  (defun open_mission (id)\n    (type_hint return \"void\")\n    (try_let (raw (fetch (call api_url \"/api/missions/get\") \"POST\" (str_join (list \"{\\\"id\\\":\\\"\" id \"\\\"}\") \"\")))\n      (catch err (call sh",
+      "pattern": "set_html",
+      "remediation": "Route every interpolated value through the artifact's escape function, or set text content instead of markup."
+    },
+    {
+      "file": "frontend/mission_view.howl",
+      "line": 134,
+      "rule": "markup.escaper_context_mismatch",
+      "severity": "HIGH",
+      "title": "`esc` does not escape the single quote but is used inside a JavaScript string literal",
+      "summary": "`esc` escapes \", &, <, > and not the single quote (defined at frontend/mission_view.howl:64). At frontend/mission_view.howl:134 its output is placed inside a single-quoted JavaScript string in an event-handler attribute. The HTML parser decodes the attribute before JavaScript parses it, so a single quote in the value terminates the string literal and everything after it becomes code. Escaping the double quote prevents breaking out of the attribute; it does not prevent breaking out of the string.",
+      "evidence": "tton type=\\\"button\\\" class=\\\"mission-row s-\" (call esc st) \"\\\"\"\n              \" onclick=\\\"window.open_mission('\" (call esc id) \"')\\\">\") \"\"))",
+      "pattern": "onclick=\\\"",
+      "remediation": "Escape the single quote in the escape function, or stop embedding values in handler attributes and bind the listener in code instead. Escaping for HTML text is not sufficient for a JavaScript context."
+    }
+  ]
+}

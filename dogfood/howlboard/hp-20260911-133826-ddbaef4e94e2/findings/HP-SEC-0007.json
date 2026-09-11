@@ -1,0 +1,62 @@
+{
+  "check_id": "web.dom_injection.mission_id_js_string",
+  "adversary": "SECURITY",
+  "category": "security",
+  "title": "Stored data executes as script in the interface: mission_id_js_string",
+  "severity": "HIGH",
+  "confidence": "CONFIRMED",
+  "summary": "A mission identifier carrying a single quote, placed in the fixture the seed endpoint loads. Identifiers created through the API are server assigned, but seeded and ledger-imported records keep whatever identifier the source document carried.. A value placed at /missions/0/id in data/fixtures/missions.json and loaded through the artifact's own seed path set `window.__howlproof_injection` when the interface rendered it, which means the value was parsed as code rather than displayed as text.",
+  "evidence": "{\n  \"payload\": {\n    \"name\": \"mission_id_js_string\",\n    \"file\": \"data/fixtures/missions.json\",\n    \"pointer\": \"/missions/0/id\",\n    \"value\": \"HF-412'); window.__howlproof_injection=1; ('\",\n    \"description\": \"A mission identifier carrying a single quote, placed in the fixture the seed endpoint loads. Identifiers created through the API are server assigned, but seeded and ledger-imported records keep whatever identifier the source document carried.\"\n  },\n  \"seed\": {\n    \"status\": 200,\n    \"elapsed_ms\": 7,\n    \"headers\": {\n      \"Access-Control-Allow-Headers\": \"Content-Type\",\n      \"Access-Control-Allow-Methods\": \"GET, POST, OPTIONS\",\n      \"Access-Control-Allow-Origin\": \"*\",\n      \"Content-Type\": \"application/json\",\n      \"Date\": \"Fri, 11 Sep 2026 13:38:26 GMT\",\n      \"Content-Length\": \"33\",\n      \"Connection\": \"close\"\n    },\n    \"body\": \"{\\\"missions\\\":5,\\\"status\\\":\\\"seeded\\\"}\\n\",\n    \"error\": \"\"\n  },\n  \"marker_set\": true,\n  \"payload_reached_the_page\": true,\n  \"console\": []\n}",
+  "recommended_remediation": "Escape for the context the value lands in, or stop placing data inside executable attributes. Remediation belongs to the artifact's builder; HowlProof only reports and re-verifies.",
+  "location": "frontend/index.html",
+  "rule": "web.dom_injection.mission_id_js_string",
+  "state": "FOUND",
+  "reproduction": {
+    "summary": "Write the payload into the seed file, seed the running service, load index.html and read window.__howlproof_injection.",
+    "requires_service": true,
+    "notes": "",
+    "steps": [
+      {
+        "description": "Set /missions/0/id in data/fixtures/missions.json to the authored payload",
+        "kind": "file_probe",
+        "payload": {
+          "path": "data/fixtures/missions.json",
+          "pointer": "/missions/0/id",
+          "value": "HF-412'); window.__howlproof_injection=1; ('"
+        },
+        "expect": {
+          "matches": true
+        }
+      },
+      {
+        "description": "POST /api/seed",
+        "kind": "http_request",
+        "payload": {
+          "method": "POST",
+          "path": "/api/seed",
+          "body": {}
+        },
+        "expect": {}
+      },
+      {
+        "description": "Load frontend/index.html in a browser and read window.__howlproof_injection",
+        "kind": "command",
+        "payload": {
+          "marker": "__howlproof_injection",
+          "page": "index.html"
+        },
+        "expect": {
+          "marker_set": true
+        }
+      }
+    ]
+  },
+  "resolution_reason": null,
+  "id": "HP-SEC-0007",
+  "fingerprint": "62b8f17135527be3c62bd82abeb061a5b5d2d2ac2fb051dbb69df989f142ad7b",
+  "first_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "first_seen_commit": "56246a9b47b0fe0b829756069fa70764a42c7213",
+  "last_seen_run": "hp-20260911-133826-ddbaef4e94e2",
+  "detail": {},
+  "blocking": true
+}

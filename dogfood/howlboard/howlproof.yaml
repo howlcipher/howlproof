@@ -1,0 +1,175 @@
+# HowlProof's evaluation contract for HowlBoard.
+#
+# Authored by HowlProof for this dogfood, not by HowlBoard. The bundle records
+# that provenance in config.json. HowlBoard is a good subject for a first real
+# evaluation because it is runnable locally, publishes a site, and its own
+# documentation makes several absolute claims that can be tested.
+
+schema_version: 1
+artifact: howlboard
+description: >-
+  Mission control for AI engineering work and the canonical HowlFrame reference
+  application. Evaluated across its API, its interface, its published site and
+  its documentation.
+
+profiles:
+  - security
+  - api
+  - web
+  - documentation
+  - reliability
+
+adversaries:
+  - FUNCTIONAL
+  - SECURITY
+  - RELIABILITY
+  - AI
+  - OPERATOR
+
+blocking_severity: HIGH
+
+# Build outputs HowlBoard gitignores but an evaluation of the running artifact
+# genuinely needs. Named explicitly rather than copied wholesale.
+include_ignored:
+  - howlframe_bin
+  - backend/server.hfbc
+  - frontend/app.js
+  - docs/demo.js
+
+acceptance:
+  - id: AC-01
+    requirement: max_findings
+    adversary: SECURITY
+    min_severity: HIGH
+    limit: 0
+
+  - id: AC-02
+    requirement: checks_pass
+    checks:
+      - http.authz.execute_without_approval
+      - http.authz.execute_with_expired_approval
+
+  - id: AC-03
+    requirement: checks_pass
+    checks:
+      - http.abuse
+      - reliability.partial_request
+
+  - id: AC-04
+    requirement: checks_pass
+    checks:
+      - web.links
+      - docs.claims.sync
+
+  - id: AC-05
+    requirement: tool_required
+    tools:
+      - go
+
+  - id: AC-06
+    requirement: no_regressions
+
+  - id: AC-07
+    requirement: coverage_floor
+    min_conclusive_fraction: 0.6
+
+service:
+  base_url: http://127.0.0.1:8080
+  start:
+    - ./howlframe_bin
+    - -run-bc
+    - -allow-caps
+    - network,database,filesystem
+    - backend/server.hfbc
+  ready_path: /api/missions
+  ready_method: POST
+  ready_timeout_seconds: 45
+  seed:
+    - POST /api/seed
+
+api:
+  endpoints:
+    - /api/missions
+    - /api/dashboard
+    - /api/projects
+    - /api/timeline
+  mutating_endpoint: /api/missions/create
+  mutating_body:
+    title: HowlProof idempotency probe
+    project: howlproof
+    priority: NORMAL
+  authority_probes:
+    - name: execute_without_approval
+      description: >-
+        HowlBoard documents two independent gates on execution, and states that a
+        mission cannot enter EXECUTING without live delegated authority. CO-118 is
+        AWAITING_APPROVAL with decision REQUIRE_APPROVAL and no approval at all.
+      method: POST
+      path: /api/missions/state
+      body:
+        id: CO-118
+        state: EXECUTING
+      expect_status: 403
+      expect_body_contains: AUTHORITY_DENIED
+
+    - name: execute_with_expired_approval
+      description: >-
+        HowlBoard documents that authority is computed on every read rather than
+        replayed from storage. This mints an approval that is already expired and
+        then attempts the transition it would otherwise authorise.
+      method: POST
+      path: /api/missions/state
+      setup:
+        - method: POST
+          path: /api/missions/approve
+          body:
+            id: CO-118
+            approver: howlproof-evaluation
+            ttl_seconds: -5
+      body:
+        id: CO-118
+        state: EXECUTING
+      expect_status: 403
+      expect_body_contains: ENVELOPE_EXPIRED
+
+markup:
+  sources:
+    - frontend/*.howl
+    - docs/*.howl
+  sink_functions:
+    - set_html
+  escape_functions:
+    - esc
+    - view/esc
+
+injection:
+  app_root: frontend
+  page: index.html
+  marker: __howlproof_injection
+  seed_request: POST /api/seed
+  settle_ms: 3000
+  payloads:
+    - name: mission_id_js_string
+      description: >-
+        A mission identifier carrying a single quote, placed in the fixture the
+        seed endpoint loads. Identifiers created through the API are server
+        assigned, but seeded and ledger-imported records keep whatever identifier
+        the source document carried.
+      file: data/fixtures/missions.json
+      pointer: /missions/0/id
+      value: "HF-412'); window.__howlproof_injection=1; ('"
+
+web:
+  root: docs
+  pages:
+    - index.html
+  viewports: [375, 768, 1440]
+  canonical_prefix: https://howlcipher.github.io/howlboard/
+
+docs:
+  claim_sources:
+    - README.md
+    - docs/architecture.md
+    - docs/domain_model.md
+  synced_pairs:
+    - [docs/missions.json, data/fixtures/missions.json]
