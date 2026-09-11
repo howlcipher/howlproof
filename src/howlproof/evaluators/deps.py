@@ -102,6 +102,7 @@ class DependencyAudit(Evaluator):
                     remediation="Upgrade the affected dependencies or record an explicit, "
                     "time-bounded exclusion with a reason.",
                     rule="deps.audit.known_advisory",
+                    aggregate=True,
                 )
             ],
         )

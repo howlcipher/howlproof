@@ -261,6 +261,7 @@ class HttpAbuse(_LiveEvaluator):
                     "the connection.",
                     location=endpoint,
                     rule="http.abuse.connection_dropped",
+                    aggregate=True,
                     reproduction=_abuse_reproduction(endpoint),
                 )
             )
@@ -282,6 +283,7 @@ class HttpAbuse(_LiveEvaluator):
                     "side only.",
                     location=endpoint,
                     rule="http.abuse.error_leak",
+                    aggregate=True,
                     reproduction=_abuse_reproduction(endpoint),
                 )
             )
@@ -297,6 +299,7 @@ class HttpAbuse(_LiveEvaluator):
                     remediation="Contain parse failures so one bad request cannot end the process.",
                     location=endpoint,
                     rule="http.abuse.not_alive",
+                    aggregate=True,
                     reproduction=_abuse_reproduction(endpoint),
                 )
             )

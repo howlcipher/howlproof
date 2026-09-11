@@ -111,6 +111,7 @@ class PromptInjection(Evaluator):
                             "outside the model."
                         ),
                         rule="ai.promptinjection.obeyed",
+                        aggregate=True,
                         reproduction=Reproduction(
                             summary="Send the injected text through the declared entry point.",
                             steps=[
@@ -191,6 +192,7 @@ class AiSchema(Evaluator):
                         remediation="Validate model output against a closed schema and reject "
                         "unknown fields, especially authority-shaped ones.",
                         rule="ai.schema.accepted_malformed",
+                        aggregate=True,
                     )
                 ],
             )

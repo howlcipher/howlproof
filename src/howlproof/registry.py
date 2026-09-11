@@ -245,7 +245,14 @@ class Evaluator(ABC):
         reproduction: Reproduction | None = None,
         suffix: str = "",
         detail: dict[str, Any] | None = None,
+        aggregate: bool = False,
     ) -> Finding:
+        """Raise a finding.
+
+        Set `aggregate` when the finding summarises a set of observations rather than
+        naming one defect. Its identity then comes from the rule alone, so the count
+        changing does not mint a new finding every run.
+        """
         return Finding(
             check_id=f"{self.id}.{suffix}" if suffix else self.id,
             adversary=self.adversary,
@@ -260,6 +267,7 @@ class Evaluator(ABC):
             rule=rule or self.id,
             reproduction=reproduction,
             detail=detail or {},
+            fingerprint_basis=[self.id, rule or self.id] if aggregate else None,
         )
 
 

@@ -295,6 +295,10 @@ class Finding:
     reproduction: Reproduction | None = None
     resolution_reason: str | None = None
     id: str = ""
+    #: Overrides the default fingerprint inputs. An aggregate finding, one that
+    #: summarises a set rather than naming a single defect, must not change identity
+    #: every time the size of that set changes.
+    fingerprint_basis: list[str] | None = None
     fingerprint: str = ""
     first_seen_run: str = ""
     first_seen_commit: str = ""
@@ -321,8 +325,19 @@ class Finding:
             self.fingerprint = self.compute_fingerprint()
 
     def compute_fingerprint(self) -> str:
-        """Stable identity across runs, commits, line shifts and temporary paths."""
-        parts = [self.check_id, self.rule or self.title, self.location or "", self.summary]
+        """Stable identity across runs, commits, line shifts and temporary paths.
+
+        The default inputs include the summary, because two defects of the same rule
+        in the same file are different findings and only the summary separates them.
+        An aggregate finding sets `fingerprint_basis` instead, since its summary
+        restates a changing set and would otherwise mint a new identity each run.
+        """
+        parts = self.fingerprint_basis or [
+            self.check_id,
+            self.rule or self.title,
+            self.location or "",
+            self.summary,
+        ]
         return digest("|".join(_normalise(part) for part in parts))
 
     @property

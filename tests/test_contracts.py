@@ -195,6 +195,42 @@ def test_fingerprint_survives_line_numbers_paths_and_timestamps():
     assert first.fingerprint == second.fingerprint
 
 
+def test_an_aggregate_finding_keeps_its_identity_as_its_count_changes():
+    """A finding that summarises a set must not become a new finding when the set grows.
+
+    The self-evaluation minted two identifiers for the same documentation finding
+    because the claim count moved from 32 to 34 between runs, which is what this
+    prevents.
+    """
+    basis = ["docs.claims", "docs.claims.unverified_absolute"]
+    first = finding(
+        check_id="docs.claims.absolutes",
+        rule="docs.claims.unverified_absolute",
+        category="other",
+        severity=Severity.INFORMATIONAL,
+        title="32 absolute documentation claims are unverified",
+        summary="The documentation asserts these without qualification: README.md:14 every ...",
+        fingerprint_basis=basis,
+    )
+    later = finding(
+        check_id="docs.claims.absolutes",
+        rule="docs.claims.unverified_absolute",
+        category="other",
+        severity=Severity.INFORMATIONAL,
+        title="34 absolute documentation claims are unverified",
+        summary="The documentation asserts these without qualification: ROADMAP.md:8 never ...",
+        fingerprint_basis=basis,
+    )
+    assert first.fingerprint == later.fingerprint
+
+
+def test_two_defects_of_one_rule_in_one_file_stay_separate():
+    """The default basis includes the summary precisely so these do not collide."""
+    first = finding(location="src/config.py:3", summary="a github token is present")
+    second = finding(location="src/config.py:9", summary="an aws access key is present")
+    assert first.fingerprint != second.fingerprint
+
+
 def test_fingerprint_distinguishes_different_defects():
     assert finding().fingerprint != finding(title="A different defect", rule="other").fingerprint
 

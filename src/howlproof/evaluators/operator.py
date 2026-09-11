@@ -94,6 +94,7 @@ class DocsClaims(Evaluator):
                         "true."
                     ),
                     rule="docs.claims.unverified_absolute",
+                    aggregate=True,
                     suffix="absolutes",
                     reproduction=Reproduction.by_reevaluation(
                         "docs.claims",
@@ -266,6 +267,7 @@ class CliContract(Evaluator):
                         remediation="Exit non-zero with a short, actionable message and no "
                         "traceback for every invalid invocation.",
                         rule="cli.contract.unclean_failure",
+                        aggregate=True,
                         reproduction=Reproduction(
                             summary="Invoke the declared command with invalid arguments.",
                             steps=[
@@ -351,6 +353,7 @@ class CliDestructive(Evaluator):
                         remediation="Add an explicit confirmation or a dry-run mode and mention "
                         "it in the help text.",
                         rule="cli.destructive.unguarded",
+                        aggregate=True,
                     )
                 ],
             )

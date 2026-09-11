@@ -148,6 +148,7 @@ class WebLinks(_WebEvaluator):
                         evidence=json.dumps(broken[:20], indent=2),
                         remediation="Repair or remove each reference.",
                         rule="web.links.broken",
+                        aggregate=True,
                         reproduction=Reproduction(
                             summary="Re-resolve the site's references from this checkout.",
                             steps=[
@@ -262,6 +263,7 @@ class WebMetadata(_WebEvaluator):
                         remediation="Add the missing tags and assets to match the ecosystem's "
                         "other published sites.",
                         rule="web.metadata.incomplete",
+                        aggregate=True,
                         reproduction=Reproduction.by_reevaluation(
                             "web.metadata",
                             "Re-parse the declared pages and observe the missing tags.",
@@ -361,6 +363,7 @@ class WebResponsive(_WebEvaluator):
                         remediation="Correct the layout or markup so each width renders without "
                         "these defects.",
                         rule="web.responsive.defects",
+                        aggregate=True,
                         reproduction=Reproduction.by_reevaluation(
                             "web.responsive",
                             "Render the declared pages again at each declared width.",
