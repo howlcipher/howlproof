@@ -22,6 +22,11 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: python -m pip install --upgrade pip setuptools
       - run: pip install -e '.[dev]'
+      # The suite exercises the browser-level injection and rendering checks against
+      # the shipped fixtures. Without a browser those report UNAVAILABLE and the tests
+      # fail, which is the correct behaviour: a check that never ran is not a pass, and
+      # the alternative would be a skip nobody notices.
+      - run: python -m playwright install --with-deps chromium
       - run: ruff format --check src tests scripts
       - run: ruff check src tests scripts
       - run: flake8 src tests scripts --max-line-length=100 --extend-ignore=E203,W503

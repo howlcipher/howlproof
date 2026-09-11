@@ -331,10 +331,15 @@ code 4. Every emitted ecosystem handoff is validated against a vendored copy of
 HowlPlane's closed JSON Schema.
 
 ```bash
+python -m playwright install chromium   # the browser checks need one
 pytest -q                       # the whole suite
 pytest -q tests/test_verdict.py # the verdict table alone
 pytest -q -k dom_injection      # the browser-level injection check, both ways
 ```
+
+The browser-dependent tests fail rather than skip when no browser is installed.
+A check that never ran is not a pass, and a skip is the kind of thing nobody
+notices.
 
 ## Development
 
