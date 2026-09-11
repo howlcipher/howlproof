@@ -183,6 +183,26 @@ finds anything at all, including something an operator has examined and accepted
 so gating on its status would duplicate the `max_findings` criterion while making
 an explicit acceptance impossible to express.
 
+### The integrity guard caught the person writing this
+
+While a self-evaluation was running, new fixture files were being written into the
+repository from another terminal. The evaluation did not finish and report a
+verdict about a tree that had changed underneath it. It returned:
+
+```
+Verdict:  INSUFFICIENT_EVIDENCE  [integrity]
+
+Why:
+  - The artifact changed during evaluation.
+  - the artifact under evaluation changed during evaluation; evidence gathered
+    while mutating the subject is not trustworthy. Added:
+    tests/fixtures/clean_app/agent.py, tests/fixtures/clean_app/cli.py, ...
+```
+
+Nothing arranged this. It is the strongest evidence available that the guard holds
+against real concurrent mutation and not only against the evaluator that the test
+suite plants for it, and it is worth more than the test because nobody designed it.
+
 ### Two defects self-evaluation found
 
 1. **Workspace containment rejected the interpreter the evaluation provisions.**
