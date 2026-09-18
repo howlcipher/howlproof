@@ -14,6 +14,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from howlproof.evaluators._markup_dataflow import analyze as _dataflow_analysis
 from howlproof.model import (
     Adversary,
     Confidence,
@@ -75,20 +76,35 @@ class MarkupEscaping(Evaluator):
 
         coverage = _escape_coverage(context, sources, markup.escape_functions)
         issues: list[dict[str, Any]] = []
+        unsupported: list[str] = []
         for name in sources:
             content = context.target.read_text(name)
             issues.extend(_js_string_contexts(name, content, markup.escape_functions, coverage))
             issues.extend(_unescaped_sinks(name, content, markup))
+            dataflow_issues, dataflow_unsupported = _dataflow_analysis(
+                name,
+                content,
+                markup.escape_functions,
+                list(getattr(markup, "sink_functions", []) or []),
+                coverage,
+            )
+            issues.extend(dataflow_issues)
+            unsupported.extend(dataflow_unsupported)
 
         ref = context.save_evidence_json(
             self.id,
             "analysis.json",
-            {"sources": sources, "escape_coverage": coverage, "issues": issues},
+            {
+                "sources": sources,
+                "escape_coverage": coverage,
+                "issues": issues,
+                "unsupported": unsupported,
+            },
         )
         limitation = (
-            "static reading of HTML construction sites and the artifact's own escape function; "
-            "it shows that an escaper's character set is insufficient for a context, not that a "
-            "particular input reaches that context at runtime"
+            "static reading of HTML construction sites and a bounded intra-file dataflow; "
+            "it tracks sources, assignments, concatenation and escaper calls but not control "
+            "flow, cross-file functions, or every JavaScript construct"
         )
         if not issues:
             return Outcome(
@@ -171,6 +187,7 @@ def _escape_coverage(
                 "line": content.count("\n", 0, index) + 1,
                 "escapes": handled,
                 "missing": sorted(set(ENTITY_FORMS) - set(handled)),
+                "body": body,
             }
             break
     return coverage
@@ -269,29 +286,30 @@ def _js_string_contexts(
 
 
 def _unescaped_sinks(name: str, content: str, markup: Any) -> list[dict[str, Any]]:
-    """Interpolation into an HTML sink with no escape function anywhere in the expression."""
+    """Interpolation into an HTML sink with no escape function in the immediate expression."""
     sinks: list[str] = list(getattr(markup, "sink_functions", []))
     escapes: list[str] = list(getattr(markup, "escape_functions", []))
     issues: list[dict[str, Any]] = []
     for sink in sinks:
-        for match in re.finditer(rf"\b{re.escape(sink)}\b", content):
-            window = content[match.start() : match.start() + STRING_WINDOW]
+        for match in _sink_matches(content, sink):
+            window = match.group("expr")
             if not INTERPOLATION.search(window):
                 continue
             if any(re.search(rf"\b{re.escape(f)}\b", window) for f in escapes):
                 continue
             if not re.search(r"[\"'`]\s*<[a-z/]", window, re.IGNORECASE):
                 continue
+            line = content.count("\n", 0, match.start()) + 1
             issues.append(
                 {
                     "file": name,
-                    "line": content.count("\n", 0, match.start()) + 1,
+                    "line": line,
                     "rule": "markup.sink_without_escaping",
                     "severity": "MEDIUM",
                     "title": f"`{sink}` builds markup from an interpolated value in {name}",
                     "summary": (
                         f"A call to `{sink}` assembles HTML containing an interpolated value and "
-                        "no escape function appears in the surrounding expression."
+                        "no escape function appears in the immediate surrounding expression."
                     ),
                     "evidence": window.strip()[:400],
                     "pattern": match.group(0),
@@ -302,6 +320,19 @@ def _unescaped_sinks(name: str, content: str, markup: Any) -> list[dict[str, Any
                 }
             )
     return issues
+
+
+def _sink_matches(content: str, sink: str) -> list[re.Match[str]]:
+    """Return matches that capture only the immediate sink expression.
+
+    For property sinks such as `innerHTML = ...` the captured expression is the
+    right-hand side up to the statement terminator. For function sinks such as
+    `setHTML(...)` the captured expression is the argument list. This keeps the
+    check from treating unrelated later concatenations as part of the same sink.
+    """
+    if sink in {"innerHTML", "outerHTML", "insertAdjacentHTML"}:
+        return list(re.finditer(rf"\.\b{re.escape(sink)}\b\s*=\s*(?P<expr>[^;]+)", content))
+    return list(re.finditer(rf"\b{re.escape(sink)}\b\s*\((?P<expr>[^)]*)\)", content))
 
 
 EVALUATORS: list[Evaluator] = [MarkupEscaping()]

@@ -9,7 +9,7 @@ acceptance:
 markup:
   sources: ["src/*.js"]
   sink_functions: [setHTML, innerHTML]
-  escape_functions: [esc]
+  escape_functions: [esc, escapeForText]
 docs:
   claim_sources: [README.md]
   synced_pairs:
