@@ -1,0 +1,48 @@
+name: Decode Pages Assets
+on:
+  push:
+    branches: ["cursor/crosslink-forge-instinct-4ad1"]
+    paths:
+      - "docs/*.zlib.b64"
+      - "docs/*.zlib.b64.part*"
+      - ".github/workflows/decode-pages.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: decode-pages
+  cancel-in-progress: true
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Assemble and decode zlib+base64 assets
+        run: |
+          python3 <<'PY'
+          import base64, zlib, hashlib, pathlib
+          docs = pathlib.Path("docs")
+          parts = sorted(docs.glob("index.html.zlib.b64.part*"))
+          assert parts, "missing part files"
+          joined = "".join(p.read_text().strip() for p in parts)
+          (docs / "index.html.zlib.b64").write_text(joined + "\n")
+          expected = {
+            "index.html": "07b2fd481393c8d5c19c6a8244bc7366719382ef91c8afbaaf7e421071e5b911"
+          }
+          data = zlib.decompress(base64.b64decode(joined))
+          digest = hashlib.sha256(data).hexdigest()
+          assert digest == expected["index.html"], (digest, expected["index.html"])
+          (docs / "index.html").write_bytes(data)
+          print(f"wrote docs/index.html ({len(data)} bytes) from {len(parts)} parts")
+          PY
+      - name: Commit decoded assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/index.html docs/index.html.zlib.b64
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "docs: decode Pages assets (HowlForge/HowlInstinct hub integration)"
+            git push
+          fi
