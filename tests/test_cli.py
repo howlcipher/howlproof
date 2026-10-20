@@ -55,7 +55,7 @@ def accepted(tmp_path_factory):
 
 
 def test_version_is_reported():
-    assert howlproof("--version", expect=0).stdout.strip() == "0.1.0"
+    assert howlproof("--version", expect=0).stdout.strip() == "0.2.0b1"
 
 
 def test_help_succeeds():

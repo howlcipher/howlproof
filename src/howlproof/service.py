@@ -20,6 +20,7 @@ from typing import IO, TYPE_CHECKING, Any, Self
 from urllib.parse import urlsplit
 
 from howlproof.process import stop
+from howlproof.target import TargetError
 
 if TYPE_CHECKING:  # pragma: no cover - import cycle only matters for type checking
     from howlproof.registry import Context
@@ -150,8 +151,8 @@ class ServiceRunner:
                 "evaluation did not start"
             )
             return self
-        workdir = self.context.target.working_directory(self.config.workdir)
         try:
+            workdir = self.context.target.working_directory(self.config.workdir)
             self.process = subprocess.Popen(
                 list(self.config.start),
                 cwd=str(workdir),
@@ -161,7 +162,7 @@ class ServiceRunner:
                 errors="replace",
                 start_new_session=os.name == "posix",
             )
-        except (OSError, ValueError) as error:
+        except (OSError, ValueError, TargetError) as error:
             self.note = f"service failed to start: {type(error).__name__}: {error}"
             return self
         self.startup_log = ""

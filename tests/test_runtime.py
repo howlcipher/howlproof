@@ -155,3 +155,18 @@ def test_command_workdir_cannot_follow_a_link_outside_workspace(tmp_path):
     (context.target.workspace / "linked").symlink_to(outside, target_is_directory=True)
     with pytest.raises(TargetError, match="workspace"):
         context.target.run([sys.executable, "-c", "pass"], cwd_rel="linked")
+
+
+def test_missing_service_workdir_is_reported_as_unavailable(tmp_path):
+    port = unused_port()
+    context = context_for(
+        tmp_path,
+        service={
+            "base_url": f"http://127.0.0.1:{port}",
+            "start": [sys.executable, "-c", "pass"],
+            "workdir": "missing",
+        },
+    )
+    with ServiceRunner(context) as service:
+        assert not service.running
+        assert "workspace" in service.note
