@@ -1,7 +1,9 @@
 # Readiness and remaining work
 
-HowlProof remains experimental. A passing test suite establishes the tested
-contracts; it does not establish detector accuracy on arbitrary artifacts.
+HowlProof 0.2.0b1 is a beta for advisory evaluation of trusted local artifacts on
+Linux. A passing suite establishes tested contracts; it does not establish
+detector accuracy on arbitrary artifacts. The beta adds explicit concurrency and
+execution boundaries plus a repeatable synthetic source calibration baseline.
 
 ## Completed hardening
 
@@ -20,7 +22,7 @@ The check does not infer storage durability or lost-update safety.
 
 | Priority | Work | Completion evidence |
 | --- | --- | --- |
-| 1 | Measure evaluator accuracy | A versioned labelled corpus with clean and defective cases, per-evaluator false-positive and false-negative counts, and repeatable runs |
+| Partially complete | Measure evaluator accuracy | A versioned eight-case clean/defective corpus reports per-rule counts for four source evaluators. Expand coverage and add independent holdouts before general accuracy claims |
 | Partially complete | Artifact execution | POSIX descendant cleanup, bounded service logs and managed-download permission are tested; commands retain host permissions and environment, and hostile-code containment requires a separate sandbox |
 | Completed locally | Concurrent ledger writers | Six overlapping processes retain distinct findings and IDs; stale-writer and interrupted-replacement contracts pass on a local POSIX filesystem |
 | 2 | Trace markup dataflow | Follow source values and aliases into sinks across statements; demonstrate known bypasses and clean-context fixtures without claiming whole-program analysis |
@@ -74,3 +76,32 @@ Runtime hardening verification: 215 tests passed in 98.98 seconds on Python
 working directories and unauthorized Python downloads. Ruff, flake8, mypy,
 generated documentation and source/wheel builds passed. Bandit's medium/high
 gate now completes without the prior suppression warnings.
+
+## Beta qualification contract
+
+The supported beta is the advisory CLI and evidence workflow on Linux with a local
+POSIX filesystem and operator-trusted commands. Python 3.11 through 3.14 must pass
+the CI matrix before integration. The release gate includes strict input/status
+contracts, known-defect and clean-artifact runs, integrity and ecosystem handoff
+checks, concurrent ledger recovery, process lifecycle tests, source calibration,
+packaging, dependency audit and rendered-site QA.
+
+The `calibration.json` baseline covers four named source evaluators, eight artifact
+cases and eight rule labels. Each label currently has one detected defective case
+and one quiet clean case. Counts are reported per rule, so this is eight true
+positives and eight true negatives over sixteen labelled rule/case pairs, with
+no observed misses or false positives on that small synthetic corpus. The cases
+are authored regression fixtures, not an independent holdout or representative
+sample. No percentage from these cases is advertised as general detector accuracy.
+
+Remaining roadmap work does not disappear with beta: dataflow, AI controls,
+lost-update observations, dependency fault injection, signed exports, independent
+holdouts and outcome calibration remain explicit. A beta verdict is still
+advisory, and HowlProof still does not repair artifacts or authorize deployment.
+
+Beta candidate verification: 226 tests passed in 104.04 seconds on Python 3.14.4.
+The built wheel was installed into a separate directory, loaded from that
+installation, and passed all eight source calibration cases with all 29 evaluator
+registrations and packaged profiles available. Release-version checking accepts
+its matching 0.2.0b1 declarations. Site QA, SEO, generated docs, Ruff, flake8,
+mypy, dependency audit, source/wheel builds and the configured Bandit gate passed.

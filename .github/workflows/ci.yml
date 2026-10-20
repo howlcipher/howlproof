@@ -37,6 +37,7 @@ jobs:
       - run: howlproof doctor
       - run: howlproof profiles
       - run: howlproof validate howlproof.yaml
+      - run: howlproof calibrate calibration.json --evidence-root /tmp/proof-calibration
       # The shipped fixtures pin the verdict model to real exit codes: a defective
       # artifact must be rejected, a clean one must not be, and an artifact that
       # declares no contract must never reach zero.

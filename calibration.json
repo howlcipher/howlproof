@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "name": "source-fixtures-v1",
+  "cases": [
+    {
+      "id": "secrets.scan.defective",
+      "target": "tests/fixtures/vulnerable_app",
+      "evaluator": "secrets.scan",
+      "expected_rules": [
+        "secrets.github_token"
+      ]
+    },
+    {
+      "id": "secrets.scan.clean",
+      "target": "tests/fixtures/clean_app",
+      "evaluator": "secrets.scan",
+      "expected_rules": []
+    },
+    {
+      "id": "ci.supplychain.defective",
+      "target": "tests/fixtures/vulnerable_app",
+      "evaluator": "ci.supplychain",
+      "expected_rules": [
+        "ci.unpinned_action",
+        "ci.pull_request_target",
+        "ci.default_permissions",
+        "ci.expression_injection"
+      ]
+    },
+    {
+      "id": "ci.supplychain.clean",
+      "target": "tests/fixtures/clean_app",
+      "evaluator": "ci.supplychain",
+      "expected_rules": []
+    },
+    {
+      "id": "markup.escaping.defective",
+      "target": "tests/fixtures/vulnerable_app",
+      "evaluator": "markup.escaping",
+      "expected_rules": [
+        "markup.escaper_context_mismatch",
+        "markup.sink_without_escaping"
+      ]
+    },
+    {
+      "id": "markup.escaping.clean",
+      "target": "tests/fixtures/clean_app",
+      "evaluator": "markup.escaping",
+      "expected_rules": []
+    },
+    {
+      "id": "release.version.defective",
+      "target": "tests/fixtures/version_drift",
+      "evaluator": "release.version",
+      "expected_rules": [
+        "release.version.inconsistent"
+      ]
+    },
+    {
+      "id": "release.version.clean",
+      "target": "tests/fixtures/version_consistent",
+      "evaluator": "release.version",
+      "expected_rules": []
+    }
+  ]
+}

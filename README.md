@@ -1,7 +1,7 @@
 # HowlProof
 
 Independent red-team QA, falsification and evidence for the Howl ecosystem.
-Experimental, milestone one.
+Beta 0.2.0b1 for advisory evaluation of trusted local artifacts on Linux.
 
 **Most QA asks whether the software works. HowlProof tries to prove that it doesn't.**
 
@@ -195,6 +195,22 @@ howlproof evaluate . --profile secrets.scan     # a single evaluator, by name
 be read and tested rather than inferred. Third-party evaluators register through
 the `howlproof.evaluators` entry-point group.
 
+## Reproducible source calibration
+
+```bash
+howlproof calibrate calibration.json --evidence-root /tmp/howlproof-calibration > calibration-report.json
+```
+
+The versioned corpus has eight clean/defective cases for `secrets.scan`,
+`ci.supplychain`, `markup.escaping` and `release.version`. The report records
+expected and observed rules, per-rule true/false positive and negative counts,
+inconclusive cases, input tree digests, implementation hashes and fresh evidence
+bundle paths. Exit 0 means all labels matched, 30 means a mismatch and 40 means
+some cases could not be evaluated. Missing coverage never contributes a true
+negative. These are synthetic fixture measurements, not an estimate of detection
+accuracy on arbitrary software. Corpus labels are human-authored and must be
+reviewed rather than regenerated from current detector output.
+
 ## Concurrent create checks
 
 The API profile includes `api.concurrency`, enabled only when an artifact declares
@@ -319,7 +335,8 @@ run end to end through HowlPlane's own `reconcile --findings-file`.
 
 ## Limitations
 
-- Milestone one. Experimental, not production-ready.
+- Beta scope is trusted local artifacts on Linux. Hostile-code isolation and
+  production-wide detection accuracy are not established.
 - Static analysis shows that an escaper's character set is wrong for a context.
   It does not prove a value reaches that context. The browser-level
   `web.dom_injection` check exists to close that gap, and needs a running service
@@ -333,15 +350,13 @@ run end to end through HowlPlane's own `reconcile --findings-file`.
   `UNAVAILABLE`, which means the site has not been shown to work at any width.
 - HowlProof evaluates artifacts on the machine it runs on. It is not a hosted
   service and has no scheduler.
-- Branch coverage over the package is 69 per cent. `cli.py` and `reproduce.py`
-  read as zero because their tests drive them as real subprocesses, which the
-  coverage tool cannot see. The genuinely thin areas are the evaluators that
-  provision a Python environment for the artifact (`python.*`, `sast.bandit`,
-  `deps.audit`): they are exercised by the self-evaluation in `dogfood/self/`,
-  not by the test suite, because installing a package per test would dominate its
-  runtime.
-- The verdict model is argued for, not measured. There is no labelled corpus, so
-  no false-negative or false-positive rate is claimed anywhere in this project.
+- CLI tests run in subprocesses, so ordinary in-process coverage does not capture
+  their execution. Python environment provisioning and external dependency audits
+  also need explicit network permission; fixture calibration does not establish
+  those integrations work in every environment.
+- The synthetic source corpus covers eight cases across four evaluators. It
+  reports per-rule confusion counts for those cases only. It does not measure
+  real-world accuracy or calibrate the other evaluators.
 
 ## Non-goals
 
@@ -405,6 +420,7 @@ mypy
 pytest -q
 howlproof doctor
 howlproof validate howlproof.yaml
+howlproof calibrate calibration.json --evidence-root /tmp/howlproof-calibration
 howlproof evaluate tests/fixtures/clean_app --evidence-root /tmp/howlproof-clean --fail-under CONDITIONALLY_PROVEN
 python -m build
 bandit -r src -ll
@@ -425,4 +441,4 @@ These are the same commands CI runs.
 - [Roadmap](ROADMAP.md)
 - [Readiness and remaining work](docs/readiness.md)
 
-MIT licensed. Experimental, not production-ready.
+MIT licensed. Beta for trusted local artifacts on Linux.

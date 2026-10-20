@@ -1,5 +1,9 @@
 # Roadmap
 
+Current release: 0.2.0b1 beta for trusted local artifacts on Linux. The source
+calibration corpus covers eight cases across four evaluators; broader readiness
+work remains tracked in docs/readiness.md.
+
 ## Milestone 1: The adversary exists
 
 Strict evaluation contracts, typed acceptance criteria, twenty-eight evaluators
@@ -42,15 +46,16 @@ smaller number of them genuinely hard to pass.
 
 ## Milestone 4: Calibration
 
-The verdict model is currently argued for, not measured. This milestone asks
-whether it is any good.
+The verdict model still needs outcome calibration. A synthetic eight-case source
+corpus now reports per-rule counts for four evaluators. This milestone asks how
+that limited baseline transfers to independent artifacts and real outcomes.
 
-- A labelled corpus of artifacts with known defects, so false-negative and
-  false-positive rates per evaluator can be stated as numbers.
+- Expand the labelled source corpus with independent holdouts and additional
+  evaluators before claiming general false-negative or false-positive rates.
 - Agreement between HowlProof verdicts and later real-world outcomes, which is
   the only honest way to find out whether `CONDITIONALLY_PROVEN` carries the
   meaning this milestone assigns it.
-- Until that exists, no claim about detection rate belongs in the documentation.
+- Synthetic fixture counts must remain distinct from real-world detection rates.
 
 ## Explicitly not planned
 

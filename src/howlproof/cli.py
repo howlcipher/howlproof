@@ -73,6 +73,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--fail-under", choices=[v.value for v in Verdict], help="exit 0 for this verdict or better"
     )
 
+    calibration = commands.add_parser(
+        "calibrate", help="measure a labelled synthetic source corpus"
+    )
+    calibration.add_argument("corpus", type=Path)
+    calibration.add_argument("--evidence-root", type=Path, default=DEFAULT_EVIDENCE_ROOT)
+
     validate = commands.add_parser("validate", help="strictly validate an evaluation contract")
     validate.add_argument("config", type=Path)
 
@@ -174,6 +180,16 @@ def main(argv: list[str] | None = None) -> int:
 def _dispatch(args: argparse.Namespace) -> int:
     if args.command == "evaluate":
         return _evaluate(args)
+    if args.command == "calibrate":
+        from howlproof.calibration import calibrate
+
+        result = calibrate(args.corpus, args.evidence_root, build_registry())
+        print(json.dumps(result, indent=2))
+        if result["passed"]:
+            return 0
+        return EXIT_CODES[
+            Verdict.INSUFFICIENT_EVIDENCE if result["inconclusive_cases"] else Verdict.REJECT
+        ]
     if args.command == "validate":
         config = read_config(args.config)
         print(

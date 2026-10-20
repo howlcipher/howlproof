@@ -385,7 +385,7 @@ def test_a_ledger_from_an_incompatible_version_is_refused(tmp_path):
 
 
 def test_the_declared_version_matches_the_package():
-    assert howlproof.__version__ == "0.1.0"
+    assert howlproof.__version__ == "0.2.0b1"
 
 
 def test_bundle_rejects_an_unindexed_finding(tmp_path):

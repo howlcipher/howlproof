@@ -10,7 +10,7 @@ from howlproof.registry import Context, Evaluator, Outcome
 
 PYPROJECT_VERSION = re.compile(r"^version\s*=\s*[\"']([^\"']+)[\"']", re.MULTILINE)
 DUNDER_VERSION = re.compile(r"^__version__\s*=\s*[\"']([^\"']+)[\"']", re.MULTILINE)
-CHANGELOG_HEADING = re.compile(r"^##\s+v?(\d+\.\d+\.\d+)\s*$", re.MULTILINE)
+CHANGELOG_HEADING = re.compile(r"^##\s+v?(\d+\.\d+\.\d+[A-Za-z0-9.!+_-]*)\s*$", re.MULTILINE)
 
 
 class ReleaseVersion(Evaluator):

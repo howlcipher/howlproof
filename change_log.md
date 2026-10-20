@@ -1,6 +1,16 @@
 # Changelog
 
-## Unreleased
+## 0.2.0b1
+
+Beta for trusted local artifacts on Linux. The advisory core now has durable
+concurrent identity, bounded process lifecycle cleanup and a reproducible source
+calibration command. The eight-case labelled corpus reports per-rule confusion
+counts for four static evaluators and fails on missed defects, unexpected rules
+or inconclusive execution. Reports bind labels, source trees and implementation
+hashes to fresh evidence. This does not establish real-world detector accuracy,
+hostile-code isolation or calibration of every evaluator.
+
+Release hygiene now accepts matching prerelease changelog headings.
 
 Commands and services now run in dedicated POSIX sessions, with descendant
 cleanup on timeout and shutdown. Service logs are drained continuously into a
