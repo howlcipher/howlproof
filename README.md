@@ -536,8 +536,9 @@ ai:
 
 The adapter must read `HOWLPROOF_SIMULATED_MODEL_RESPONSE`. Proof first sends
 `{"result":"howlproof-schema-control"}` and requires exit 0 with the acceptance
-marker on stdout. It then sends five malformed responses. Rejection requires the
-declared nonzero exit and rejection marker; crashes, timeouts, conflicting markers
+marker at the start of a stdout line. It then sends five malformed responses.
+Rejection requires the declared nonzero exit and exactly one nonblank output line
+(on stdout or stderr) beginning with the rejection marker; crashes, timeouts, conflicting markers
 and unexplained outputs are inconclusive errors. Acceptance of malformed output
 raises a finding even without authority-shaped text. Transcripts retain expected
 and observed outcomes, including the valid control.

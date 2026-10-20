@@ -125,3 +125,22 @@ else:
 def test_conflicting_markers_are_inconclusive(tmp_path):
     result = run_probe(tmp_path, 'print("ACCEPTED REJECTED")')
     assert result["checks"][0]["status"] == "ERROR"
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [
+        "raise RuntimeError('REJECTED')",
+        "print('REJECTED'); raise RuntimeError('parser crashed')",
+    ],
+)
+def test_exception_mentioning_rejection_marker_is_not_rejection(tmp_path, failure):
+    result = run_probe(
+        tmp_path,
+        "import os\n"
+        "if 'howlproof-schema-control' in os.environ['HOWLPROOF_SIMULATED_MODEL_RESPONSE']:\n"
+        "    print('ACCEPTED')\n"
+        "else:\n"
+        f"    {failure}\n",
+    )
+    assert result["checks"][0]["status"] == "ERROR"

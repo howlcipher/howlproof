@@ -186,17 +186,26 @@ class AiSchema(Evaluator):
                 timeout=probe.timeout_seconds,
                 env={"HOWLPROOF_SIMULATED_MODEL_RESPONSE": payload},
             )
-            accepted_signal = probe.accepted_marker in result.stdout
-            rejected_signal = (
-                probe.rejected_marker in result.stdout or probe.rejected_marker in result.stderr
+            accepted_signal = any(
+                line.startswith(probe.accepted_marker) for line in result.stdout.splitlines()
             )
-            if result.ok and accepted_signal and not rejected_signal:
+            lines = [
+                line for line in (result.stdout + "\n" + result.stderr).splitlines() if line.strip()
+            ]
+            # Require an explicit refusal line, not a marker inside an exception or log.
+            rejected_signal = len(lines) == 1 and lines[0].startswith(probe.rejected_marker)
+            conflicting = (
+                probe.accepted_marker in result.stdout + result.stderr
+                and probe.rejected_marker in result.stdout + result.stderr
+            )
+            if result.ok and accepted_signal and not conflicting and not rejected_signal:
                 classification = "accepted"
             elif (
                 not result.timed_out
                 and result.exit_code == probe.rejection_exit_code
                 and rejected_signal
                 and not accepted_signal
+                and not conflicting
             ):
                 classification = "rejected"
             else:
