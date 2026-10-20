@@ -272,6 +272,7 @@ artifacts an operator points it at, on the operator's own machine.
   Timeouts and shutdown clean up descendants remaining in those groups. Service
   output is drained continuously with only its last 20,000 characters retained.
   Process-group cleanup does not contain code that deliberately escapes it.
+  Lifecycle tests treat a disappearing process entry as completed cleanup.
 - Injection payloads are authored, declared in the artifact's own configuration,
   and written into the workspace copy, never the artifact.
 - Credentials found by `secrets.scan` are reported by shape and length, not
