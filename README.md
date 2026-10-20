@@ -261,8 +261,17 @@ artifacts an operator points it at, on the operator's own machine.
 
 - HTTP requests are refused unless the destination is `127.0.0.1` or `localhost`,
   both in the configuration schema and again at the call site.
-- External network access is off unless `--allow-network` is passed. `deps.audit`
-  reports `SKIPPED` with a reason rather than pretending it checked.
+- Managed package downloads and dependency auditing require `--allow-network`.
+  Without it, Python environment provisioning reports `UNAVAILABLE` and dependency
+  auditing reports `SKIPPED`, with reasons.
+- Artifact commands run with the operator's host permissions and inherited
+  environment. The workspace copy and digest guard are not an OS sandbox and do
+  not prevent commands from using the network. Evaluate trusted commands only;
+  put untrusted executables in an independently managed disposable sandbox.
+- On POSIX hosts, commands and services start in dedicated process groups.
+  Timeouts and shutdown clean up descendants remaining in those groups. Service
+  output is drained continuously with only its last 20,000 characters retained.
+  Process-group cleanup does not contain code that deliberately escapes it.
 - Injection payloads are authored, declared in the artifact's own configuration,
   and written into the workspace copy, never the artifact.
 - Credentials found by `secrets.scan` are reported by shape and length, not

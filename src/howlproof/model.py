@@ -180,9 +180,9 @@ def _normalise(value: str) -> str:
     """Collapse run-specific noise so a fingerprint survives paths, times and line shifts."""
     text = re.sub(r"\b[0-9a-f]{7,64}\b", "<hex>", value.strip())
     text = re.sub(r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}\S*", "<timestamp>", text)
-    # nosec B108 - a pattern that normalises scratch paths out of a fingerprint,
-    # not a filesystem location this process ever writes to.
-    text = re.sub(r"/tmp/[^\s:]+", "<tmp>", text)  # nosec B108
+    # This is a fingerprint normalizer, not a path this process writes to.
+    temporary_path_pattern = r"/tmp/[^\s:]+"  # nosec B108
+    text = re.sub(temporary_path_pattern, "<tmp>", text)
     text = re.sub(r"\b\d+\b", "<n>", text)
     return re.sub(r"\s+", " ", text).lower()
 

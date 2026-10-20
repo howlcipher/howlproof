@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+Commands and services now run in dedicated POSIX sessions, with descendant
+cleanup on timeout and shutdown. Service logs are drained continuously into a
+bounded tail so verbose startup cannot deadlock a pipe. Working directories must
+stay inside the workspace even through links. Managed Python provisioning now
+requires --allow-network before any package installation. The documentation
+explicitly distinguishes these controls from an OS sandbox and requires trusted
+artifact commands.
+
+
 Finding ledger writes now reload under a POSIX process lock and commit atomically
 with file and directory sync. Concurrent evaluations cannot overwrite each
 other's findings or lifecycle decisions. IDs are allocated across artifacts in

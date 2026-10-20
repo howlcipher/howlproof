@@ -17,6 +17,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from howlproof.process import stop
+
 #: A single file larger than this is not copied into the workspace; it is listed instead.
 MAX_FILE_BYTES = 40_000_000
 #: A target with more files than this is refused rather than silently truncated.
@@ -255,6 +257,14 @@ class Target:
             raise TargetError(f"path escapes the workspace: {relative}")
         return candidate
 
+    def working_directory(self, relative: str) -> Path:
+        directory = self._resolve(relative).resolve()
+        if directory != self.workspace and self.workspace not in directory.parents:
+            raise TargetError(f"working directory escapes the workspace: {relative}")
+        if not directory.is_dir():
+            raise TargetError(f"working directory missing from workspace: {relative}")
+        return directory
+
     # -- execution --------------------------------------------------------
 
     def run(
@@ -265,40 +275,39 @@ class Target:
         env: dict[str, str] | None = None,
     ) -> CommandResult:
         """Run a command inside the workspace copy. The original tree is never the cwd."""
-        cwd = self._resolve(cwd_rel)
-        if not cwd.is_dir():
-            raise TargetError(f"working directory missing from workspace: {cwd_rel}")
+        cwd = self.working_directory(cwd_rel)
         environment = dict(os.environ)
         environment.update(env or {})
         environment["HOWLPROOF_TARGET_READONLY"] = "1"
         started = time.monotonic()
         try:
-            completed = subprocess.run(
+            process = subprocess.Popen(
                 list(argv),
                 cwd=str(cwd),
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
-                check=False,
-                timeout=timeout,
                 env=environment,
-            )
-        except subprocess.TimeoutExpired as expired:
-            return CommandResult(
-                argv=list(argv),
-                exit_code=124,
-                stdout=_text(expired.stdout),
-                stderr=_text(expired.stderr),
-                duration_ms=int((time.monotonic() - started) * 1000),
-                timed_out=True,
+                start_new_session=os.name == "posix",
             )
         except FileNotFoundError as missing:
             raise TargetError(f"command not found: {argv[0]}") from missing
+        timed_out = False
+        try:
+            stdout, stderr = process.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            timed_out = True
+            stop(process, kill=True)
+            stdout, stderr = process.communicate(timeout=5)
+        finally:
+            stop(process, kill=True)
         return CommandResult(
             argv=list(argv),
-            exit_code=completed.returncode,
-            stdout=completed.stdout,
-            stderr=completed.stderr,
+            exit_code=124 if timed_out else process.returncode,
+            stdout=stdout,
+            stderr=stderr,
             duration_ms=int((time.monotonic() - started) * 1000),
+            timed_out=timed_out,
         )
 
     # -- the separation guard ---------------------------------------------

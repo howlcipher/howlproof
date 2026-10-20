@@ -8,14 +8,18 @@ surface rather than quietly treated as nothing to test.
 from __future__ import annotations
 
 import json
+import os
 import socket
 import subprocess
 import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Self
+from threading import Thread
+from typing import IO, TYPE_CHECKING, Any, Self
 from urllib.parse import urlsplit
+
+from howlproof.process import stop
 
 if TYPE_CHECKING:  # pragma: no cover - import cycle only matters for type checking
     from howlproof.registry import Context
@@ -134,6 +138,7 @@ class ServiceRunner:
         self.note = ""
         self.base_url = self.config.base_url if self.config else ""
         self.startup_log = ""
+        self.log_reader: Thread | None = None
 
     def __enter__(self) -> Self:
         if self.config is None or not self.config.start:
@@ -145,7 +150,7 @@ class ServiceRunner:
                 "evaluation did not start"
             )
             return self
-        workdir = self.context.target.workspace / self.config.workdir
+        workdir = self.context.target.working_directory(self.config.workdir)
         try:
             self.process = subprocess.Popen(
                 list(self.config.start),
@@ -153,19 +158,29 @@ class ServiceRunner:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
+                errors="replace",
+                start_new_session=os.name == "posix",
             )
         except (OSError, ValueError) as error:
             self.note = f"service failed to start: {type(error).__name__}: {error}"
             return self
-        if self._await_ready():
-            self.running = True
-            self._seed()
-        else:
-            self.note = (
-                f"service did not become ready at {self.config.ready_path} within "
-                f"{self.config.ready_timeout_seconds}s"
-            )
+        self.startup_log = ""
+        assert self.process.stdout is not None
+        self.log_reader = Thread(target=self._capture_log, args=(self.process.stdout,), daemon=True)
+        self.log_reader.start()
+        try:
+            if self._await_ready():
+                self.running = True
+                self._seed()
+            else:
+                self.note = (
+                    f"service did not become ready at {self.config.ready_path} within "
+                    f"{self.config.ready_timeout_seconds}s"
+                )
+                self.stop()
+        except BaseException:
             self.stop()
+            raise
         return self
 
     def __exit__(self, *_: object) -> None:
@@ -199,25 +214,24 @@ class ServiceRunner:
         if response.status >= 400 or response.error:
             self.note = f"seed request returned {response.status or response.error}"
 
-    def _drain(self) -> str:
-        if self.process is None or self.process.stdout is None:
-            return ""
+    def _capture_log(self, stream: IO[str]) -> None:
         try:
-            return self.process.stdout.read()[-20_000:]
+            while chunk := stream.read(4096):
+                self.startup_log = (self.startup_log + chunk)[-20_000:]
         except (OSError, ValueError):
-            return ""
+            pass
+        finally:
+            stream.close()
+
+    def _drain(self) -> str:
+        return self.startup_log
 
     def stop(self) -> None:
         if self.process is None:
             return
-        if self.process.poll() is None:
-            self.process.terminate()
-            try:
-                self.process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                self.process.kill()
-                self.process.wait(timeout=10)
-        self.startup_log = self.startup_log or self._drain()
+        stop(self.process)
+        if self.log_reader is not None:
+            self.log_reader.join(timeout=3)
         self.process = None
         self.running = False
 
