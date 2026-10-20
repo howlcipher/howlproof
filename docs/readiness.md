@@ -21,7 +21,7 @@ The check does not infer storage durability or lost-update safety.
 | Priority | Work | Completion evidence |
 | --- | --- | --- |
 | 1 | Measure evaluator accuracy | A versioned labelled corpus with clean and defective cases, per-evaluator false-positive and false-negative counts, and repeatable runs |
-| 1 | Harden artifact execution | Document and test the trust boundary for artifact commands, subprocess descendants, inherited environment and network access; a workspace copy is not an OS sandbox |
+| Partially complete | Artifact execution | POSIX descendant cleanup, bounded service logs and managed-download permission are tested; commands retain host permissions and environment, and hostile-code containment requires a separate sandbox |
 | Completed locally | Concurrent ledger writers | Six overlapping processes retain distinct findings and IDs; stale-writer and interrupted-replacement contracts pass on a local POSIX filesystem |
 | 2 | Trace markup dataflow | Follow source values and aliases into sinks across statements; demonstrate known bypasses and clean-context fixtures without claiming whole-program analysis |
 | 2 | Calibrate AI probes | Add benign controls, labelled outcomes and repeated trials; distinguish application refusal from a broken entry point and report measured uncertainty |
@@ -68,3 +68,9 @@ not edited.
 
 Ledger hardening verification: 209 tests passed in 97.67 seconds on Python
 3.14.4, including ten new concurrency, recovery and lifecycle contracts.
+
+Runtime hardening verification: 215 tests passed in 98.98 seconds on Python
+3.14.4. Tests reproduce noisy startup, timeout/shutdown descendants, forbidden
+working directories and unauthorized Python downloads. Ruff, flake8, mypy,
+generated documentation and source/wheel builds passed. Bandit's medium/high
+gate now completes without the prior suppression warnings.

@@ -146,6 +146,13 @@ class ServiceConfig(StrictModel):
             raise ValueError("path must not traverse outside the target")
         return value
 
+    @field_validator("workdir")
+    @classmethod
+    def relative_workdir(cls, value: str) -> str:
+        if Path(value).is_absolute():
+            raise ValueError("service.workdir must be relative to the workspace")
+        return value
+
 
 class AuthorityProbe(StrictModel):
     """One request the artifact is expected to refuse, and the refusal that proves it."""

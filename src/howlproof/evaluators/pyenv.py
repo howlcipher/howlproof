@@ -43,6 +43,13 @@ def _provision(context: Context) -> PythonEnv:
     if not target.exists("pyproject.toml"):
         return PythonEnv(None, "the artifact has no pyproject.toml to install")
 
+    if not context.allow_network:
+        return PythonEnv(
+            None,
+            "Python environment provisioning can download packages; pass --allow-network "
+            "to authorize package installation",
+        )
+
     created = target.run(["python3", "-m", "venv", VENV_DIR], timeout=300)
     if not created.ok:
         return PythonEnv(
