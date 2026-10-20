@@ -450,3 +450,33 @@ These are the same commands CI runs.
 - [Readiness and remaining work](docs/readiness.md)
 
 MIT licensed. Beta for trusted local artifacts on Linux.
+
+## Plane CLI integration
+
+Proof has a CLI and versioned JSON/file contracts. To ingest a specific sealed
+bundle into Plane's existing reconciler:
+
+```bash
+howlproof plane /absolute/path/to/proof/hp-RUN-ID --run-dir /tmp/plane-proof-run
+```
+
+The run directory must be new and outside the bundle. The command verifies bundle
+integrity before invoking `howlplane reconcile`, records the advisory verdict,
+command, original result (including unavailable checks), exit codes and report,
+and times out after 120 seconds. Use `--timeout`
+or `--executable` for another bound or Plane installation. It never grants
+promotion authority. Proof verdict exits remain nonzero even when reconciliation
+succeeds; a Plane blocker returns 1 when Proof's verdict exit is zero. Tool or
+protocol errors return 2 with an error record when the run directory was created.
+
+The bridge ingests an existing evaluation; it does not re-evaluate the target or
+establish that an old bundle describes today's working tree. Evaluate the repaired
+artifact afresh before ingestion. There is no HTTP service. For remote untrusted
+artifacts, OS isolation and authenticated provenance remain outstanding.
+
+Cross-repository check:
+
+```bash
+HOWLPROOF_PLANE=$(command -v howlplane) pytest -q tests/test_plane_bridge.py
+python scripts/check_ecosystem_contracts.py --plane-root ../howlplane
+```
