@@ -377,3 +377,76 @@ def test_findings_carry_identifiers_severity_evidence_and_lifecycle(vulnerable):
         assert finding["evidence"].strip()
         assert finding["state"] == "FOUND"
         assert finding["fingerprint"]
+
+
+def test_required_evidence_must_exist_not_just_be_referenced(tmp_path):
+    from howlproof.config import ProofConfig
+    from howlproof.registry import Registry
+
+    class PhantomEvidence(Evaluator):
+        id = "fixture.evidence"
+
+        def evaluate(self, context):
+            return Outcome(
+                checks=[
+                    self.verified(
+                        "claimed evidence",
+                        "a claim alone establishes nothing",
+                        evidence_refs=["evidence/fixture.evidence/missing.txt"],
+                    )
+                ]
+            )
+
+    registry = Registry()
+    registry.register(PhantomEvidence())
+    target = tmp_path / "target"
+    target.mkdir()
+    (target / "README.md").write_text("fixture")
+    config = ProofConfig.model_validate(
+        {
+            "schema_version": 1,
+            "artifact": "fixture",
+            "profiles": ["fixture.evidence"],
+            "acceptance": [
+                {
+                    "id": "evidence",
+                    "requirement": "required_evidence",
+                    "artifacts": ["fixture.evidence/missing.txt"],
+                }
+            ],
+        }
+    )
+    result = evaluate(target, config, registry, tmp_path / "proof")
+    assert result["verdict"] == Verdict.INSUFFICIENT_EVIDENCE.value
+    assert result["criteria"][0]["outcome"] == "UNEVALUABLE"
+
+
+@pytest.mark.parametrize("timed_out", [False, True])
+def test_prompt_injection_does_not_pass_when_entrypoint_fails(tmp_path, monkeypatch, timed_out):
+    from howlproof.config import ProofConfig
+    from howlproof.evaluators.aisurface import PromptInjection
+    from howlproof.evidence import Bundle
+    from howlproof.target import CommandResult
+
+    target_dir = tmp_path / "target"
+    target_dir.mkdir()
+    target = Target.prepare(target_dir, tmp_path / "workspace")
+    monkeypatch.setattr(
+        target,
+        "run",
+        lambda *args, **kwargs: CommandResult(
+            argv=["fixture"],
+            exit_code=124 if timed_out else 1,
+            stdout="",
+            stderr="entrypoint failed",
+            duration_ms=1,
+            timed_out=timed_out,
+        ),
+    )
+    config = ProofConfig.model_validate(
+        {"schema_version": 1, "artifact": "fixture", "ai": {"entrypoint": ["fixture"]}}
+    )
+    context = Context(target, config, Bundle.create(tmp_path / "proof", target_dir))
+    outcome = PromptInjection().evaluate(context)
+    assert outcome.checks[0].status is CheckStatus.ERROR
+    assert outcome.checks[0].evidence_refs

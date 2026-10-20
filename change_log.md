@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased
+
+Added `api.concurrency` to the API profile: bounded parallel creates carrying
+unique request keys, evidence for every response, and duplicate-ID detection.
+Real local service fixtures require overlapping requests and exercise clean,
+colliding, failed and incomplete responses. This checks identifier uniqueness;
+lost-update testing remains open.
+
+Corrected false positive verification paths: absent evidence references cannot
+satisfy required-evidence criteria; duplicate check IDs and runs with no completed
+applicable check cannot produce positive verdicts; and verify-fix requires the
+original check to verify on a target that stayed unchanged during evaluation.
+AI prompt-injection probes no longer pass when their entry point fails or times out.
+
+HTTP probes validate exact local hostnames, ignore ambient proxies and return
+redirects without following them. Bundle loading rejects unindexed additions,
+internal symlinks and malformed manifest types. Nested evidence files named
+manifest.json are now included in the integrity index.
+
+Every correction was reproduced by a failing regression test before implementation.
+
 ## 0.1.0
 
 Initial release. Strict versioned evaluation contracts with typed acceptance

@@ -23,7 +23,12 @@ if TYPE_CHECKING:  # pragma: no cover - import cycle only matters for type check
 DEFAULT_HTTP_TIMEOUT = 15
 
 #: Requests only ever reach an artifact this evaluation started on this machine.
-LOCAL_PREFIXES = ("http://127.0.0.1", "http://localhost")
+LOCAL_HOSTS = frozenset({"127.0.0.1", "localhost"})
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
 
 @dataclass
@@ -67,7 +72,13 @@ def request(
         payload = json.dumps(body).encode()
     sent_headers = {"Content-Type": content_type} if payload is not None else {}
     sent_headers.update(headers or {})
-    if not url.startswith(LOCAL_PREFIXES):
+    parts = urlsplit(url)
+    if (
+        parts.scheme != "http"
+        or parts.hostname not in LOCAL_HOSTS
+        or parts.username is not None
+        or parts.password is not None
+    ):
         raise ValueError(
             f"refusing to send an evaluation request outside this machine: {url}. "
             "HowlProof attacks artifacts the operator started locally, not remote hosts."
@@ -75,9 +86,9 @@ def request(
     call = urllib.request.Request(url, data=payload, headers=sent_headers, method=method)
     started = time.monotonic()
     try:
-        # The scheme and host are restricted to a locally started artifact by the check
-        # above and by the base_url pattern the configuration already enforces.
-        with urllib.request.urlopen(call, timeout=timeout) as response:  # nosec B310
+        # Ignore ambient proxies and return redirects as evidence without following them.
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+        with opener.open(call, timeout=timeout) as response:  # nosec B310
             content = response.read().decode("utf-8", errors="replace")
             return HttpResponse(
                 status=response.status,

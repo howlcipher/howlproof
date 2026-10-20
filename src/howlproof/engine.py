@@ -129,9 +129,13 @@ def evaluate(
             finding.state = FindingState.REGRESSED
     ledger.save()
 
-    evidence_names = {ref for check in checks for ref in check.evidence_refs} | {
-        ref.removeprefix("evidence/") for check in checks for ref in check.evidence_refs
+    # Acceptance rests on files actually produced, never on an evaluator's claims.
+    evidence_files = {
+        p.relative_to(bundle.path).as_posix()
+        for p in (bundle.path / "evidence").rglob("*")
+        if p.is_file() and not p.is_symlink() and bundle.path in p.resolve().parents
     }
+    evidence_names = evidence_files | {ref.removeprefix("evidence/") for ref in evidence_files}
 
     outcome = derive(
         config=config,

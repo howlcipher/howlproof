@@ -5,6 +5,7 @@ from __future__ import annotations
 from howlproof.evaluators import (
     aisurface,
     code,
+    concurrency,
     deps,
     httpsurface,
     markup,
@@ -16,7 +17,19 @@ from howlproof.evaluators import (
 )
 from howlproof.registry import Registry
 
-MODULES = (code, secrets, supplychain, markup, httpsurface, web, aisurface, operator, release, deps)
+MODULES = (
+    concurrency,
+    code,
+    secrets,
+    supplychain,
+    markup,
+    httpsurface,
+    web,
+    aisurface,
+    operator,
+    release,
+    deps,
+)
 
 
 def build_registry() -> Registry:

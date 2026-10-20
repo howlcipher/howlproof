@@ -284,12 +284,16 @@ def verify_fix(
             c["check_id"] for c in result["checks"] if c["check_id"].startswith(evaluator_id)
         ],
     }
-    inconclusive = [
+    relevant = [
         c
         for c in result["checks"]
-        if c["check_id"].startswith(evaluator_id)
-        and c["status"] in {"UNAVAILABLE", "SKIPPED", "ERROR", "NOT_APPLICABLE"}
+        if c["check_id"] == evaluator_id or c["check_id"].startswith(evaluator_id + ".")
     ]
+    original = [c for c in relevant if c["check_id"] == finding.get("check_id")]
+    target_state = result["target"]
+    invalid_target = not target_state.get("tree_digest_after") or target_state.get(
+        "tree_digest_before"
+    ) != target_state.get("tree_digest_after")
     if still:
         return FixResult(
             FindingState.RETESTED.value,
@@ -297,12 +301,11 @@ def verify_fix(
             True,
             detail,
         )
-    if inconclusive:
+    if invalid_target or not original or any(c["status"] != "VERIFIED" for c in relevant):
         return FixResult(
             FindingState.RETESTED.value,
-            "the evaluator that raised this finding could not run against the changed artifact ("
-            + "; ".join(f"{c['check_id']} is {c['status']}: {c['reason']}" for c in inconclusive)
-            + "), so its absence is not evidence of a fix",
+            "the original check did not complete successfully against an unchanged target; "
+            "the finding's absence is not evidence of a fix",
             False,
             detail,
         )

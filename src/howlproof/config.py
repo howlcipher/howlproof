@@ -160,9 +160,21 @@ class AuthorityProbe(StrictModel):
     description: str = Field(default="", max_length=500)
 
 
+class ConcurrentCreate(StrictModel):
+    """Bounded parallel creates with an explicit unique request field and response ID."""
+
+    path: str = Field(pattern=r"^/[A-Za-z0-9_./-]{0,200}$")
+    body: dict[str, Any] = Field(default_factory=dict)
+    request_id_field: str = Field(default="howlproof_request_id", pattern=r"^[A-Za-z_][\w-]{0,60}$")
+    id_field: str = Field(default="id", pattern=r"^[A-Za-z_][\w-]{0,60}$")
+    requests: int = Field(default=10, ge=2, le=100)
+    workers: int = Field(default=4, ge=2, le=16)
+
+
 class ApiConfig(StrictModel):
     """Endpoints and denial expectations for the functional and security adversaries."""
 
+    concurrent_create: ConcurrentCreate | None = None
     endpoints: list[str] = Field(default_factory=list, max_length=100)
     mutating_endpoint: str = ""
     mutating_body: dict[str, Any] = Field(default_factory=dict)

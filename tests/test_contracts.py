@@ -386,3 +386,38 @@ def test_a_ledger_from_an_incompatible_version_is_refused(tmp_path):
 
 def test_the_declared_version_matches_the_package():
     assert howlproof.__version__ == "0.1.0"
+
+
+def test_bundle_rejects_an_unindexed_finding(tmp_path):
+    bundle = _seal(tmp_path)
+    (bundle.path / "findings" / "injected.json").write_text('{"title": "untrusted"}')
+    with pytest.raises(BundleError, match="unindexed"):
+        Bundle.load(bundle.path)
+
+
+def test_bundle_rejects_internal_symlinks(tmp_path):
+    bundle = _seal(tmp_path)
+    report = bundle.path / "result.md"
+    report.unlink()
+    report.symlink_to("target.json")
+    with pytest.raises(BundleError, match="(path|symlink)"):
+        Bundle.load(bundle.path)
+
+
+@pytest.mark.parametrize(
+    "manifest",
+    [[], None, {"schema": "howlproof.run/v1", "authority": "ADVISORY", "file_hashes": []}],
+)
+def test_malformed_bundle_is_a_bundle_error(tmp_path, manifest):
+    bundle = _seal(tmp_path)
+    (bundle.path / "manifest.json").write_text(json.dumps(manifest))
+    with pytest.raises(BundleError):
+        Bundle.load(bundle.path)
+
+
+def test_nested_manifests_are_indexed_as_evidence(tmp_path):
+    bundle = _seal(tmp_path)
+    bundle.write_json("evidence/fixture/manifest.json", {"fixture": True})
+    bundle.seal({"artifact": "fixture"})
+    loaded = Bundle.load(bundle.path)
+    assert "evidence/fixture/manifest.json" in loaded["manifest"]["file_hashes"]
