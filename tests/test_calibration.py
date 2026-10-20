@@ -45,7 +45,7 @@ def test_scoring_keeps_false_positives_and_missed_defects():
 def test_repository_corpus_matches_its_labels(tmp_path):
     report = calibrate(ROOT / "calibration.json", tmp_path / "proof", build_registry())
     assert report["passed"]
-    assert len(report["cases"]) == 8
+    assert len(report["cases"]) == 10
     assert len(report["by_evaluator"]) == 4
     assert all(row["conclusive"] and row["matched"] for row in report["cases"])
     assert report["corpus_hash"]

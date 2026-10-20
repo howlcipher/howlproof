@@ -52,6 +52,7 @@ class MarkupEscaping(Evaluator):
     """Check that the artifact's escaping is adequate for the context each value lands in."""
 
     id = "markup.escaping"
+    version = "2"
     adversary = Adversary.SECURITY
 
     def applicable(self, context: Context) -> tuple[bool, str]:
@@ -88,7 +89,8 @@ class MarkupEscaping(Evaluator):
         limitation = (
             "static reading of HTML construction sites and the artifact's own escape function; "
             "it shows that an escaper's character set is insufficient for a context, not that a "
-            "particular input reaches that context at runtime"
+            "particular input reaches that context at runtime; sink scanning is a bounded "
+            "lexical heuristic, not inter-statement dataflow or a JavaScript parser"
         )
         if not issues:
             return Outcome(
@@ -268,6 +270,39 @@ def _js_string_contexts(
     return issues
 
 
+def _javascript_sink_expression(tail: str) -> str:
+    """Bound the lexical heuristic to one sink call or assignment statement.
+
+    Quote/escape and bracket tracking prevents a semicolon inside a literal or a
+    nested expression from terminating the sink. This is not a JavaScript parser
+    or inter-statement taint analysis; the existing bounded lookahead still applies.
+    """
+    quote = ""
+    escaped = False
+    depth = 0
+    call = tail.lstrip().startswith("(")
+    for index, char in enumerate(tail):
+        if quote:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = ""
+            continue
+        if char in "\"'`":
+            quote = char
+        elif char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth -= 1
+            if depth < 0 or (call and depth == 0):
+                return tail[: index + 1]
+        elif char == ";" and depth == 0:
+            return tail[: index + 1]
+    return tail
+
+
 def _unescaped_sinks(name: str, content: str, markup: Any) -> list[dict[str, Any]]:
     """Interpolation into an HTML sink with no escape function anywhere in the expression."""
     sinks: list[str] = list(getattr(markup, "sink_functions", []))
@@ -276,6 +311,9 @@ def _unescaped_sinks(name: str, content: str, markup: Any) -> list[dict[str, Any
     for sink in sinks:
         for match in re.finditer(rf"\b{re.escape(sink)}\b", content):
             window = content[match.start() : match.start() + STRING_WINDOW]
+            if name.lower().endswith((".js", ".mjs", ".cjs", ".ts", ".jsx", ".tsx")):
+                tail = window[len(match.group(0)) :]
+                window = match.group(0) + _javascript_sink_expression(tail)
             if not INTERPOLATION.search(window):
                 continue
             if any(re.search(rf"\b{re.escape(f)}\b", window) for f in escapes):

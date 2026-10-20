@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "name": "source-fixtures-v1",
+  "name": "source-fixtures-v2",
   "cases": [
     {
       "id": "secrets.scan.defective",
@@ -60,6 +60,20 @@
       "id": "release.version.clean",
       "target": "tests/fixtures/version_consistent",
       "evaluator": "release.version",
+      "expected_rules": []
+    },
+    {
+      "id": "markup.boundary.defective",
+      "target": "tests/fixtures/markup_boundary_defective",
+      "evaluator": "markup.escaping",
+      "expected_rules": [
+        "markup.sink_without_escaping"
+      ]
+    },
+    {
+      "id": "markup.boundary.clean",
+      "target": "tests/fixtures/markup_boundary_clean",
+      "evaluator": "markup.escaping",
       "expected_rules": []
     }
   ]
