@@ -265,10 +265,31 @@ class CliConfig(StrictModel):
     needs_python_env: bool = False
 
 
+class AiSchemaProbe(StrictModel):
+    """Observable adapter protocol for the fixed closed result:string probe."""
+
+    accepted_marker: str = Field(min_length=1, max_length=200)
+    rejected_marker: str = Field(min_length=1, max_length=200)
+    rejection_exit_code: int = Field(default=1, ge=1, le=125)
+    timeout_seconds: int = Field(default=10, ge=1, le=60)
+
+    @model_validator(mode="after")
+    def markers_are_distinct(self) -> AiSchemaProbe:
+        if not self.accepted_marker.strip() or not self.rejected_marker.strip():
+            raise ValueError("schema probe markers must contain non-whitespace text")
+        if (
+            self.accepted_marker in self.rejected_marker
+            or self.rejected_marker in self.accepted_marker
+        ):
+            raise ValueError("schema probe markers must not overlap")
+        return self
+
+
 class AiConfig(StrictModel):
     """Declared AI surface. Absent means the AI adversary reports NOT_APPLICABLE, honestly."""
 
     entrypoint: list[str] = Field(default_factory=list, max_length=20)
+    schema_probe: AiSchemaProbe | None = None
     untrusted_input_paths: list[str] = Field(default_factory=list, max_length=50)
     policy_markers: list[str] = Field(default_factory=list, max_length=50)
 

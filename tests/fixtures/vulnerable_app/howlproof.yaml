@@ -47,6 +47,9 @@ api:
       expect_body_contains: AUTHORITY_DENIED
 
 ai:
+  schema_probe:
+    accepted_marker: "parsed model response:"
+    rejected_marker: "rejected:"
   entrypoint:
     - python3
     - agent.py

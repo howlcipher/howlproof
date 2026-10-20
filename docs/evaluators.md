@@ -57,7 +57,7 @@ tooling is absent, and attaches to each result a statement of what the check doe
 | Check | Version | What it does | Needs | Profiles |
 | --- | --- | --- | --- | --- |
 | `ai.promptinjection` | v1 | Feed indirect-injection text through the declared entry point and read the reply. | nothing extra | ai, default |
-| `ai.schema` | v1 | A malformed model response must not become a trusted value. | nothing extra | ai, default |
+| `ai.schema` | v2 | A malformed model response must not become a trusted value. | nothing extra | ai, default |
 
 ## Operator adversary
 

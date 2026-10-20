@@ -26,7 +26,7 @@ The check does not infer storage durability or lost-update safety.
 | Partially complete | Artifact execution | POSIX descendant cleanup, bounded service logs and managed-download permission are tested; commands retain host permissions and environment, and hostile-code containment requires a separate sandbox |
 | Completed locally | Concurrent ledger writers | Six overlapping processes retain distinct findings and IDs; stale-writer and interrupted-replacement contracts pass on a local POSIX filesystem |
 | 2 | Trace markup dataflow | Follow source values and aliases into sinks across statements; demonstrate known bypasses and clean-context fixtures without claiming whole-program analysis |
-| 2 | Calibrate AI probes | Add benign controls, labelled outcomes and repeated trials; distinguish application refusal from a broken entry point and report measured uncertainty |
+| Partially complete | Calibrate AI probes | Schema v2 uses a valid-response control and labelled adapter outcomes; explicit rejection differs from crash, timeout or ignored simulation. Benign prompt-injection controls, repeated model trials and uncertainty measurement remain open |
 | 2 | Detect lost updates | Add declared state observations before and after parallel mutations and compare expected state deltas, alongside response-ID checks |
 | 2 | Inject dependency faults | Exercise an explicitly declared local dependency through timeout, disconnect and invalid-response faults; keep simulation labels precise |
 | Partially complete | Authenticate exported evidence | Detached SSH manifest signatures and explicit allowed-signers policy reject changed evidence, reindexed forgeries and unknown identities. Key provisioning, rotation and revocation procedures remain consumer-owned |
