@@ -24,6 +24,7 @@ The check does not infer storage durability or lost-update safety.
 | --- | --- | --- |
 | Partially complete | Measure evaluator accuracy | A versioned ten-case clean/defective corpus reports per-rule counts for four source evaluators. Expand coverage and add independent holdouts before general accuracy claims |
 | Partially complete | Artifact execution | POSIX descendant cleanup, bounded service logs and managed-download permission are tested; commands retain host permissions and environment, and hostile-code containment requires a separate sandbox |
+| Implemented and gated | Operator onboarding | `init` creates an explicit, non-overwriting contract; draft acceptance cannot pass. CI installs the wheel outside the checkout and exercises the first-project CLI workflow on supported Python versions |
 | Completed locally | Concurrent ledger writers | Six overlapping processes retain distinct findings and IDs; stale-writer and interrupted-replacement contracts pass on a local POSIX filesystem |
 | 2 | Trace markup dataflow | Follow source values and aliases into sinks across statements; demonstrate known bypasses and clean-context fixtures without claiming whole-program analysis |
 | Partially complete | Calibrate AI probes | Schema v2 uses a valid-response control and labelled adapter outcomes; explicit rejection differs from crash, timeout or ignored simulation. Benign prompt-injection controls, repeated model trials and uncertainty measurement remain open |

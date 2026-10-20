@@ -78,6 +78,39 @@ HTTP authorization and malformed input, AI handling, CLI behavior and browser
 execution. Its neighbour `tests/fixtures/clean_app` has the same surfaces built
 correctly, raises none of those findings, and is not rejected.
 
+## Start evaluating your own project
+
+Only evaluate operator-trusted local commands; execution is not an OS sandbox.
+Create an explicit contract before drawing conclusions:
+
+```bash
+howlproof init ../my-project --profile secrets.scan --require-check secrets.scan
+howlproof validate ../my-project/howlproof.yaml
+howlproof evaluate ../my-project --evidence-root /tmp/my-project-proof --json
+howlproof report /tmp/my-project-proof
+```
+
+This example requires only the credential-pattern scan. A `PROVEN` result applies
+to that declared scope, not overall project readiness. Review the contract and
+add the actual functional, security and reliability requirements before relying
+on it. Discover available checks with `howlproof profiles` and
+`howlproof profiles python`.
+
+`init` defaults to the source-only `secrets.scan` profile and writes a new
+`howlproof.yaml` with private permissions. Without `--require-check`, it creates
+a draft with no acceptance criteria, which cannot reach `PROVEN`. Repeat
+`--profile` and `--require-check` to select scope and required evaluator IDs;
+required IDs must belong to the selected profiles. Checks with dynamic child IDs
+need manually reviewed acceptance criteria. `--artifact` sets a stable identity;
+the default is a sanitized directory name. Keep identities unique in a shared
+finding ledger.
+
+Initialization requires an existing target directory and refuses every supported
+existing contract name, including dangling links. It does not install tooling,
+run project commands, infer services or grant network access. Python provisioning
+and dependency checks may require `--allow-network`; unavailable tooling remains
+recorded evidence rather than a pass.
+
 ## Checks are not all the same kind of answer
 
 | Status | Meaning |
