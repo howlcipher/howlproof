@@ -186,6 +186,31 @@ howlproof evaluate . --profile secrets.scan     # a single evaluator, by name
 be read and tested rather than inferred. Third-party evaluators register through
 the `howlproof.evaluators` entry-point group.
 
+## Concurrent create checks
+
+The API profile includes `api.concurrency`, enabled only when an artifact declares
+an endpoint that creates a distinct resource for each distinct request key:
+
+```yaml
+api:
+  concurrent_create:
+    path: /api/items
+    body: {name: probe}
+    request_id_field: request_key
+    id_field: id
+    requests: 10
+    workers: 4
+```
+
+Each POST receives a fresh request key in the named body field. The endpoint must
+return a JSON object carrying a string or integer ID. The check detects duplicate
+response IDs across successful creates. Failed requests, invalid JSON and missing
+IDs produce `ERROR`, never a clean uniqueness result. Requests are bounded to
+100, workers to 16, and each HTTP call has a ten-second timeout. This is a single
+burst against the service started in the workspace; it does not establish absence
+of lost updates or durable storage. Use `requirement: checks_pass` with `checks: [api.concurrency]` in an
+acceptance criterion when successful execution of this check is required.
+
 ## Acceptance criteria
 
 An artifact declares its own contract in `howlproof.yaml`. Validation is strict:
@@ -212,6 +237,13 @@ exclusions:
 `tool_required` is the important one: a named tool that is absent is a hard
 failure, never a silent skip. Any active exclusion prevents `PROVEN` and an
 expired one routes to `REQUIRES_HUMAN`.
+
+A bundle loader rejects unindexed files and symbolic links, including links to
+files inside the bundle. Required-evidence criteria inspect files actually written,
+not just references returned by a check. Duplicate check identifiers and runs with
+no completed applicable check cannot support a positive verdict. `verify-fix`
+requires the original check to return `VERIFIED` against a target whose digest
+remained unchanged during the rerun.
 
 ## Security model
 
@@ -373,5 +405,6 @@ These are the same commands CI runs.
 - [Evaluators](docs/evaluators.md) — every check, what it establishes and what it does not
 - [Dogfood](docs/dogfood.md) — real evaluations of real ecosystem components
 - [Roadmap](ROADMAP.md)
+- [Readiness and remaining work](docs/readiness.md)
 
 MIT licensed. Experimental, not production-ready.

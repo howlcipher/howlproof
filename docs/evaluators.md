@@ -14,6 +14,7 @@ tooling is absent, and attaches to each result a statement of what the check doe
 
 | Check | Version | What it does | Needs | Profiles |
 | --- | --- | --- | --- | --- |
+| `api.concurrency` | v1 | Challenge response identifier uniqueness under concurrent create requests. | nothing extra | api |
 | `cli.contract` | v1 | Misuse the artifact's command line the way a tired operator would. | nothing extra | code, default |
 | `go.fmt` | v1 | gofmt reports by printing names, so exit status alone would be misleading. | `gofmt` | code, default, go |
 | `go.test` | v1 | Run the artifact's own Go tests. | `go` | code, default, go |
@@ -76,7 +77,7 @@ tooling is absent, and attaches to each result a statement of what the check doe
 | Profile | Evaluators | Description |
 | --- | --- | --- |
 | `ai` | 2 | Indirect prompt injection and structured-response handling. NOT_APPLICABLE unless the artifact declares an AI entry point. |
-| `api` | 4 | A running HTTP surface, its refusals and its behaviour under malformed input. |
+| `api` | 5 | A running HTTP surface, its refusals and its behaviour under malformed input. |
 | `code` | 9 | The artifact own build, lint, type and test gates, reported honestly. |
 | `default` | 27 | A broad pass over whatever surfaces the artifact declares. Evaluators that find no surface report NOT_APPLICABLE rather than passing vacuously. |
 | `documentation` | 4 | Absolute claims, files documented as synchronised, and operator-facing guards. |

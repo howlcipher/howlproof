@@ -166,7 +166,7 @@ class Bundle:
         manifest["file_hashes"] = {
             str(p.relative_to(self.path)): digest_bytes(p.read_bytes())
             for p in sorted(self.path.rglob("*"))
-            if p.is_file() and p.name != "manifest.json"
+            if p.is_file() and p != self.path / "manifest.json"
         }
         self.write_json("manifest.json", manifest)
         return manifest
@@ -180,15 +180,34 @@ class Bundle:
         manifest_path = path / "manifest.json"
         if manifest_path.is_symlink() or not manifest_path.is_file():
             raise BundleError(f"no readable manifest at {path}")
-        manifest = json.loads(manifest_path.read_text())
+        try:
+            manifest = json.loads(manifest_path.read_text())
+        except (OSError, ValueError) as error:
+            raise BundleError("manifest is not readable JSON") from error
+        if not isinstance(manifest, dict):
+            raise BundleError("manifest must be a JSON object")
         if manifest.get("schema") != RUN_SCHEMA:
             raise BundleError(f"unsupported bundle schema: {manifest.get('schema')!r}")
         if manifest.get("authority") != AUTHORITY:
             raise BundleError("invalid bundle authority: HowlProof evidence is ADVISORY only")
-        hashes = manifest.get("file_hashes") or {}
+        hashes = manifest.get("file_hashes")
+        if not isinstance(hashes, dict) or not all(
+            isinstance(name, str) and isinstance(value, str) for name, value in hashes.items()
+        ):
+            raise BundleError("bundle integrity index must map paths to hashes")
         missing = REQUIRED_FILES - set(hashes)
         if missing:
             raise BundleError(f"bundle integrity index is incomplete: {sorted(missing)}")
+        # Reject links before resolution, including links to other files inside the bundle.
+        actual = set()
+        for entry in path.rglob("*"):
+            if entry.is_symlink():
+                raise BundleError(f"invalid bundle symlink: {entry.relative_to(path)}")
+            if entry.is_file() and entry != manifest_path:
+                actual.add(entry.relative_to(path).as_posix())
+        unindexed = actual - set(hashes)
+        if unindexed:
+            raise BundleError(f"bundle contains unindexed files: {sorted(unindexed)}")
         for name, expected in hashes.items():
             candidate = (path / name).resolve()
             if path not in candidate.parents or candidate.is_symlink():

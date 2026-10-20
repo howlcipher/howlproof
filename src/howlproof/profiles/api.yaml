@@ -5,3 +5,4 @@ evaluators:
   - http.abuse
   - api.idempotency
   - reliability.partial_request
+  - api.concurrency

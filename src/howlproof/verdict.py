@@ -388,6 +388,13 @@ def derive(
             ["No check produced a result, so nothing about this artifact was established."],
         )
 
+    if len({c.check_id for c in checks}) != len(checks):
+        return decide(
+            Verdict.INSUFFICIENT_EVIDENCE,
+            "duplicate_check_ids",
+            ["Repeated check identifiers make acceptance criteria ambiguous."],
+        )
+
     if not config.acceptance:
         return decide(
             Verdict.INSUFFICIENT_EVIDENCE,
@@ -435,6 +442,13 @@ def derive(
         ]
         rationale += [f"exclusion for {e.check} expired on {e.expires}" for e in expired_exclusions]
         return decide(Verdict.REQUIRES_HUMAN, "human_judgment_required", rationale)
+
+    if not any(c.status in {CheckStatus.VERIFIED, CheckStatus.FAILED} for c in checks):
+        return decide(
+            Verdict.INSUFFICIENT_EVIDENCE,
+            "no_conclusive_checks",
+            ["No applicable check completed, so a positive verdict cannot be supported."],
+        )
 
     if active_exclusions or inconclusive or unresolved or not_applicable or optional_shortfalls:
         rationale = [f"active exclusion: {e.check} ({e.reason})" for e in active_exclusions]

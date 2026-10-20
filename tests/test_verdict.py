@@ -302,3 +302,17 @@ def test_an_optional_criterion_does_not_decide_the_verdict():
         AVAILABLE,
     )
     assert outcome.verdict is Verdict.CONDITIONALLY_PROVEN
+
+
+@pytest.mark.parametrize(
+    "status",
+    [CheckStatus.UNAVAILABLE, CheckStatus.SKIPPED, CheckStatus.ERROR, CheckStatus.NOT_APPLICABLE],
+)
+def test_no_conclusive_checks_cannot_support_a_positive_verdict(status):
+    config = contract(acceptance=[{"id": "findings", "requirement": "max_findings", "limit": 0}])
+    assert derive(config, [check(status)], [], AVAILABLE).verdict is Verdict.INSUFFICIENT_EVIDENCE
+
+
+def test_duplicate_check_ids_cannot_hide_a_failed_result():
+    checks = [check(CheckStatus.FAILED), check()]
+    assert derive(contract(), checks, [], AVAILABLE).verdict is Verdict.INSUFFICIENT_EVIDENCE

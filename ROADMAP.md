@@ -21,8 +21,9 @@ smaller number of them genuinely hard to pass.
 - Replace the fixed `ai.promptinjection` corpus with a measured suite carrying a
   labelled baseline, so a clean result means something quantitative rather than
   "these five strings did not work".
-- Concurrency as a first-class adversary: parallel mutating requests against a
-  declared endpoint, checking for lost updates and colliding identifiers.
+- Concurrency: `api.concurrency` now sends bounded parallel creates against a
+  declared endpoint and checks response IDs for collisions. Lost-update testing
+  and durable-state assertions remain open.
 - Real fault injection through a local proxy for artifacts that declare an
   upstream dependency, which today is the largest gap the `SIMULATED` label
   covers for.
