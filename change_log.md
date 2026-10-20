@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+Added optional detached SSH manifest signatures with explicit key selection,
+consumer-owned allowed-signers policy, a dedicated signature namespace and bounded
+noninteractive operations. Verification authenticates intact evidence while retaining
+its original advisory verdict. Tests reject tampering, reindexed forgeries and
+untrusted identities. This provides authenticity, not execution isolation.
+
 Added `howlproof plane` to verify an exact sealed bundle and ingest advisory
 findings through Plane’s existing CLI with timeout cleanup, fresh run records
 and preserved verdict exits. Added pinned real-CLI integration for rejection,

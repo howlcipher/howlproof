@@ -480,3 +480,35 @@ Cross-repository check:
 HOWLPROOF_PLANE=$(command -v howlplane) pytest -q tests/test_plane_bridge.py
 python scripts/check_ecosystem_contracts.py --plane-root ../howlplane
 ```
+
+## Evidence authenticity
+
+Manifest hashes detect changes. Optional detached SSH signatures also let a
+consumer authenticate who signed that exact manifest. Choose a key explicitly:
+
+```bash
+howlproof attest /path/to/hp-RUN-ID --key /path/to/signing-key --output /path/to/run.sig
+howlproof verify-attestation /path/to/hp-RUN-ID --signature /path/to/run.sig \
+  --allowed-signers /path/to/allowed-signers --identity proof-ci
+```
+
+The allowed-signers file is consumer-owned OpenSSH policy, for example
+`proof-ci namespaces="howlproof-evidence" ssh-ed25519 PUBLIC_KEY`. Distribute
+trusted public keys independently of received evidence. OpenSSH `ssh-keygen`
+with SSH signature support is required. Signing never selects an ambient key;
+protected keys need an already-authorized SSH agent. Interactive prompts are
+disabled and operations have a 30-second deadline. Output must be a new file
+outside the bundle and evaluated target; signatures do not alter sealed bundles.
+
+Verification checks both bundle integrity and the signature in the
+`howlproof-evidence` namespace. Exit 0 authenticates the recorded evidence; the
+JSON still carries its original advisory verdict. It does not establish that
+an old run describes today's target, detector accuracy, or permission to promote.
+Invalid signatures return 4; missing/invalid input follows the usual CLI errors.
+Key issuance, revocation and allowed-signers maintenance belong to the consumer.
+
+For authenticated Plane ingestion, pass `--signature`, `--allowed-signers` and
+`--identity` together to `howlproof plane`. Authentication must succeed before
+Plane starts or its run directory is created. The run record includes the
+verified identity and manifest hash. Without these flags, ingestion records that
+authentication was not requested and retains the trusted-local-artifact scope.

@@ -15,7 +15,12 @@ from howlproof.process import stop
 
 
 def ingest(
-    result: dict[str, Any], run_dir: Path, *, executable: str = "howlplane", timeout: float = 120
+    result: dict[str, Any],
+    run_dir: Path,
+    *,
+    executable: str = "howlplane",
+    timeout: float = 120,
+    authentication: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Persist an advisory handoff in a fresh directory and reconcile it in Plane."""
     if not math.isfinite(timeout) or timeout <= 0:
@@ -30,6 +35,7 @@ def ingest(
         "verdict": result["verdict"],
         "proof_exit_code": proof_exit,
         "status": "ERROR",
+        "authentication": authentication or {"authenticated": False, "reason": "not requested"},
     }
     process = None
     try:

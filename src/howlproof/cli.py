@@ -17,6 +17,7 @@ from pydantic import ValidationError
 from yaml import YAMLError
 
 from howlproof import __version__
+from howlproof.attestation import SignatureError
 from howlproof.config import ProofConfig, default_config, find_config, read_config
 from howlproof.evaluators import build_registry
 from howlproof.evidence import Bundle, BundleError, environment_probe, find_bundle
@@ -156,6 +157,20 @@ def build_parser() -> argparse.ArgumentParser:
     )
     plane.add_argument("--executable", default="howlplane")
     plane.add_argument("--timeout", type=float, default=120)
+    plane.add_argument("--signature", type=Path)
+    plane.add_argument("--allowed-signers", type=Path)
+    plane.add_argument("--identity")
+    attest = commands.add_parser("attest", help="sign an intact bundle with an explicit SSH key")
+    attest.add_argument("bundle", type=Path)
+    attest.add_argument("--key", type=Path, required=True)
+    attest.add_argument("--output", type=Path, required=True)
+    authenticate = commands.add_parser(
+        "verify-attestation", help="authenticate a bundle using explicit SSH trust"
+    )
+    authenticate.add_argument("bundle", type=Path)
+    authenticate.add_argument("--signature", type=Path, required=True)
+    authenticate.add_argument("--allowed-signers", type=Path, required=True)
+    authenticate.add_argument("--identity", required=True)
     return parser
 
 
@@ -164,6 +179,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         return _dispatch(args)
+    except SignatureError as error:
+        return _fail(str(error), EXIT_INTEGRITY)
     except (BundleError, LedgerError, TargetError, FixRefused, KeyError) as error:
         return _fail(str(error).strip("'"), EXIT_USAGE)
     except ValidationError as error:
@@ -226,17 +243,48 @@ def _dispatch(args: argparse.Namespace) -> int:
         return _accept(args)
     if args.command == "compare":
         return _compare(args)
+    if args.command == "attest":
+        from howlproof.attestation import sign
+
+        print(json.dumps(sign(args.bundle, args.key, args.output)))
+        return 0
+    if args.command == "verify-attestation":
+        from howlproof.attestation import verify
+
+        print(json.dumps(verify(args.bundle, args.signature, args.allowed_signers, args.identity)))
+        return 0
     if args.command == "plane":
         from howlproof.plane import ingest
 
+        authentication = None
+        if any((args.signature, args.allowed_signers, args.identity)):
+            if not all((args.signature, args.allowed_signers, args.identity)):
+                raise ValueError(
+                    "signed ingestion requires --signature, --allowed-signers and --identity"
+                )
+            from howlproof.attestation import verify
+
+            authentication = verify(
+                args.bundle, args.signature, args.allowed_signers, args.identity
+            )
         bundle = Bundle.load(args.bundle.resolve())
+        if authentication:
+            import hashlib
+
+            current_hash = hashlib.sha256((args.bundle / "manifest.json").read_bytes()).hexdigest()
+            if current_hash != authentication["manifest_sha256"]:
+                raise SignatureError("manifest changed before ingestion")
         if args.run_dir.resolve().is_relative_to(args.bundle.resolve()):
             raise ValueError("Plane run directory must be outside the sealed bundle")
         target_root = bundle["result"].get("target", {}).get("root")
         if target_root and args.run_dir.resolve().is_relative_to(Path(target_root).resolve()):
             raise ValueError("Plane run directory must be outside the evaluated target")
         record = ingest(
-            bundle["result"], args.run_dir, executable=args.executable, timeout=args.timeout
+            bundle["result"],
+            args.run_dir,
+            executable=args.executable,
+            timeout=args.timeout,
+            authentication=authentication,
         )
         print(json.dumps(record))
         return int(record["exit_code"])
