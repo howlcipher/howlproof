@@ -22,7 +22,7 @@ The check does not infer storage durability or lost-update safety.
 | --- | --- | --- |
 | 1 | Measure evaluator accuracy | A versioned labelled corpus with clean and defective cases, per-evaluator false-positive and false-negative counts, and repeatable runs |
 | 1 | Harden artifact execution | Document and test the trust boundary for artifact commands, subprocess descendants, inherited environment and network access; a workspace copy is not an OS sandbox |
-| 1 | Support concurrent ledger writers | Multiple evaluation processes must preserve all findings and allocate unambiguous identities without lost writes; test interruption recovery as well |
+| Completed locally | Concurrent ledger writers | Six overlapping processes retain distinct findings and IDs; stale-writer and interrupted-replacement contracts pass on a local POSIX filesystem |
 | 2 | Trace markup dataflow | Follow source values and aliases into sinks across statements; demonstrate known bypasses and clean-context fixtures without claiming whole-program analysis |
 | 2 | Calibrate AI probes | Add benign controls, labelled outcomes and repeated trials; distinguish application refusal from a broken entry point and report measured uncertainty |
 | 2 | Detect lost updates | Add declared state observations before and after parallel mutations and compare expected state deltas, alongside response-ID checks |
@@ -65,3 +65,6 @@ INSUFFICIENT_EVIDENCE for an artifact with no contract with exit 40. Both fixtur
 bundles passed integrity loading and rendered all five ecosystem handoffs. Fresh
 evidence is under `/tmp/howlproof-final-smoke-jd35y67j`; historical bundles were
 not edited.
+
+Ledger hardening verification: 209 tests passed in 97.67 seconds on Python
+3.14.4, including ten new concurrency, recovery and lifecycle contracts.
