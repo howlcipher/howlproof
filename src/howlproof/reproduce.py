@@ -24,7 +24,7 @@ from howlproof.evidence import Bundle
 from howlproof.model import FindingState
 from howlproof.registry import Context, Registry
 from howlproof.service import ServiceRunner, request
-from howlproof.target import Target
+from howlproof.target import Target, TargetMutatedError
 
 SUPPORTED_KINDS = frozenset({"file_probe", "command", "http_request"})
 
@@ -54,12 +54,14 @@ class ReplayResult:
     outcome: str
     reason: str
     steps: list[StepOutcome]
+    integrity_violation: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "outcome": self.outcome,
             "reason": self.reason,
             "steps": [step.to_dict() for step in self.steps],
+            "integrity_violation": self.integrity_violation,
         }
 
 
@@ -104,6 +106,10 @@ def replay(finding: dict[str, Any], target_root: Path, config: ProofConfig) -> R
         else:
             for step in steps:
                 outcomes.append(_run_step(step, target, ""))
+        try:
+            target.verify_unchanged()
+        except TargetMutatedError as error:
+            return ReplayResult(NOT_SUPPORTED, str(error), outcomes, integrity_violation=True)
 
     asserted = [step for step in outcomes if step.matched is not None]
     if not asserted:
@@ -250,6 +256,8 @@ def verify_fix(
     """Re-run the evaluator that raised the finding, against a genuinely changed artifact."""
     from howlproof.engine import evaluate  # imported here to avoid a module cycle
 
+    if not recorded_tree_digest:
+        raise FixRefused("an original tree digest is required to verify a claimed fix")
     with tempfile.TemporaryDirectory(prefix="howlproof-fixcheck-") as scratch:
         probe = Target.prepare(target_root, Path(scratch) / "probe", config.include_ignored)
         current = probe.digest_before

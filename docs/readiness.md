@@ -105,3 +105,12 @@ installation, and passed all eight source calibration cases with all 29 evaluato
 registrations and packaged profiles available. Release-version checking accepts
 its matching 0.2.0b1 declarations. Site QA, SEO, generated docs, Ruff, flake8,
 mypy, dependency audit, source/wheel builds and the configured Bandit gate passed.
+
+Final beta boundary gate: 233 tests passed in 102.41 seconds on Python 3.14.4.
+Fix verification now uses the original bundle's artifact identity and tree digest,
+refuses a missing baseline, and cannot close an unrelated legacy ledger ID.
+Replay invalidates mutation of the original, workspace copying refuses concurrent
+edits, and missing service directories remain explicit unavailable surfaces.
+Combined line/branch coverage is 78%; subprocess-driven CLI paths remain partly
+outside that measurement. The final installed wheel passed the eight-case corpus;
+fresh smoke evidence is under `/tmp/howlproof-final-wheel-hjihxw6_`.

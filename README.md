@@ -71,13 +71,12 @@ howlproof findings /tmp/proof
 howlproof report /tmp/proof
 ```
 
-`tests/fixtures/vulnerable_app` is a deliberately defective artifact shipped with
-the package. The evaluation exits `30` and raises twelve findings: a committed credential, four
-workflow weaknesses, an escaper that is wrong for the context it is used in, an
-HTML sink with no escaping at all, a documented sync that has drifted, broken
-links, missing page metadata, rendering defects at a declared width, and its own
-unqualified documentation claims. Its neighbour `tests/fixtures/clean_app` is the
-same shapes built correctly, raises none of those, and is not rejected.
+`tests/fixtures/vulnerable_app` is a deliberately defective artifact in this
+repository. With the required tooling available, the evaluation exits `30` and
+reports planted defects across credentials, workflows, markup, documentation,
+HTTP authorization and malformed input, AI handling, CLI behavior and browser
+execution. Its neighbour `tests/fixtures/clean_app` has the same surfaces built
+correctly, raises none of those findings, and is not rejected.
 
 ## Checks are not all the same kind of answer
 
@@ -154,6 +153,13 @@ state the finding was raised against, because an unchanged artifact cannot have
 been fixed. When the artifact has changed it re-runs the evaluator that raised the
 finding. If that evaluator could not run, the absence of the finding is reported
 as inconclusive rather than as a fix.
+
+Fix verification binds the artifact identity and original tree digest to the
+loaded evidence bundle, even when the original ledger is absent. JSON output
+states `lifecycle_recorded` separately from the verification outcome, so an
+imported bundle cannot silently update an unrelated ledger finding with the same
+legacy ID. Replay is also invalidated if the original target changes, with exit 4.
+Workspace preparation refuses an artifact edited while its files are copied.
 
 A statement that a defect was repaired never produces `VERIFIED_FIXED`. Only a
 re-execution does.
@@ -289,6 +295,7 @@ artifacts an operator points it at, on the operator's own machine.
   output is drained continuously with only its last 20,000 characters retained.
   Process-group cleanup does not contain code that deliberately escapes it.
   Lifecycle tests treat a disappearing process entry as completed cleanup.
+  A missing service working directory is recorded as an unavailable service.
 - Injection payloads are authored, declared in the artifact's own configuration,
   and written into the workspace copy, never the artifact.
 - Credentials found by `secrets.scan` are reported by shape and length, not
@@ -375,7 +382,7 @@ run end to end through HowlPlane's own `reconcile --findings-file`.
 `tests/fixtures/` ships three artifacts, and the suite runs the evaluators against
 all of them.
 
-`vulnerable_app` carries seventeen planted defects across every adversary: a
+`vulnerable_app` carries planted defects across every adversary: a
 committed credential, four workflow weaknesses, an escaper that is wrong for the
 context and an HTML sink with none at all, a documented sync that has drifted,
 broken links, missing metadata, rendering defects, and a live HTTP service that

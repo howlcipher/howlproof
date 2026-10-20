@@ -158,8 +158,11 @@ class Target:
         extra = cls._expand_ignored(root, include_ignored)
         names = sorted(set(discovered) | set(extra))
 
+        digest_before = tree_digest(root, names)
         workspace.mkdir(parents=True, exist_ok=True)
         oversized = cls._materialise(root, workspace, names)
+        if tree_digest(root, names) != digest_before:
+            raise TargetError("the artifact changed while its workspace was being prepared")
 
         commit = (_git(root, "rev-parse", "HEAD") or "").strip() if is_git else ""
         branch = (_git(root, "rev-parse", "--abbrev-ref", "HEAD") or "").strip() if is_git else ""
@@ -169,7 +172,7 @@ class Target:
             root=root,
             workspace=workspace,
             names=names,
-            digest_before=tree_digest(root, names),
+            digest_before=digest_before,
             commit=commit,
             branch=branch,
             dirty=dirty,

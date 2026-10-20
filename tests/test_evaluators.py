@@ -450,3 +450,19 @@ def test_prompt_injection_does_not_pass_when_entrypoint_fails(tmp_path, monkeypa
     outcome = PromptInjection().evaluate(context)
     assert outcome.checks[0].status is CheckStatus.ERROR
     assert outcome.checks[0].evidence_refs
+
+
+def test_target_cannot_change_while_its_workspace_is_being_copied(tmp_path, monkeypatch):
+    root = tmp_path / "artifact"
+    root.mkdir()
+    (root / "file.txt").write_text("before")
+    materialise = Target._materialise
+
+    def changing_copy(root, workspace, names):
+        result = materialise(root, workspace, names)
+        (root / "file.txt").write_text("after")
+        return result
+
+    monkeypatch.setattr(Target, "_materialise", changing_copy)
+    with pytest.raises(TargetError, match="changed"):
+        Target.prepare(root, tmp_path / "workspace")

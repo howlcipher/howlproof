@@ -405,6 +405,8 @@ def _reproduce(args: argparse.Namespace) -> int:
         for step in outcome.steps:
             mark = {True: "observed", False: "not observed", None: "setup"}[step.matched]
             print(f"  [{mark}] {step.description}")
+    if outcome.integrity_violation:
+        return EXIT_INTEGRITY
     return 0 if outcome.outcome in {"CONFIRMED", "NOT_REPRODUCED"} else EXIT_USAGE
 
 
@@ -412,14 +414,15 @@ def _verify_fix(args: argparse.Namespace) -> int:
     bundle = Bundle.load(find_bundle(args.bundle))
     finding = _find(bundle, args.finding)
     config, _ = _load_config(args.target, args.config, [])
-    ledger = Ledger.open(args.evidence_root)
-    try:
-        artifact, record = ledger.find_anywhere(finding["id"])
-    except LedgerError:
-        artifact, record = config.artifact, {}
+    artifact = bundle["manifest"].get("artifact")
+    if artifact != config.artifact:
+        raise FixRefused("artifact identity does not match the original evidence bundle")
+    recorded_tree_digest = bundle["target"].get("tree_digest_before", "")
+    if not recorded_tree_digest:
+        raise FixRefused("the original bundle carries no target digest to verify against")
     outcome = verify_fix(
         finding=finding,
-        recorded_tree_digest=str(record.get("first_seen_tree_digest", "")),
+        recorded_tree_digest=recorded_tree_digest,
         target_root=args.target,
         config=config,
         registry=build_registry(),
@@ -427,7 +430,11 @@ def _verify_fix(args: argparse.Namespace) -> int:
         allow_network=args.allow_network,
     )
     ledger = Ledger.open(args.evidence_root)
+    lifecycle_recorded = False
     try:
+        record = ledger.get(artifact, finding["id"])
+        if record["fingerprint"] != finding["fingerprint"]:
+            raise LedgerError("the ledger identifier refers to a different fingerprint")
         ledger.record_state(
             artifact,
             finding["id"],
@@ -436,9 +443,15 @@ def _verify_fix(args: argparse.Namespace) -> int:
             outcome.reason,
         )
         ledger.save()
+        lifecycle_recorded = True
     except LedgerError:
         pass
-    payload = {"finding": finding["id"], "artifact": artifact, **outcome.to_dict()}
+    payload = {
+        "finding": finding["id"],
+        "artifact": artifact,
+        "lifecycle_recorded": lifecycle_recorded,
+        **outcome.to_dict(),
+    }
     if args.json:
         print(json.dumps(payload, indent=2))
     else:

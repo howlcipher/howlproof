@@ -10,10 +10,17 @@ or inconclusive execution. Reports bind labels, source trees and implementation
 hashes to fresh evidence. This does not establish real-world detector accuracy,
 hostile-code isolation or calibration of every evaluator.
 
-Release hygiene now accepts matching prerelease changelog headings.
+Fix verification now binds artifact identity and tree state to its original
+bundle rather than depending on the original ledger. Lifecycle updates require a
+matching fingerprint and report whether they were recorded. Replay invalidates
+original-target mutation, and workspace preparation refuses concurrent edits.
+
+Release hygiene now accepts matching prerelease changelog headings. Quick-start
+documentation describes fixture surfaces without stale fixed finding counts.
 
 Lifecycle probes tolerate a process disappearing while its state is read; live
-descendants still fail the cleanup contract.
+descendants still fail the cleanup contract. A missing service workdir is
+reported as an unavailable surface instead of aborting evaluation.
 
 Commands and services now run in dedicated POSIX sessions, with descendant
 cleanup on timeout and shutdown. Service logs are drained continuously into a
@@ -22,7 +29,6 @@ stay inside the workspace even through links. Managed Python provisioning now
 requires --allow-network before any package installation. The documentation
 explicitly distinguishes these controls from an OS sandbox and requires trusted
 artifact commands.
-
 
 Finding ledger writes now reload under a POSIX process lock and commit atomically
 with file and directory sync. Concurrent evaluations cannot overwrite each
