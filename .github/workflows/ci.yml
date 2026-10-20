@@ -72,6 +72,11 @@ jobs:
           howlproof handoff /tmp/proof-reject --for changeops > /dev/null
           howlproof handoff /tmp/proof-reject --for verification-plan > /dev/null
       - run: python -m build
+      - name: Installed wheel first-project workflow
+        run: |
+          wheels=(dist/*.whl)
+          test "${#wheels[@]}" -eq 1
+          HOWLPROOF_WHEEL="${wheels[0]}" pytest -q tests/test_installed_wheel.py
       - run: bandit -r src -ll
       - run: pip-audit --skip-editable
 

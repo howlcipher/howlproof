@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+Added `howlproof init` for validated starter contracts with explicit selected-check
+requirements, private exclusive writes and protection for existing config names
+and links. Drafts without operator-specified acceptance cannot reach PROVEN.
+Bare target names with spaces or punctuation now get valid default identities.
+CI now installs the built wheel in a fresh environment and exercises initialization,
+evaluation, integrity inspection, report export and detection of a subsequent defect
+outside the source checkout on each supported Python version.
+
 Fixed `ai.schema` false passes when an entry point crashes, times out, ignores
 simulation or silently fails. Checker v2 requires a valid-response control and an
 explicit bounded acceptance/rejection adapter protocol. Missing declarations are

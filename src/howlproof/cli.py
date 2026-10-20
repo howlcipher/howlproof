@@ -52,6 +52,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=__version__)
     commands = parser.add_subparsers(dest="command", required=True)
 
+    init = commands.add_parser("init", help="create a starter contract without overwriting one")
+    init.add_argument("target", type=Path, nargs="?", default=Path("."))
+    init.add_argument("--profile", action="append", dest="profiles", default=[])
+    init.add_argument("--require-check", action="append", default=[], dest="required_checks")
+    init.add_argument(
+        "--artifact", help="stable artifact identity; defaults to a sanitized directory name"
+    )
+
     evaluate = commands.add_parser("evaluate", help="challenge an artifact and issue a verdict")
     evaluate.add_argument("target", type=Path)
     evaluate.add_argument(
@@ -202,6 +210,13 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _dispatch(args: argparse.Namespace) -> int:
+    if args.command == "init":
+        from howlproof.initialize import initialize
+
+        print(
+            json.dumps(initialize(args.target, args.profiles, args.required_checks, args.artifact))
+        )
+        return 0
     if args.command == "evaluate":
         return _evaluate(args)
     if args.command == "calibrate":
@@ -302,9 +317,9 @@ def _load_config(
     else:
         found = find_config(target)
         if found is None:
-            config = default_config(
-                target.resolve().name.replace(".", "-"), profiles or ["default"]
-            )
+            from howlproof.initialize import artifact_name
+
+            config = default_config(artifact_name(target), profiles or ["default"])
             source = "generated default (the artifact declares no contract)"
             return config, source
         config = read_config(found)
