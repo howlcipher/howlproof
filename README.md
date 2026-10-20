@@ -53,6 +53,11 @@ Also `2` for a usage or configuration error, `3` for an internal fault, and `4`
 when the artifact changed during its own evaluation. `--fail-under <verdict>`
 collapses these for a pipeline that only wants pass or fail.
 
+`howlproof interop --json` prints this exit table, every command and flag, and
+the one command HowlProof runs elsewhere (`howlplane reconcile --findings-file
+--output`) as a `howl.interop/v1` descriptor, which `howl doctor` checks under
+the [Howl interop contract](https://github.com/howlcipher/howl/blob/main/docs/INTEROP.md).
+
 `INSUFFICIENT_EVIDENCE` is the point of the whole design. HowlProof prefers
 saying it could not tell over implying that it checked.
 
