@@ -157,6 +157,6 @@ Nothing of HowlGuard is implemented. This section is a boundary, not a plan.
 ## Installer status
 
 **Not included in the default Howl installer manifest.** HowlProof is
-experimental, milestone one, and the installer's manifest describes tested,
-supported components. Inclusion is a decision for the hub, not a claim this
-repository makes on its own behalf.
+a scoped beta for trusted local Linux artifacts. Installer inclusion still requires
+the hub's support and integration criteria. Inclusion is a decision for the hub,
+not a claim this repository makes on its own behalf.

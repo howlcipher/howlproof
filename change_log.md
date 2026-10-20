@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+Added `howlproof plane` to verify an exact sealed bundle and ingest advisory
+findings through Plane’s existing CLI with timeout cleanup, fresh run records
+and preserved verdict exits. Added pinned real-CLI integration for rejection,
+repair, unavailable required tools and tampered evidence. Refreshed Plane schemas
+and added semantic drift detection with scheduled upstream checks. Corrected
+stale experimental status in the ecosystem documentation.
+
 ## 0.2.0b1
 
 Beta for trusted local artifacts on Linux. The advisory core now has durable

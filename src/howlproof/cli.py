@@ -149,6 +149,13 @@ def build_parser() -> argparse.ArgumentParser:
         "--for", dest="target", required=True, choices=[*TARGETS, "verification-plan"]
     )
     handoff.add_argument("--output", type=Path, help="write here instead of standard output")
+    plane = commands.add_parser("plane", help="verify a bundle and ingest its findings into Plane")
+    plane.add_argument("bundle", type=Path, help="exact bundle directory (not an evidence root)")
+    plane.add_argument(
+        "--run-dir", type=Path, required=True, help="new directory outside the bundle"
+    )
+    plane.add_argument("--executable", default="howlplane")
+    plane.add_argument("--timeout", type=float, default=120)
     return parser
 
 
@@ -219,6 +226,20 @@ def _dispatch(args: argparse.Namespace) -> int:
         return _accept(args)
     if args.command == "compare":
         return _compare(args)
+    if args.command == "plane":
+        from howlproof.plane import ingest
+
+        bundle = Bundle.load(args.bundle.resolve())
+        if args.run_dir.resolve().is_relative_to(args.bundle.resolve()):
+            raise ValueError("Plane run directory must be outside the sealed bundle")
+        target_root = bundle["result"].get("target", {}).get("root")
+        if target_root and args.run_dir.resolve().is_relative_to(Path(target_root).resolve()):
+            raise ValueError("Plane run directory must be outside the evaluated target")
+        record = ingest(
+            bundle["result"], args.run_dir, executable=args.executable, timeout=args.timeout
+        )
+        print(json.dumps(record))
+        return int(record["exit_code"])
     if args.command == "handoff":
         return _handoff(args)
     return _fail(f"unknown command: {args.command}", EXIT_USAGE)

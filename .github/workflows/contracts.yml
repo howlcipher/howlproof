@@ -1,0 +1,45 @@
+name: Ecosystem contract drift
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 8 * * 1'
+permissions:
+  contents: read
+jobs:
+  drift:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: howlcipher/howlplane
+          ref: main
+          path: upstream-plane
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: python scripts/check_ecosystem_contracts.py --plane-root upstream-plane
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: howlcipher/howlplane
+          ref: b633199aff0ddd71f3ea3639d14e63c2e7a0c499
+          path: upstream-plane
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: python -m venv /tmp/plane-env
+      - run: /tmp/plane-env/bin/pip install ./upstream-plane
+      - run: pip install -e '.[dev]'
+      - run: python scripts/check_ecosystem_contracts.py --plane-root upstream-plane
+      - run: pytest -q tests/test_plane_bridge.py
+        env:
+          HOWLPROOF_PLANE: /tmp/plane-env/bin/howlplane
