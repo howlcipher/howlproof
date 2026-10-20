@@ -1,0 +1,7 @@
+schema_version: 1
+artifact: markup-boundary-clean
+profiles: [security]
+markup:
+  sources: [view.js]
+  sink_functions: [setHTML]
+  escape_functions: [esc]

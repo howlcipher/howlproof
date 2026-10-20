@@ -207,7 +207,7 @@ the `howlproof.evaluators` entry-point group.
 howlproof calibrate calibration.json --evidence-root /tmp/howlproof-calibration > calibration-report.json
 ```
 
-The versioned corpus has eight clean/defective cases for `secrets.scan`,
+The versioned corpus has ten clean/defective cases for `secrets.scan`,
 `ci.supplychain`, `markup.escaping` and `release.version`. The report records
 expected and observed rules, per-rule true/false positive and negative counts,
 inconclusive cases, input tree digests, implementation hashes and fresh evidence
@@ -362,7 +362,7 @@ run end to end through HowlPlane's own `reconcile --findings-file`.
   their execution. Python environment provisioning and external dependency audits
   also need explicit network permission; fixture calibration does not establish
   those integrations work in every environment.
-- The synthetic source corpus covers eight cases across four evaluators. It
+- The synthetic source corpus covers ten cases across four evaluators. It
   reports per-rule confusion counts for those cases only. It does not measure
   real-world accuracy or calibrate the other evaluators.
 
@@ -512,3 +512,9 @@ For authenticated Plane ingestion, pass `--signature`, `--allowed-signers` and
 Plane starts or its run directory is created. The run record includes the
 verified identity and manifest hash. Without these flags, ingestion records that
 authentication was not requested and retains the trusted-local-artifact scope.
+
+The markup sink heuristic now stops at JavaScript sink-call and statement
+boundaries, so nearby unrelated escape calls cannot hide defects and unrelated
+HTML construction cannot create findings. Independent regression fixtures cover
+both errors. This remains bounded lexical scanning: aliases, branches, cross-file
+flows and complete JavaScript grammar still require deeper analysis.

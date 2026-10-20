@@ -34,7 +34,7 @@ tooling is absent, and attaches to each result a statement of what the check doe
 | `ci.supplychain` | v1 | Read the build pipeline as an attack surface: pinning, triggers, permissions, injection. | nothing extra | default, release, security |
 | `deps.audit` | v1 | pip-audit against the artifact's own resolved environment. | `python3` | default, python, security |
 | `http.authz` | v1 | Send requests the artifact is documented to refuse, and check that it refuses. | nothing extra | api, default, security |
-| `markup.escaping` | v1 | Check that the artifact's escaping is adequate for the context each value lands in. | nothing extra | default, security, web |
+| `markup.escaping` | v2 | Check that the artifact's escaping is adequate for the context each value lands in. | nothing extra | default, security, web |
 | `sast.bandit` | v1 | bandit over the artifact's own Python source. | `python3` | default, python, security |
 | `secrets.scan` | v1 | Look for credential-shaped strings the artifact carries in the open. | nothing extra | default, security |
 | `web.dom_injection` | v1 | Place an authored payload in data the artifact renders, then watch a real browser. | `playwright` | default, security, web |

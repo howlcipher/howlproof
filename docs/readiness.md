@@ -22,18 +22,18 @@ The check does not infer storage durability or lost-update safety.
 
 | Priority | Work | Completion evidence |
 | --- | --- | --- |
-| Partially complete | Measure evaluator accuracy | A versioned eight-case clean/defective corpus reports per-rule counts for four source evaluators. Expand coverage and add independent holdouts before general accuracy claims |
+| Partially complete | Measure evaluator accuracy | A versioned ten-case clean/defective corpus reports per-rule counts for four source evaluators. Expand coverage and add independent holdouts before general accuracy claims |
 | Partially complete | Artifact execution | POSIX descendant cleanup, bounded service logs and managed-download permission are tested; commands retain host permissions and environment, and hostile-code containment requires a separate sandbox |
 | Completed locally | Concurrent ledger writers | Six overlapping processes retain distinct findings and IDs; stale-writer and interrupted-replacement contracts pass on a local POSIX filesystem |
 | 2 | Trace markup dataflow | Follow source values and aliases into sinks across statements; demonstrate known bypasses and clean-context fixtures without claiming whole-program analysis |
 | 2 | Calibrate AI probes | Add benign controls, labelled outcomes and repeated trials; distinguish application refusal from a broken entry point and report measured uncertainty |
 | 2 | Detect lost updates | Add declared state observations before and after parallel mutations and compare expected state deltas, alongside response-ID checks |
 | 2 | Inject dependency faults | Exercise an explicitly declared local dependency through timeout, disconnect and invalid-response faults; keep simulation labels precise |
-| 3 | Authenticate exported evidence | Define key ownership and verification policy, sign a canonical bundle index, and test tampering, unknown keys and revoked keys |
+| Partially complete | Authenticate exported evidence | Detached SSH manifest signatures and explicit allowed-signers policy reject changed evidence, reindexed forgeries and unknown identities. Key provisioning, rotation and revocation procedures remain consumer-owned |
 | 3 | Replay ecosystem regressions | Re-evaluate previously fixed findings across explicitly selected artifact revisions, preserving new evidence separately from historical bundles |
 | 3 | Validate real outcomes | Compare advisory verdicts with later observed defects before making claims about production readiness or detection rates |
 
-These are acceptance targets, not implemented capabilities. Signing also requires
+Uncompleted rows are acceptance targets. Signing requires
 an owner's key and trust policy; outcome calibration requires observed outcomes.
 No unattended repair, deployment or authority over sibling projects is added.
 
@@ -86,16 +86,16 @@ contracts, known-defect and clean-artifact runs, integrity and ecosystem handoff
 checks, concurrent ledger recovery, process lifecycle tests, source calibration,
 packaging, dependency audit and rendered-site QA.
 
-The `calibration.json` baseline covers four named source evaluators, eight artifact
-cases and eight rule labels. Each label currently has one detected defective case
-and one quiet clean case. Counts are reported per rule, so this is eight true
-positives and eight true negatives over sixteen labelled rule/case pairs, with
-no observed misses or false positives on that small synthetic corpus. The cases
+The `calibration.json` v2 baseline covers four named source evaluators, ten artifact
+cases and eight rule labels. It includes separate markup fixtures for statement
+boundary regressions. Confusion counts are reported per rule; cases without a
+rule remain negative labels, and inconclusive execution never counts as a pass.
+All ten case labels match on the synthetic corpus. The cases
 are authored regression fixtures, not an independent holdout or representative
 sample. No percentage from these cases is advertised as general detector accuracy.
 
 Remaining roadmap work does not disappear with beta: dataflow, AI controls,
-lost-update observations, dependency fault injection, signed exports, independent
+lost-update observations, dependency fault injection, key lifecycle policy, independent
 holdouts and outcome calibration remain explicit. A beta verdict is still
 advisory, and HowlProof still does not repair artifacts or authorize deployment.
 

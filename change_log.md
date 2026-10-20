@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+Fixed markup false negatives from unrelated later escape calls and false positives
+from unrelated later HTML construction. JavaScript sink scanning now respects
+call/statement boundaries and quoted semicolons. Added separate defective/clean
+fixtures to source corpus v2 (ten cases). This remains lexical analysis rather
+than inter-statement taint tracking.
+
 Added optional detached SSH manifest signatures with explicit key selection,
 consumer-owned allowed-signers policy, a dedicated signature namespace and bounded
 noninteractive operations. Verification authenticates intact evidence while retaining
