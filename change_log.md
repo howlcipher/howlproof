@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+Finding ledger writes now reload under a POSIX process lock and commit atomically
+with file and directory sync. Concurrent evaluations cannot overwrite each
+other's findings or lifecycle decisions. IDs are allocated across artifacts in
+one evidence root, while legacy IDs remain unchanged and ambiguous lookups fail
+explicitly. Symlink ledgers are rejected before resolving them. Regression tests
+exercise six overlapping processes, stale writers and interrupted replacements.
+
 Added `api.concurrency` to the API profile: bounded parallel creates carrying
 unique request keys, evidence for every response, and duplicate-ID detection.
 Real local service fixtures require overlapping requests and exercise clean,

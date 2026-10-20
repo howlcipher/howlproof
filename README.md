@@ -109,6 +109,15 @@ The identifier is allocated once, on the first observation of a fingerprint, and
 reused forever, so the same defect keeps its number across runs, commits and line
 shifts.
 
+Ledger mutations commit immediately under a POSIX file lock, using a private
+temporary file, atomic replacement and filesystem sync. Overlapping local
+processes reload the latest state before modifying it, so an old reader cannot
+erase another evaluation or an accepted risk. New identifiers are unique across
+artifacts within an evidence root. Existing identifiers are preserved; ambiguous
+legacy IDs are refused rather than silently attributed to the first artifact.
+Ledger writes currently require a local POSIX filesystem with working file locks;
+Windows and network filesystem durability are not established.
+
 `CONFIRMED` confidence is reserved for findings whose defect was directly
 observed, and the model refuses to construct one without a recorded reproduction.
 
