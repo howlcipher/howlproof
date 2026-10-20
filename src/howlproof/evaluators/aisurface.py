@@ -154,6 +154,7 @@ class AiSchema(Evaluator):
     """A malformed model response must not become a trusted value."""
 
     id = "ai.schema"
+    version = "2"
     adversary = Adversary.AI
 
     def applicable(self, context: Context) -> tuple[bool, str]:
@@ -164,23 +165,80 @@ class AiSchema(Evaluator):
     def evaluate(self, context: Context) -> Outcome:
         ai = context.config.ai
         assert ai is not None
+        probe = ai.schema_probe
+        if probe is None:
+            return Outcome(
+                checks=[
+                    self.unavailable(
+                        "ai.schema requires an explicit ai.schema_probe "
+                        "acceptance/rejection protocol"
+                    )
+                ]
+            )
         transcripts: list[dict[str, object]] = []
         accepted: list[str] = []
-        for name, payload in MALFORMED_RESPONSES:
+        errors: list[str] = []
+        control = '{"result":"howlproof-schema-control"}'
+        cases = [("valid_control", control), *MALFORMED_RESPONSES]
+        for name, payload in cases:
             result = context.target.run(
                 [*ai.entrypoint, payload],
-                timeout=300,
+                timeout=probe.timeout_seconds,
                 env={"HOWLPROOF_SIMULATED_MODEL_RESPONSE": payload},
             )
-            transcripts.append({"case": name, **result.to_dict()})
-            if result.exit_code == 0 and "authority" in (result.stdout + result.stderr).lower():
+            accepted_signal = any(
+                line.startswith(probe.accepted_marker) for line in result.stdout.splitlines()
+            )
+            lines = [
+                line for line in (result.stdout + "\n" + result.stderr).splitlines() if line.strip()
+            ]
+            # Require an explicit refusal line, not a marker inside an exception or log.
+            rejected_signal = len(lines) == 1 and lines[0].startswith(probe.rejected_marker)
+            conflicting = (
+                probe.accepted_marker in result.stdout + result.stderr
+                and probe.rejected_marker in result.stdout + result.stderr
+            )
+            if result.ok and accepted_signal and not conflicting and not rejected_signal:
+                classification = "accepted"
+            elif (
+                not result.timed_out
+                and result.exit_code == probe.rejection_exit_code
+                and rejected_signal
+                and not accepted_signal
+                and not conflicting
+            ):
+                classification = "rejected"
+            else:
+                classification = "error"
+            transcripts.append(
+                {
+                    "case": name,
+                    "expected": "accepted" if name == "valid_control" else "rejected",
+                    "observed": classification,
+                    **result.to_dict(),
+                }
+            )
+            if name == "valid_control":
+                if classification != "accepted":
+                    errors.append(name)
+                    break  # A broken adapter cannot establish anything about its parser.
+            elif classification == "accepted":
                 accepted.append(name)
+            elif classification == "error":
+                errors.append(name)
         ref = context.save_evidence_json(self.id, "malformed-responses.json", transcripts)
         limitation = (
-            "five malformed payloads through one entry point; the artifact must cooperate by "
-            "reading HOWLPROOF_SIMULATED_MODEL_RESPONSE for this to exercise its parser rather "
-            "than its argument handling"
+            "one valid control and five malformed payloads for a closed result:string schema; "
+            "the declared adapter must read HOWLPROOF_SIMULATED_MODEL_RESPONSE and emit its "
+            "acceptance/rejection markers; this tests a cooperating local adapter, not live "
+            "model behaviour, repeated-trial uncertainty or general schema correctness"
         )
+        detail = {
+            "accepted_malformed": accepted,
+            "execution_errors": errors,
+            "control_passed": "valid_control" not in errors,
+            "attempted_cases": len(transcripts),
+        }
         if accepted:
             return Outcome(
                 checks=[
@@ -188,7 +246,7 @@ class AiSchema(Evaluator):
                         f"{len(accepted)} malformed responses were accepted",
                         limitation,
                         evidence_refs=[ref],
-                        detail={"accepted": accepted},
+                        detail=detail,
                     )
                 ],
                 findings=[
@@ -197,8 +255,9 @@ class AiSchema(Evaluator):
                         category="correctness",
                         severity=Severity.HIGH,
                         confidence=Confidence.HIGH,
-                        summary="Responses that were truncated or carried unexpected authority "
-                        f"fields were accepted for: {', '.join(accepted)}",
+                        summary=(
+                            "Malformed model responses were accepted for: " + ", ".join(accepted)
+                        ),
                         evidence=json.dumps(transcripts, indent=2)[:3000],
                         remediation="Validate model output against a closed schema and reject "
                         "unknown fields, especially authority-shaped ones.",
@@ -207,12 +266,23 @@ class AiSchema(Evaluator):
                     )
                 ],
             )
+        if errors:
+            check = self.errored(
+                "schema probe lacked explicit acceptance/rejection evidence for: "
+                + ", ".join(errors)
+            )
+            check.evidence_refs = [ref]
+            check.detail = detail
+            return Outcome(checks=[check])
         return Outcome(
             checks=[
                 self.verified(
-                    f"all {len(MALFORMED_RESPONSES)} malformed responses were rejected",
+                    f"valid control accepted and all {len(MALFORMED_RESPONSES)} "
+                    "malformed responses "
+                    "explicitly rejected",
                     limitation,
                     evidence_refs=[ref],
+                    detail=detail,
                 )
             ]
         )

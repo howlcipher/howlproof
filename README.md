@@ -518,3 +518,32 @@ boundaries, so nearby unrelated escape calls cannot hide defects and unrelated
 HTML construction cannot create findings. Independent regression fixtures cover
 both errors. This remains bounded lexical scanning: aliases, branches, cross-file
 flows and complete JavaScript grammar still require deeper analysis.
+
+## AI schema adapter protocol
+
+`ai.schema` v2 tests a closed object with exactly one string field, `result`.
+Declare how the local entry point reports acceptance and rejection:
+
+```yaml
+ai:
+  entrypoint: [python3, agent.py]
+  schema_probe:
+    accepted_marker: "accepted result:"
+    rejected_marker: "rejected:"
+    rejection_exit_code: 1
+    timeout_seconds: 10
+```
+
+The adapter must read `HOWLPROOF_SIMULATED_MODEL_RESPONSE`. Proof first sends
+`{"result":"howlproof-schema-control"}` and requires exit 0 with the acceptance
+marker at the start of a stdout line. It then sends five malformed responses.
+Rejection requires the declared nonzero exit and exactly one nonblank output line
+(on stdout or stderr) beginning with the rejection marker; crashes, timeouts, conflicting markers
+and unexplained outputs are inconclusive errors. Acceptance of malformed output
+raises a finding even without authority-shaped text. Transcripts retain expected
+and observed outcomes, including the valid control.
+
+Markers must be nonblank and non-overlapping. Per-call timeouts are bounded to
+1–60 seconds. Without `schema_probe`, the check reports `UNAVAILABLE`; an
+uncooperative entry point cannot establish parser correctness. This is a local
+adapter test, not a live-model benchmark or a general JSON-schema validator.

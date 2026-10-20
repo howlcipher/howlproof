@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+Fixed `ai.schema` false passes when an entry point crashes, times out, ignores
+simulation or silently fails. Checker v2 requires a valid-response control and an
+explicit bounded acceptance/rejection adapter protocol. Missing declarations are
+UNAVAILABLE. Malformed acceptance no longer depends on an authority keyword.
+Rejection markers inside exceptions or additional diagnostic output cannot pass.
+Transcripts label expected and observed outcomes; fixtures declare their protocol.
+
 Fixed markup false negatives from unrelated later escape calls and false positives
 from unrelated later HTML construction. JavaScript sink scanning now respects
 call/statement boundaries and quoted semicolons. Added separate defective/clean
