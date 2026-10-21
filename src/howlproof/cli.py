@@ -179,6 +179,10 @@ def build_parser() -> argparse.ArgumentParser:
     authenticate.add_argument("--signature", type=Path, required=True)
     authenticate.add_argument("--allowed-signers", type=Path, required=True)
     authenticate.add_argument("--identity", required=True)
+    interop = commands.add_parser(
+        "interop", help="print the howl.interop/v1 descriptor other Howl components check"
+    )
+    interop.add_argument("--json", action="store_true", help="JSON output (the default)")
     return parser
 
 
@@ -210,6 +214,11 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _dispatch(args: argparse.Namespace) -> int:
+    if args.command == "interop":
+        from howlproof.interop_descriptor import describe
+
+        print(json.dumps(describe(build_parser()), indent=2))
+        return 0
     if args.command == "init":
         from howlproof.initialize import initialize
 

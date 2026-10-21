@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+Added `howlproof interop --json`: the `howl.interop/v1` descriptor from the Howl
+interop contract, built from the live parser, with the verdict exit table and
+the `howlplane reconcile` command `howlproof plane` runs, so `howl doctor` can
+check that edge against the installed HowlPlane.
+
 Added `howlproof init` for validated starter contracts with explicit selected-check
 requirements, private exclusive writes and protection for existing config names
 and links. Drafts without operator-specified acceptance cannot reach PROVEN.
