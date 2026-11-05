@@ -8,7 +8,7 @@ HowlBoard's domain model and import tool; the Howl hub's site and manifest.
 
 | Component | Its role | Relationship to HowlProof |
 | --- | --- | --- |
-| HowlDream | Speculative experiments and scoped verification of generated claims | Neither evaluates the other; Dream challenges ideas, Proof challenges artifacts |
+| HowlDream | Speculative experiments and scoped verification of generated claims | `howldream export-proof` writes a `howl.claim_bundle/v1`; `howlproof evaluate --profile research` judges it claim by claim; `howldream import-proof` reads the result back ([research_claims.md](research_claims.md)) |
 | HowlCreate | Intentional invention and concept lineage | Upstream of anything Proof would evaluate |
 | HowlPlane | Orchestration, routing, independent review, authority gates | Consumes Proof findings as advisory evidence and decides what to do about them |
 | HowlFrame | Language, compiler and capability-bounded VM | An artifact Proof can evaluate, not a dependency of it |

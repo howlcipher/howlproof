@@ -1,0 +1,6 @@
+name: research
+description: >-
+  Per-claim evaluation of a howl.claim_bundle/v1. Unverifiable claims stay unresolved;
+  an artifact with no claim bundle reports NOT_APPLICABLE rather than passing.
+evaluators:
+  - research.claims

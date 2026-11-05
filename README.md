@@ -519,6 +519,15 @@ HOWLPROOF_PLANE=$(command -v howlplane) pytest -q tests/test_plane_bridge.py
 python scripts/check_ecosystem_contracts.py --plane-root ../howlplane
 ```
 
+## Research claims
+
+`howlproof evaluate <bundle> --profile research` evaluates a `howl.claim_bundle/v1`
+(for example from `howldream export-proof`) one claim at a time. A claim is SUPPORTED
+only through an author-grounded check against independent, digest-verified evidence;
+forecasts and judgments are REQUIRES_EXTERNAL_VALIDATION, hypotheses and uncited claims
+are INCONCLUSIVE, and an empty acceptance contract still yields INSUFFICIENT_EVIDENCE.
+See [docs/research_claims.md](docs/research_claims.md).
+
 ## Evidence authenticity
 
 Manifest hashes detect changes. Optional detached SSH signatures also let a
