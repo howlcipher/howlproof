@@ -73,6 +73,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--allow-network", action="store_true", help="permit checks that reach outside this machine"
     )
     evaluate.add_argument(
+        "--acquisition-store",
+        type=Path,
+        help="operator-owned store written by `howlproof acquire`; without it no evidence "
+        "source can be verified and sourced claims stay INCONCLUSIVE",
+    )
+    evaluate.add_argument(
         "--allow-evidence-in-target",
         action="store_true",
         help="write the bundle inside the artifact; refused by default",
@@ -81,6 +87,17 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument(
         "--fail-under", choices=[v.value for v in Verdict], help="exit 0 for this verdict or better"
     )
+
+    acquire = commands.add_parser(
+        "acquire",
+        help="record where an evidence source came from; the only command that may fetch",
+    )
+    acquire.add_argument("--store", type=Path, required=True, help="acquisition store directory")
+    origin = acquire.add_mutually_exclusive_group(required=True)
+    origin.add_argument("--url", help="fetch one http(s) URL (public hosts only, bounded)")
+    origin.add_argument("--file", type=Path, help="register a file you already hold")
+    acquire.add_argument("--source-url", help="with --file: where you attest the file came from")
+    acquire.add_argument("--operator", help="with --file: who attests to it")
 
     calibration = commands.add_parser(
         "calibrate", help="measure a labelled synthetic source corpus"
@@ -228,6 +245,8 @@ def _dispatch(args: argparse.Namespace) -> int:
         return 0
     if args.command == "evaluate":
         return _evaluate(args)
+    if args.command == "acquire":
+        return _acquire(args)
     if args.command == "calibrate":
         from howlproof.calibration import calibrate
 
@@ -338,6 +357,26 @@ def _load_config(
     return config, source
 
 
+def _acquire(args: argparse.Namespace) -> int:
+    """Explicit, opt-in retrieval. Failures are recorded in the store, not swallowed."""
+    from howlproof.acquire import AcquireError, AcquisitionStore, acquire_file, acquire_url
+
+    store = AcquisitionStore(args.store)
+    source = args.url or str(args.file)
+    try:
+        record, raw = (
+            acquire_url(args.url)
+            if args.url
+            else acquire_file(args.file, source_url=args.source_url, operator=args.operator)
+        )
+        sealed = store.add(record, raw)
+    except AcquireError as error:
+        store.log_failure(source, str(error))
+        return _fail(str(error), EXIT_USAGE)
+    print(json.dumps(sealed, indent=2, sort_keys=True))
+    return 0
+
+
 def _evaluate(args: argparse.Namespace) -> int:
     from howlproof.engine import EvaluationError, evaluate
 
@@ -351,6 +390,7 @@ def _evaluate(args: argparse.Namespace) -> int:
             allow_network=args.allow_network,
             allow_evidence_in_target=args.allow_evidence_in_target,
             config_source=source,
+            acquisition_store=args.acquisition_store,
         )
     except EvaluationError as error:
         return _fail(str(error), EXIT_USAGE)
