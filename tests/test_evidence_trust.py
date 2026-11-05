@@ -673,6 +673,12 @@ def test_reference_classification_distinguishes_url_placeholder_and_free_text():
         ("63%", "reduces tokens by 63.4%", False),
         ("63%", "<td>63%</td>", True),
         ("42 ms", "142 ms", False),
+        # A bare small number is an agent-coded flag or count, not a quotable source value.
+        ("0", "Ruby 3.0 and 4.0 are supported", False),
+        ("1", "Supports 1 platform", False),
+        ("9", "Ruby 4.0.9 Released", False),
+        ("200", "HTTP 200 OK", True),
+        ("2.55", "took 2.55x as long", True),
     ],
 )
 def test_value_location_respects_number_boundaries(value, text, found):
@@ -776,3 +782,39 @@ def test_cli_acquire_refuses_a_private_target_and_records_the_failure(tmp_path):
     assert "non-public" in done.stderr
     attempts = (tmp_path / "st" / "attempts.jsonl").read_text()
     assert "169.254.169.254" in attempts
+
+
+def test_text_presence_records_disagreement_between_older_and_newer_artifacts(tmp_path, store):
+    """An outdated source says one thing, a newer authoritative source another."""
+    root = tmp_path / "bundle"
+    old = ev(
+        root,
+        "old",
+        facts={},
+        store=store,
+        raw="Ruby 4.0.0 Released. Ruby news.",
+        url="https://a.example.com/2025",
+    )
+    new = ev(
+        root,
+        "new",
+        facts={},
+        store=store,
+        raw="Ruby news. Ruby 4.0.9 Released.",
+        url="https://b.example.com/2026",
+    )
+    old["published_at"], new["published_at"] = "2025-12-25T00:00:00Z", "2026-10-23T00:00:00Z"
+    c = claim(
+        "c1",
+        "Ruby 4.0.0 is the most recent Ruby 4.0 release",
+        "EMPIRICAL",
+        ("old", "new"),
+        check={"type": "text_presence", "term": "Ruby 4.0.9 Released", "expect": "absent"},
+        subject_terms=["Ruby"],
+    )
+    write_bundle(root, [c], [old, new], authorship=REAL)
+    r = evaluate(tmp_path, root, store.root)["c1"]
+    assert r["claim_status"] == "REFUTED"  # a source containing the term is decisive for "absent"
+    assert r["conflicts"][0]["kind"] == "artifacts_disagree"
+    assert r["conflicts"][0]["newer"] == "new"
+    assert r["scope_limited"] is True

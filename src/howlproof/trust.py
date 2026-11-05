@@ -161,10 +161,22 @@ def locate_value(value: str, text: str) -> bool:
     `5%` is not found inside `65%`, and `42 ms` is not found inside `142 ms`.
     """
     needle = _squash(str(value))
-    if not needle:
+    if not needle or _is_bare_small_number(needle):
         return False
     return (
         re.search(rf"(?<![0-9]){re.escape(needle)}(?![0-9])(?!\.[0-9])", _squash(text)) is not None
+    )
+
+
+def _is_bare_small_number(squashed: str) -> bool:
+    """`0`, `1`, `9`, `42`: no unit, currency or scale, fewer than three digits.
+
+    Such a value is how an agent encodes a flag, a count or a judgment ("documented: 0"). It
+    would "appear" in almost any page, so it cannot show the source said it.
+    """
+    return (
+        re.fullmatch(r"[0-9][0-9.,]*", squashed) is not None
+        and sum(c.isdigit() for c in squashed) < 3
     )
 
 

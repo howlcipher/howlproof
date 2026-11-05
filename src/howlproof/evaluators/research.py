@@ -850,6 +850,20 @@ class ResearchClaims(Evaluator):
             )
             return
         found = [r["id"] for r in decided if r["relation"] == "contains"]
+        lacking = [r["id"] for r in decided if r["relation"] == "lacks"]
+        if found and lacking:
+            involved = sorted(found + lacking)
+            dates = {r["id"]: _date(r["published_at"]) for r in decided}
+            stamps = [(d, i) for i, d in dates.items() if d is not None]
+            result["conflicts"] = [
+                {
+                    "kind": "artifacts_disagree",
+                    "contains": sorted(found),
+                    "lacks": sorted(lacking),
+                    "evidence": involved,
+                    "newer": max(stamps)[1] if len(stamps) == len(decided) else None,
+                }
+            ]
         holds = bool(found) if expect == "present" else not found
         elsewhere = sorted(
             i

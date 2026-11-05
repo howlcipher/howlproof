@@ -64,6 +64,13 @@ matching a source is not proof the source is right. A `verification_plan` is
 | `REQUIRES_EXTERNAL_VALIDATION` | `SKIPPED` | none |
 | `ERROR` (malformed check) | `ERROR` | none |
 
+A bare small number (fewer than three digits, no unit, currency or scale: `0`, `1`, `9`) can
+never be located in a source: it is how an agent encodes a flag or count, and it would "appear"
+in almost any page. Such facts leave a sourced claim INCONCLUSIVE. `text_presence` records
+`artifacts_disagree` in `conflicts` (with `newer`) when one cited artifact contains the term
+and another lacks it; a source that contains the term is decisive for `expect: absent`, and
+one containing it supports `expect: present`, because absence from one document is never proof.
+
 `SUPPORTED`/`REFUTED` for a **sourced** claim (EMPIRICAL, or TECHNICAL via `fact_compare` or
 `text_presence`) needs all of: a grounded check; evidence whose bytes match their `sha256`;
 `independent: true` declared (necessary, never sufficient); an `acquisition` pointer that
