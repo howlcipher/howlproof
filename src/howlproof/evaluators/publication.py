@@ -6,7 +6,7 @@ import hashlib
 import json
 import struct
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Any
 
 from howlproof.model import (
     Adversary,
@@ -22,7 +22,7 @@ MIN_IMAGE_WIDTH = 1200
 MIN_IMAGE_HEIGHT = 675
 
 
-def _parse_image_dimensions(data: bytes) -> Optional[Tuple[int, int]]:
+def _parse_image_dimensions(data: bytes) -> tuple[int, int] | None:
     """Deterministically parse image width and height from PNG or JPEG headers."""
     if len(data) >= 24 and data.startswith(b"\x89PNG\r\n\x1a\n"):
         if data[12:16] == b"IHDR":
@@ -50,10 +50,9 @@ def _parse_image_dimensions(data: bytes) -> Optional[Tuple[int, int]]:
                 b"\xff\xc5",
                 b"\xff\xc6",
                 b"\xff\xc7",
-            ):
-                if offset + 4 + 5 <= len(data):
-                    _, height, width = struct.unpack(">BHH", data[offset + 4 : offset + 9])
-                    return width, height
+            ) and offset + 4 + 5 <= len(data):
+                _, height, width = struct.unpack(">BHH", data[offset + 4 : offset + 9])
+                return width, height
             offset += 2 + length
     return None
 
@@ -113,7 +112,11 @@ class PublicationPackageIntegrity(Evaluator):
 
         # 4. Image decoding, dimensions, and magic headers
         image_extensions = (".png", ".jpg", ".jpeg")
-        images = [n for n in context.target.names if any(n.lower().endswith(ext) for ext in image_extensions)]
+        images = [
+            n
+            for n in context.target.names
+            if any(n.lower().endswith(ext) for ext in image_extensions)
+        ]
         observed["image_count"] = len(images)
         image_details: list[dict[str, Any]] = []
 
@@ -155,7 +158,9 @@ class PublicationPackageIntegrity(Evaluator):
                     problems.append(f"alt text in {alt_candidate} is trivially short (< 10 chars)")
 
         if missing_alt:
-            problems.append(f"missing alt_text.txt in illustrated post directories: {', '.join(missing_alt)}")
+            problems.append(
+                f"missing alt_text.txt in illustrated post directories: {', '.join(missing_alt)}"
+            )
 
         ref = context.save_evidence_json(self.id, "package_integrity.json", observed)
         limitation = (
@@ -235,7 +240,7 @@ class PublicationManifestConsistency(Evaluator):
         try:
             raw_manifest = context.target.read_text("MANIFEST.json")
             manifest_data = json.loads(raw_manifest)
-        except Exception as exc:
+        except (json.JSONDecodeError, UnicodeDecodeError, OSError) as exc:
             return Outcome(
                 checks=[
                     self.failed(

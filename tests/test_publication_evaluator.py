@@ -8,8 +8,6 @@ import struct
 import zlib
 from pathlib import Path
 
-import pytest
-
 from howlproof.config import ProofConfig
 from howlproof.evaluators.publication import (
     PublicationManifestConsistency,
@@ -31,7 +29,9 @@ def _create_synthetic_png(width: int = 1200, height: int = 675) -> bytes:
     return header + ihdr_chunk + iend_chunk
 
 
-def _setup_publication_target(root: Path, *, modify_manifest: bool = False, bad_image: bool = False, missing_alt: bool = False) -> None:
+def _setup_publication_target(
+    root: Path, *, modify_manifest: bool = False, bad_image: bool = False, missing_alt: bool = False
+) -> None:
     root.mkdir(parents=True, exist_ok=True)
     posts_dir = root / "POSTS" / "POST_01"
     posts_dir.mkdir(parents=True, exist_ok=True)
@@ -45,7 +45,9 @@ def _setup_publication_target(root: Path, *, modify_manifest: bool = False, bad_
     (posts_dir / "post.txt").write_text(post_content, encoding="utf-8")
 
     if not missing_alt:
-        (posts_dir / "alt_text.txt").write_text("Detailed architectural diagram showing components.", encoding="utf-8")
+        (posts_dir / "alt_text.txt").write_text(
+            "Detailed architectural diagram showing components.", encoding="utf-8"
+        )
 
     img_data = b"NOT_A_VALID_PNG" if bad_image else _create_synthetic_png(1200, 675)
     (posts_dir / "image.png").write_bytes(img_data)
@@ -65,11 +67,13 @@ def _setup_publication_target(root: Path, *, modify_manifest: bool = False, bad_
         sha = hashlib.sha256(content).hexdigest()
         if modify_manifest and rel_path.endswith("post.txt"):
             sha = "0000000000000000000000000000000000000000000000000000000000000000"
-        manifest_entries.append({
-            "path": rel_path,
-            "size_bytes": len(content),
-            "sha256": sha,
-        })
+        manifest_entries.append(
+            {
+                "path": rel_path,
+                "size_bytes": len(content),
+                "sha256": sha,
+            }
+        )
 
     manifest = {
         "campaign": "LINKEDIN_SEASON_03",
@@ -174,4 +178,3 @@ def test_publication_profile_loading_and_resolution() -> None:
     eval_ids = [e.id for e in evaluators]
     assert "publication.package.integrity" in eval_ids
     assert "publication.manifest.consistency" in eval_ids
-
