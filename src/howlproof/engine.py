@@ -48,6 +48,7 @@ def evaluate(
     allow_network: bool = False,
     allow_evidence_in_target: bool = False,
     config_source: str = "",
+    acquisition_store: Path | None = None,
 ) -> dict[str, Any]:
     """Run one evaluation and return the sealed bundle's result document."""
     started = time.monotonic()
@@ -88,6 +89,7 @@ def evaluate(
             bundle=bundle,
             environment=environment,
             allow_network=allow_network,
+            acquisition_store=acquisition_store,
         )
 
         with ServiceRunner(context) as service:

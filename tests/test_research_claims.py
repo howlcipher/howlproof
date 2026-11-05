@@ -76,7 +76,10 @@ def write_bundle(root: Path, claims, evidences=(), **overrides) -> dict[str, Any
     document = {
         "schema": "howl.claim_bundle/v1",
         "candidate": {"candidate_id": "cand-1", "text": "t", "source_run_id": "run-1"},
-        "authorship": {"kind": "EXTERNAL_AUTHORED", "component": "agent"},
+        # These bundles are synthetic fixtures (example.test URLs, declared-only provenance).
+        # Declared provenance cannot reach SUPPORTED/REFUTED for real-world authorship; see
+        # tests/test_evidence_trust.py for that boundary.
+        "authorship": {"kind": "SYNTHETIC_FIXTURE", "component": "fixture"},
         "claims": list(claims),
         "evidence": list(evidences),
         "lineage": {"exported_by": "howldream"},

@@ -526,6 +526,8 @@ python scripts/check_ecosystem_contracts.py --plane-root ../howlplane
 only through an author-grounded check against independent, digest-verified evidence;
 forecasts and judgments are REQUIRES_EXTERNAL_VALIDATION, hypotheses and uncited claims
 are INCONCLUSIVE, and an empty acceptance contract still yields INSUFFICIENT_EVIDENCE.
+Sourced claims reach SUPPORTED/REFUTED only on evidence whose bytes were observed by
+`howlproof acquire` (pass `--acquisition-store`); declared independence confers nothing.
 See [docs/research_claims.md](docs/research_claims.md).
 
 ## Evidence authenticity

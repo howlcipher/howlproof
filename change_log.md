@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+M2 evidence integrity (`howl.evidence_trust/v1`). **Semantic change:** a sourced claim
+(EMPIRICAL, or TECHNICAL via `fact_compare`) now reaches SUPPORTED or REFUTED only on
+evidence whose source bytes an acquisition event in the operator's acquisition store
+actually observed, in which the compared fact and the claim's `subject_terms` appear (and,
+for measurements, a located `methodology_quote`). `independent: true`, `EXTERNAL_OBSERVATION`,
+`represents_observed_reality`, a URL, a digest or an AI summary are kept as *claimed
+provenance* and confer no authority. Otherwise the result is INCONCLUSIVE with the
+arithmetic of the supplied numbers preserved in `check_outcome`. Every claim result gains an
+`assurance` record (check, integrity, source origin, relevance, methodology, corroboration,
+real-world truth), `checked_proposition`, `scope` and `scope_limited`. New `text_presence`
+check: a narrow, artifact-scoped presence/absence check that never becomes an absence claim.
+New `howlproof acquire` (the only command that may fetch; SSRF-resistant, bounded) and
+`evaluate --acquisition-store`. Bundles declared `SYNTHETIC_FIXTURE`/`MOCK` keep their old
+behaviour and are labelled not real-world eligible. Old results are not rewritten; a
+pre-M2 bundle re-evaluated today reports INCONCLUSIVE for empirical claims (docs/research_claims.md).
+Hardening from the M2 adversarial audit: markup reduction is linear-time (a regex stripper took 17 s
+on 200 KB of `<`); evidence count, stored-artifact size and retained source text are bounded;
+`methodology_quote` needs 25 characters and 4 words; bare flag values (`0`, `9`) cannot be located
+in a source; `text_presence` states the proposition it actually checked; `assurance.source_origin`
+is `NOT_EXAMINED` for claims that never read their citations.
+
 Added the `research.claims` evaluator and `research` profile: per-claim evaluation of a
 `howl.claim_bundle/v1` (claim categories, unit- and currency-aware fact comparison, a
 closed arithmetic check, evidence digest integrity, conflict recording, instruction-like

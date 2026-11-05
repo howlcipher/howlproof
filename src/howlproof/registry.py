@@ -50,6 +50,9 @@ class Context:
     service_runner: Any = None
     #: Cached interpreter provisioned for a Python artifact, shared across evaluators.
     python_env: Any = None
+    #: Operator-owned acquisition store (`howlproof acquire`). Outside the artifact under
+    #: evaluation, so a claim bundle cannot write its own provenance.
+    acquisition_store: Path | None = None
 
     def tool_available(self, name: str) -> bool:
         return bool(self.environment.get("tools", {}).get(name, {}).get("available"))
