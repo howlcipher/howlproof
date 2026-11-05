@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+Added the `research.claims` evaluator and `research` profile: per-claim evaluation of a
+`howl.claim_bundle/v1` (claim categories, unit- and currency-aware fact comparison, a
+closed arithmetic check, evidence digest integrity, conflict recording, instruction-like
+evidence flagged as data). Claim outcomes SUPPORTED, REFUTED, INCONCLUSIVE,
+REQUIRES_EXTERNAL_VALIDATION and ERROR map onto existing check statuses; only SUPPORTED is
+VERIFIED. Pairs with HowlDream 0.4.5+ `export-proof` / `import-proof`
+(docs/research_claims.md).
+
 Added `howlproof interop --json`: the `howl.interop/v1` descriptor from the Howl
 interop contract, built from the live parser, with the verdict exit table and
 the `howlplane reconcile` command `howlproof plane` runs, so `howl doctor` can

@@ -12,6 +12,7 @@ from howlproof.evaluators import (
     operator,
     publication,
     release,
+    research,
     secrets,
     supplychain,
     web,
@@ -30,6 +31,7 @@ MODULES = (
     operator,
     publication,
     release,
+    research,
     deps,
 )
 
