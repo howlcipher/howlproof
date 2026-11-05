@@ -17,6 +17,11 @@ New `howlproof acquire` (the only command that may fetch; SSRF-resistant, bounde
 `evaluate --acquisition-store`. Bundles declared `SYNTHETIC_FIXTURE`/`MOCK` keep their old
 behaviour and are labelled not real-world eligible. Old results are not rewritten; a
 pre-M2 bundle re-evaluated today reports INCONCLUSIVE for empirical claims (docs/research_claims.md).
+Hardening from the M2 adversarial audit: markup reduction is linear-time (a regex stripper took 17 s
+on 200 KB of `<`); evidence count, stored-artifact size and retained source text are bounded;
+`methodology_quote` needs 25 characters and 4 words; bare flag values (`0`, `9`) cannot be located
+in a source; `text_presence` states the proposition it actually checked; `assurance.source_origin`
+is `NOT_EXAMINED` for claims that never read their citations.
 
 Added the `research.claims` evaluator and `research` profile: per-claim evaluation of a
 `howl.claim_bundle/v1` (claim categories, unit- and currency-aware fact comparison, a

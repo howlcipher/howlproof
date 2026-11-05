@@ -78,8 +78,9 @@ verifies against the operator's acquisition store (`--acquisition-store`) and wh
 location matches the evidence's `source_ref`; the compared fact value present in the acquired
 source bytes; every claim `subject_terms` entry present in that source (this is the
 structural relevance check; a claim with no `subject_terms` cannot establish relevance); and,
-for `nature: measurement` (the default for `fact_compare`), a `methodology_quote` that appears
-in the source. `nature: reported_fact` waives only the methodology requirement and is
+for `nature: measurement` (the default for `fact_compare`), a `methodology_quote` of at least 25
+characters and 4 words that appears in the source (a bare phrase such as the product name does
+not count). `nature: reported_fact` waives only the methodology requirement and is
 author-declared. Bundles declared `SYNTHETIC_FIXTURE`/`MOCK` skip the source requirements and
 are reported `real_world_eligible: false`, `real_world_truth: NOT_APPLICABLE_SYNTHETIC`.
 Deterministic `arithmetic` on a TECHNICAL claim stays SUPPORTED/REFUTED but reports
@@ -100,7 +101,7 @@ merged into a score:
 | --- | --- | --- | --- |
 | `check_passed` | true/false/null | the check's condition held on the data it saw | that the data is real |
 | `evidence_integrity` | ok / mismatch / missing / not_applicable | stored bytes match their digest | that they were truthful when made |
-| `source_origin` | OBSERVED_ACQUISITION, OPERATOR_ATTESTED_FILE, SYNTHETIC_FIXTURE, UNVERIFIABLE, CLAIMED_ONLY, PLACEHOLDER, AGENT_AUTHORED, NONE | where the source bytes came from, as far as an inspectable acquisition event shows | that the source's claims are correct |
+| `source_origin` | NOT_EXAMINED (arithmetic, forecasts, claims with no check: their citations were never read), OBSERVED_ACQUISITION, OPERATOR_ATTESTED_FILE, SYNTHETIC_FIXTURE, UNVERIFIABLE, CLAIMED_ONLY, PLACEHOLDER, AGENT_AUTHORED, NONE | where the source bytes came from, as far as an inspectable acquisition event shows | that the source's claims are correct |
 | `claim_relevance` | STRUCTURAL_MATCH, NOT_ESTABLISHED, NOT_APPLICABLE(_SYNTHETIC) | the fact and the claim's subject terms occur in the source | that the source substantively addresses the claim; a reviewer must still read it |
 | `methodology` | RECORDED, NOT_REQUIRED, NOT_RECORDED, NOT_EVALUATED | a quoted methodology exists in the source | that the methodology is sound |
 | `corroboration` / `corroborated` | NONE, SINGLE_SOURCE, DUPLICATES_ONLY, SEPARATE_ARTIFACTS_ORIGIN_UNASSESSED / always false | duplicate artifacts are detected | independence of origin; this milestone cannot establish it |
@@ -118,11 +119,30 @@ was observed. The two are never merged.
 ### Claim additions (all optional)
 
 * `subject_terms: [..]`: terms the source must contain to be structurally relevant.
-* `checked_proposition`: the exact proposition checked (defaults to `text`); echoed in the result.
+* `checked_proposition`: the exact proposition checked (defaults to `text`; for `text_presence`
+  with none supplied, a derived statement of the artifact-level check, never the broad claim);
+  echoed in the result.
 * `scope: {artifact, extent}`: what the proposition covers; any `extent` other than
   `FULL_QUESTION` sets `scope_limited`. Proof never evaluates the broader question
   (`broader_question: NOT_EVALUATED`).
 * check `nature`: `measurement` (default) or `reported_fact`.
+
+## Resource bounds
+
+At most 200 evidence entries and 500 claims per bundle; a stored artifact larger than 4 MiB is
+refused (`TOO_LARGE`); retained source text across one bundle is capped at 32 M characters and
+overflow is reported `SOURCE_BUDGET_EXCEEDED` (unverifiable, never silently dropped). Markup is
+reduced to text in a single linear pass: a regex-based stripper took 17 s on 200 KB of `<`, so a
+hostile page could stall an evaluation. Regression tests cover it.
+
+## Known limits (asserted in `tests/test_evidence_adversarial.py`)
+
+These attacks still succeed, by design of what can be checked mechanically: a real number with
+the wrong meaning (location finds the number, not its sense); author-chosen `subject_terms` that
+are too generic; a vendor's own page (a single, uncorroborated source); and a forged record by
+anyone who can write the acquisition store. Each result still reports `claim_relevance:
+STRUCTURAL_MATCH` (never "substantive"), `real_world_truth: UNRESOLVED` and
+`corroborated: false`.
 
 ## Acquisition (`howlproof acquire`)
 
@@ -155,7 +175,8 @@ attested, not observed, and are labelled `OPERATOR_ATTESTED_FILE`.
   results are not rewritten; evaluate again to get an M2 result.
 * Deterministic TECHNICAL arithmetic and VALUE_JUDGMENT/HYPOTHESIS handling are unchanged.
 * New result keys (`assurance`, `check_outcome`, `check_passed`, `checked_proposition`,
-  `scope`, `scope_limited`, `broader_question`, `also_found_in`, per-row `trust`,
+  `scope`, `scope_limited`, `broader_question`, `also_found_in` (only artifacts that contain
+  every `subject_term`), per-row `trust`,
   `claimed_provenance`, `eligible`, `ineligible_reasons`) are additive.
 
 One check per claim (`research.claims.c001`, ...) carries the full per-claim record in

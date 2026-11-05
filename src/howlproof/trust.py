@@ -145,10 +145,41 @@ def source_text(raw: bytes, content_type: str | None = None) -> str:
     text = raw.decode("utf-8", errors="replace")
     kind = (content_type or "").split(";")[0].strip().lower()
     if kind in ("text/html", "application/xhtml+xml", "") and "<" in text:
-        text = re.sub(r"(?is)<(script|style)\b.*?</\1\s*>", " ", text)
-        text = re.sub(r"(?s)<[^>]*>", " ", text)
-        text = html.unescape(text)
+        text = html.unescape(_strip_markup(text))
     return text
+
+
+def _strip_markup(text: str) -> str:
+    """Reduce markup to its text in one left-to-right pass.
+
+    Deliberately not a regex: `<[^>]*>` is quadratic on hostile input such as `<<<<...` (a
+    200 KB page took 17 s). Every `find` here either advances past what it consumed or ends the
+    scan, so the cost is linear in the size of the page.
+    """
+    lower = text.lower()
+    out: list[str] = []
+    i, n = 0, len(text)
+    while i < n:
+        j = text.find("<", i)
+        if j == -1:
+            out.append(text[i:])
+            break
+        out.append(text[i:j])
+        for tag in ("script", "style"):
+            if lower.startswith("<" + tag, j):
+                end = lower.find("</" + tag, j)
+                close = text.find(">", end) if end != -1 else -1
+                i = close + 1 if close != -1 else n
+                out.append(" ")
+                break
+        else:
+            close = text.find(">", j)
+            if close == -1:  # no later '>' exists, so nothing further can be a tag
+                out.append(text[j:])
+                break
+            out.append(" ")
+            i = close + 1
+    return "".join(out)
 
 
 def _squash(text: str) -> str:

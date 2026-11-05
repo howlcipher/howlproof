@@ -44,6 +44,8 @@ from urllib.parse import urljoin, urlsplit
 from howlproof import __version__
 
 ID_PATTERN = re.compile(r"^acq-[0-9a-f]{16}$")
+#: A stored artifact larger than this is refused on read, whatever wrote it.
+MAX_RAW_BYTES = 4 * 1024 * 1024
 REDIRECT_STATUSES = frozenset({301, 302, 303, 307, 308})
 SAFE_CONTENT_TYPES = frozenset(
     {
@@ -395,7 +397,10 @@ class AcquisitionStore:
         if not re.fullmatch(r"[0-9a-f]{64}", digest):
             return Verified("RECORD_TAMPERED")
         try:
-            raw = (self.root / "raw" / digest).read_bytes()
+            raw_path = self.root / "raw" / digest
+            if raw_path.stat().st_size > MAX_RAW_BYTES:
+                return Verified("TOO_LARGE", record)
+            raw = raw_path.read_bytes()
         except OSError:
             return Verified("MISSING", record)
         if hashlib.sha256(raw).hexdigest() != digest:

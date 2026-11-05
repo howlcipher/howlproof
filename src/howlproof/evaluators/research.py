@@ -66,6 +66,11 @@ CATEGORIES = ("EMPIRICAL", "TECHNICAL", "HYPOTHESIS", "VALUE_JUDGMENT")
 CHECK_TYPES = ("fact_compare", "arithmetic", "text_presence")
 NATURES = ("measurement", "reported_fact")
 MAX_SOURCE_CHARS = 2_000_000
+#: Retained source text across all evidence in one bundle; overflow is unverifiable.
+MAX_TOTAL_SOURCE_CHARS = 32_000_000
+MAX_EVIDENCE = 200
+MIN_METHODOLOGY_CHARS = 25
+MIN_METHODOLOGY_WORDS = 4
 OPS = ("eq", "approx", "lt", "le", "gt", "ge")
 MAX_CLAIMS = 500
 MAX_EXPONENT = 64
@@ -211,8 +216,8 @@ def validate_bundle(document: Any) -> None:
             _fail(f"missing required field: {key}")
     if not isinstance(document["claims"], list) or len(document["claims"]) > MAX_CLAIMS:
         _fail(f"claims must be a list of at most {MAX_CLAIMS} entries")
-    if not isinstance(document["evidence"], list):
-        _fail("evidence must be a list")
+    if not isinstance(document["evidence"], list) or len(document["evidence"]) > MAX_EVIDENCE:
+        _fail(f"evidence must be a list of at most {MAX_EVIDENCE} entries")
     ids: set[str] = set()
     for index, entry in enumerate(document["evidence"]):
         if not isinstance(entry, dict) or not isinstance(entry.get("id"), str):
@@ -326,7 +331,12 @@ def _origin(
     return {"PLACEHOLDER": "PLACEHOLDER", "URL": "CLAIMED_ONLY", "FREE_TEXT": "CLAIMED_ONLY"}[kind]
 
 
-def _load_evidence(context: Context, entry: dict[str, Any], authorship: str = "UNKNOWN") -> Loaded:
+def _load_evidence(
+    context: Context,
+    entry: dict[str, Any],
+    authorship: str = "UNKNOWN",
+    budget: list[int] | None = None,
+) -> Loaded:
     path = entry["path"]
     claimed = {
         "source_type": entry.get("source_type"),
@@ -337,6 +347,11 @@ def _load_evidence(context: Context, entry: dict[str, Any], authorship: str = "U
         "note": "as declared by the bundle author; not verified provenance",
     }
     acquisition, record, raw_source = _observe(context, entry)
+    if acquisition == "OBSERVED" and budget is not None:
+        if len(raw_source) > budget[0]:
+            acquisition, raw_source = "SOURCE_BUDGET_EXCEEDED", b""
+        else:
+            budget[0] -= len(raw_source)
     trust: dict[str, Any] = {
         "integrity": "ok",
         "claimed_provenance": claimed,
@@ -417,7 +432,10 @@ class ResearchClaims(Evaluator):
         candidate = document["candidate"] if isinstance(document["candidate"], dict) else {}
         candidate_id = str(candidate.get("candidate_id", ""))
         authorship = _bundle_authorship(document)
-        loaded = {e["id"]: _load_evidence(context, e, authorship) for e in document["evidence"]}
+        budget = [MAX_TOTAL_SOURCE_CHARS]
+        loaded = {
+            e["id"]: _load_evidence(context, e, authorship, budget) for e in document["evidence"]
+        }
         outcome = Outcome()
 
         results = []
@@ -669,12 +687,18 @@ class ResearchClaims(Evaluator):
                     row["trust"]["methodology"] = "NOT_REQUIRED"
                 else:
                     quote = source.entry.get("methodology_quote")
-                    recorded = isinstance(quote, str) and locate_phrase(quote, source.source)
+                    recorded = (
+                        isinstance(quote, str)
+                        and len(quote.strip()) >= MIN_METHODOLOGY_CHARS
+                        and len(quote.split()) >= MIN_METHODOLOGY_WORDS
+                        and locate_phrase(quote, source.source)
+                    )
                     row["trust"]["methodology"] = "RECORDED" if recorded else "NOT_RECORDED"
                     if not recorded:
                         reasons.append(
                             "no methodology recorded: a quantitative measurement needs a "
-                            "methodology_quote that appears in the acquired source"
+                            f"methodology_quote of at least {MIN_METHODOLOGY_WORDS} words that "
+                            "appears in the acquired source"
                         )
         row["eligible"] = not reasons
         row["ineligible_reasons"] = reasons
@@ -865,6 +889,7 @@ class ResearchClaims(Evaluator):
                 }
             ]
         holds = bool(found) if expect == "present" else not found
+        subject = [t for t in item.get("subject_terms") or [] if isinstance(t, str)]
         elsewhere = sorted(
             i
             for i, other in loaded.items()
@@ -872,10 +897,18 @@ class ResearchClaims(Evaluator):
             and other.integrity == "ok"
             and (other_text := other.searchable(synthetic)) is not None
             and locate_phrase(term, other_text)
+            # only artifacts about the same subject count as related context
+            and (synthetic or (subject and all(locate_phrase(t, other_text) for t in subject)))
         )
         result["also_found_in"] = elsewhere
         result.update(check_outcome="SUPPORTED" if holds else "REFUTED", check_passed=holds)
         where = ", ".join(r["id"] for r in decided)
+        if not item.get("checked_proposition"):
+            # Never echo a broader claim as if it were what was checked.
+            result["checked_proposition"] = (
+                f"The cited artifact(s) {where} "
+                f"{'contain' if expect == 'present' else 'do not contain'} the text {term!r}"
+            )
         note = (
             f"; the term does appear in other bundle evidence ({', '.join(elsewhere)}), so the "
             "broader question is open"
@@ -896,12 +929,17 @@ class ResearchClaims(Evaluator):
         rows = result["evidence_considered"]
         method = result["method"]
         sourced = method in ("fact_compare", "text_presence")
+        # Origin and integrity describe evidence a check actually examined. A forecast, a
+        # claim with no check, or arithmetic never reads its citations, so reporting their
+        # origin would make an unexamined claim look verified.
         origins = [r["trust"]["source_origin"] for r in rows]
-        origin = next((o for o in ORIGIN_RANK if o in origins), "NONE")
+        origin = (
+            next((o for o in ORIGIN_RANK if o in origins), "NONE") if sourced else "NOT_EXAMINED"
+        )
         integrities = {r["integrity"] for r in rows}
         integrity = (
             "not_applicable"
-            if not rows
+            if not rows or not sourced
             else "mismatch"
             if "mismatch" in integrities
             else "missing"

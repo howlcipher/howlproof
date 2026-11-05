@@ -434,16 +434,15 @@ def test_a_fabricated_methodology_quote_is_not_credited(tmp_path, store):
 
 
 def presence_claim(term="agent", **extra):
+    base = {
+        "check": {"type": "text_presence", "term": term, "expect": "present"},
+        "subject_terms": ["Mutant"],
+        "checked_proposition": "The text of Mutant's README mentions 'agent'",
+        "scope": {"artifact": "README.md", "extent": "SINGLE_FILE"},
+    }
+    base.update(extra)
     return claim(
-        "c1",
-        "Mutant's README documents agent integration",
-        "EMPIRICAL",
-        ("readme",),
-        check={"type": "text_presence", "term": term, "expect": "present"},
-        subject_terms=["Mutant"],
-        checked_proposition="The text of Mutant's README mentions 'agent'",
-        scope={"artifact": "README.md", "extent": "SINGLE_FILE"},
-        **extra,
+        "c1", "Mutant's README documents agent integration", "EMPIRICAL", ("readme",), **base
     )
 
 
@@ -818,3 +817,60 @@ def test_text_presence_records_disagreement_between_older_and_newer_artifacts(tm
     assert r["conflicts"][0]["kind"] == "artifacts_disagree"
     assert r["conflicts"][0]["newer"] == "new"
     assert r["scope_limited"] is True
+
+
+# -- dogfood findings: assurance must not imply a check that did not happen ---------------------------
+
+
+def test_a_forecast_citing_acquired_evidence_does_not_report_an_observed_origin(tmp_path, store):
+    root = tmp_path / "bundle"
+    e = ev(root, "e1", facts={}, store=store, raw="Rubydex adoption is growing.")
+    c = claim("c1", "Rubydex will be adopted by 2028", "VALUE_JUDGMENT", ("e1",))
+    write_bundle(root, [c], [e], authorship=REAL)
+    a = evaluate(tmp_path, root, store.root)["c1"]["assurance"]
+    assert a["source_origin"] == "NOT_EXAMINED"
+    assert a["evidence_integrity"] == "not_applicable"
+    assert a["real_world_eligible"] is False
+
+
+def test_arithmetic_does_not_inherit_the_origin_of_evidence_it_never_read(tmp_path, store):
+    root = tmp_path / "bundle"
+    e = ev(root, "e1", facts={}, store=store, raw="Rubydex benchmark.")
+    check = {"type": "arithmetic", "expression": "12 * 3", "op": "eq", "expected": "36"}
+    c = claim("c1", "12 x 3 = 36", "TECHNICAL", ("e1",), check=check)
+    write_bundle(root, [c], [e], authorship=REAL)
+    a = evaluate(tmp_path, root, store.root)["c1"]["assurance"]
+    assert a["source_origin"] == "NOT_EXAMINED"
+    assert a["input_provenance"] == "UNVERIFIED"
+
+
+def test_also_found_in_lists_only_artifacts_about_the_same_subject(tmp_path, store):
+    """An unrelated page that happens to contain the word must not read as related context."""
+    root = tmp_path / "bundle"
+    readme = ev(
+        root,
+        "readme",
+        facts={},
+        store=store,
+        raw="Mutant is a mutation tool.",
+        url="https://github.com/mbj/mutant",
+    )
+    skill = ev(
+        root,
+        "skill",
+        facts={},
+        store=store,
+        raw="Mutant skill: agent workflow.",
+        url="https://github.com/mbj/mutant/s",
+    )
+    other = ev(
+        root,
+        "other",
+        facts={},
+        store=store,
+        raw="A benchmark of coding agent languages.",
+        url="https://github.com/o/bench",
+    )
+    write_bundle(root, [presence_claim()], [readme, skill, other], authorship=REAL)
+    c = evaluate(tmp_path, root, store.root)["c1"]
+    assert c["also_found_in"] == ["skill"]
