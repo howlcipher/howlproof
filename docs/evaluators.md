@@ -67,6 +67,8 @@ tooling is absent, and attaches to each result a statement of what the check doe
 | --- | --- | --- | --- | --- |
 | `cli.destructive` | v1 | Destructive operations should be hard to reach by accident. | nothing extra | default, documentation |
 | `docs.claims` | v1 | Collect the artifact's absolute claims so each one can be answered with evidence. | nothing extra | default, documentation |
+| `publication.manifest.consistency` | v1 | Check consistency between MANIFEST.json and disk files. | nothing extra | publication |
+| `publication.package.integrity` | v1 | Check structural integrity of publication packages. | nothing extra | publication |
 | `release.version` | v1 | Check that the artifact agrees with itself about which version it is. | nothing extra | code, default, documentation, python, release |
 | `web.links` | v1 | Every internal reference must resolve. External ones are only followed on request. | nothing extra | default, documentation, web |
 | `web.metadata` | v1 | Discovery metadata the ecosystem's other sites all carry. | nothing extra | default, web |
@@ -82,6 +84,7 @@ tooling is absent, and attaches to each result a statement of what the check doe
 | `default` | 27 | A broad pass over whatever surfaces the artifact declares. Evaluators that find no surface report NOT_APPLICABLE rather than passing vacuously. |
 | `documentation` | 4 | Absolute claims, files documented as synchronised, and operator-facing guards. |
 | `go` | 3 | Go formatting, vet and tests. |
+| `publication` | 2 | Publication package integrity and manifest consistency verification. |
 | `python` | 7 | Python packaging, typing, linting and tests in a freshly provisioned environment. |
 | `release` | 3 | Version agreement and the supply chain that publishes the artifact. |
 | `reliability` | 4 | Failure, restart and corruption behaviour. The service-disrupting checks run last so they cannot disturb the evidence gathered before them. |

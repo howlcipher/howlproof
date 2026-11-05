@@ -10,6 +10,7 @@ from howlproof.evaluators import (
     httpsurface,
     markup,
     operator,
+    publication,
     release,
     secrets,
     supplychain,
@@ -27,6 +28,7 @@ MODULES = (
     web,
     aisurface,
     operator,
+    publication,
     release,
     deps,
 )
