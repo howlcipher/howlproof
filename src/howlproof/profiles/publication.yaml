@@ -1,0 +1,5 @@
+name: publication
+description: Publication package integrity and manifest consistency verification.
+evaluators:
+  - publication.package.integrity
+  - publication.manifest.consistency
