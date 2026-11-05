@@ -106,8 +106,9 @@ class PublicationPackageIntegrity(Evaluator):
                 except UnicodeDecodeError as exc:
                     encoding_errors.append(f"{name}: {exc}")
         if encoding_errors:
+            err_summary = ", ".join(encoding_errors[:3])
             problems.append(
-                f"{len(encoding_errors)} text files contain invalid UTF-8: {', '.join(encoding_errors[:3])}"
+                f"{len(encoding_errors)} text files contain invalid UTF-8: {err_summary}"
             )
 
         # 4. Image decoding, dimensions, and magic headers
@@ -135,7 +136,8 @@ class PublicationPackageIntegrity(Evaluator):
             image_details.append({"path": img_name, "width": width, "height": height})
             if width < MIN_IMAGE_WIDTH or height < MIN_IMAGE_HEIGHT:
                 problems.append(
-                    f"image {img_name} dimensions ({width}x{height}) below required minimum ({MIN_IMAGE_WIDTH}x{MIN_IMAGE_HEIGHT})"
+                    f"image {img_name} dimensions ({width}x{height}) "
+                    f"below required minimum ({MIN_IMAGE_WIDTH}x{MIN_IMAGE_HEIGHT})"
                 )
 
         observed["images"] = image_details
@@ -149,23 +151,25 @@ class PublicationPackageIntegrity(Evaluator):
 
         missing_alt: list[str] = []
         for pdir in sorted(post_dirs):
-            alt_candidate = f"{pdir}/alt_text.txt"
-            if not context.target.exists(alt_candidate):
+            alt_candidates = [f"{pdir}/alt_text.txt", f"{pdir}/image_alt.txt"]
+            alt_found = next((c for c in alt_candidates if context.target.exists(c)), None)
+            if not alt_found:
                 missing_alt.append(pdir)
             else:
-                alt_content = context.target.read_text(alt_candidate).strip()
+                alt_content = context.target.read_text(alt_found).strip()
                 if len(alt_content) < 10:
-                    problems.append(f"alt text in {alt_candidate} is trivially short (< 10 chars)")
+                    problems.append(f"alt text in {alt_found} is trivially short (< 10 chars)")
 
         if missing_alt:
+            missing_dirs = ", ".join(missing_alt)
             problems.append(
-                f"missing alt_text.txt in illustrated post directories: {', '.join(missing_alt)}"
+                f"missing alt_text.txt or image_alt.txt in illustrated posts: {missing_dirs}"
             )
 
         ref = context.save_evidence_json(self.id, "package_integrity.json", observed)
         limitation = (
-            "validates required package layout, path safety, text encoding, image headers/dimensions, "
-            "and accessibility metadata on disk; does not evaluate stylistic prose quality."
+            "validates required package layout, path safety, text encoding, image headers,"
+            " dimensions, and accessibility metadata on disk; does not evaluate stylistic prose."
         )
 
         if problems:
@@ -186,8 +190,10 @@ class PublicationPackageIntegrity(Evaluator):
                         confidence=Confidence.CONFIRMED,
                         summary="; ".join(problems),
                         evidence=json.dumps({"problems": problems, "observed": observed}, indent=2),
-                        remediation="Ensure all required files exist, images are valid with dimensions >= 1200x675, "
-                        "all text files use valid UTF-8, and alt_text.txt is supplied for each image.",
+                        remediation=(
+                            "Ensure required files exist, images are valid (width>=1200, "
+                            "height>=675), text files use valid UTF-8, and alt text is supplied."
+                        ),
                         rule="publication.package.defect",
                         reproduction=Reproduction(
                             summary="Inspect package root and post folders.",
@@ -207,7 +213,8 @@ class PublicationPackageIntegrity(Evaluator):
         return Outcome(
             checks=[
                 self.verified(
-                    f"publication package layout verified ({len(context.target.names)} files, {len(images)} images)",
+                    f"publication package layout verified ({len(context.target.names)} files, "
+                    f"{len(images)} images)",
                     limitation,
                     evidence_refs=[ref],
                     detail=observed,
@@ -336,14 +343,15 @@ class PublicationManifestConsistency(Evaluator):
             and not n.startswith(".")
         ]
         if untracked:
+            omitted = ", ".join(untracked[:5])
             discrepancies.append(
-                f"{len(untracked)} files exist on disk but are omitted from manifest: {', '.join(untracked[:5])}"
+                f"{len(untracked)} files exist on disk but are omitted from manifest: {omitted}"
             )
 
         ref = context.save_evidence_json(self.id, "manifest_consistency.json", observed_results)
         limitation = (
-            "verifies cryptographic digest (SHA-256) and exact byte lengths of files declared in MANIFEST.json "
-            "against disk copies; does not attest to legal copyright or external publication status."
+            "verifies cryptographic digest (SHA-256) and exact byte lengths of files declared "
+            "in MANIFEST.json against disk copies; does not attest to external publication status."
         )
 
         if discrepancies:
@@ -351,7 +359,7 @@ class PublicationManifestConsistency(Evaluator):
             return Outcome(
                 checks=[
                     self.failed(
-                        f"manifest consistency check failed with {len(discrepancies)} discrepancies",
+                        f"manifest check failed with {len(discrepancies)} discrepancies",
                         limitation,
                         evidence_refs=[ref],
                         detail={"discrepancies": discrepancies},
@@ -365,7 +373,9 @@ class PublicationManifestConsistency(Evaluator):
                         confidence=Confidence.CONFIRMED,
                         summary="; ".join(discrepancies),
                         evidence=json.dumps({"discrepancies": discrepancies}, indent=2),
-                        remediation="Re-run manifest generation to record accurate hashes and file sizes.",
+                        remediation=(
+                            "Re-run manifest generation to record accurate hashes and file sizes."
+                        ),
                         rule="publication.manifest.mismatch",
                         reproduction=Reproduction(
                             summary="Verify disk files against manifest digests.",
@@ -385,7 +395,8 @@ class PublicationManifestConsistency(Evaluator):
         return Outcome(
             checks=[
                 self.verified(
-                    f"all {len(declared_files)} manifest entries match disk files and SHA-256 digests exactly",
+                    f"all {len(declared_files)} manifest entries match disk files and "
+                    "SHA-256 digests exactly",
                     limitation,
                     evidence_refs=[ref],
                     detail=observed_results,
