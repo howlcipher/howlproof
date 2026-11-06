@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+Vendor canonical JSON Schema for `howl.claim_bundle/v1` (`schemas/howl.claim_bundle.v1.schema.json`
+and `tests/ecosystem_schemas/howl.claim_bundle.v1.schema.json`). Adds test suite in
+`tests/test_claim_bundle_schema.py` verifying required envelope fields (`schema`, `candidate`,
+`authorship`), valid claim categories (`EMPIRICAL`, `TECHNICAL`, `HYPOTHESIS`, `VALUE_JUDGMENT`),
+rejection of invalid categories and injected execution authority, and schema parity.
+
 M2 evidence integrity (`howl.evidence_trust/v1`). **Semantic change:** a sourced claim
 (EMPIRICAL, or TECHNICAL via `fact_compare`) now reaches SUPPORTED or REFUTED only on
 evidence whose source bytes an acquisition event in the operator's acquisition store
