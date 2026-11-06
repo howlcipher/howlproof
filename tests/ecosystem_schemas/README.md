@@ -1,8 +1,13 @@
 # Vendored ecosystem schemas
 
 Copied from `howlcipher/howlplane` revision
-`b633199aff0ddd71f3ea3639d14e63c2e7a0c499`. `tests/test_handoff.py` validates
-emitted documents against these independent schemas.
+`b633199aff0ddd71f3ea3639d14e63c2e7a0c499` (`verification-plan`, `review-finding`,
+`evidence-entry`). `tests/test_handoff.py` validates emitted documents against these
+independent schemas.
+
+`howl.claim_bundle.v1.schema.json` is vendored from `howlcipher/howldream`
+(`howl.claim_bundle/v1` envelope). `tests/test_claim_bundle_schema.py` validates
+evaluated research claim bundles against it.
 
 The evidence-entry action enum has expanded under v1. A stable schema identifier
 therefore does not establish identical contents. The drift checker compares parsed
