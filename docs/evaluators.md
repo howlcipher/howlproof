@@ -24,6 +24,7 @@ tooling is absent, and attaches to each result a statement of what the check doe
 | `python.lint` | v1 | Run the artifact's own linter. | `python3` | code, default, python |
 | `python.tests` | v1 | Run the artifact's own Python test suite in an environment provisioned for it. | `python3` | code, default, python |
 | `python.types` | v1 | Run the artifact's own type checker over the code it declares. | `python3` | code, default, python |
+| `research.claims` | v1 | Evaluate each claim in a claim bundle on its own. | nothing extra | research |
 
 ## Security adversary
 
@@ -88,6 +89,7 @@ tooling is absent, and attaches to each result a statement of what the check doe
 | `python` | 7 | Python packaging, typing, linting and tests in a freshly provisioned environment. |
 | `release` | 3 | Version agreement and the supply chain that publishes the artifact. |
 | `reliability` | 4 | Failure, restart and corruption behaviour. The service-disrupting checks run last so they cannot disturb the evidence gathered before them. |
+| `research` | 1 | Per-claim evaluation of a howl.claim_bundle/v1. Unverifiable claims stay unresolved; an artifact with no claim bundle reports NOT_APPLICABLE rather than passing. |
 | `security` | 7 | The defensive security adversary. Bounded, authorised probes against an artifact the operator owns; it ships no general exploitation tooling. |
 | `web` | 5 | The published interface, covering references, discovery metadata and rendered behaviour at the declared widths. |
 

@@ -637,7 +637,9 @@ class ResearchClaims(Evaluator):
             {
                 "CLAIMED_ONLY": "no acquisition record: source_ref is a claim, not an observation",
                 "PLACEHOLDER": "source_ref is a placeholder and no acquisition record exists",
-                "UNVERIFIABLE": f"acquisition could not be verified ({row['trust']['acquisition']})",
+                "UNVERIFIABLE": (
+                    f"acquisition could not be verified ({row['trust']['acquisition']})"
+                ),
                 "AGENT_AUTHORED": "evidence is agent-authored "
                 f"({row['source_type']}), not a primary source",
                 "SYNTHETIC_FIXTURE": "evidence is a synthetic fixture, not a real-world source",

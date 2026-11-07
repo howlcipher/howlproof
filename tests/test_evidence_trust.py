@@ -604,7 +604,7 @@ def test_replaying_an_evaluation_is_deterministic(tmp_path, store):
     )
 
 
-# -- legacy v1 bundles -------------------------------------------------------------------------------
+# -- legacy v1 bundles -----------------------------------------------------------------------------
 
 
 def test_legacy_v1_empirical_evidence_keeps_its_check_outcome_but_loses_authority(tmp_path):
@@ -626,7 +626,7 @@ def test_legacy_v1_empirical_evidence_keeps_its_check_outcome_but_loses_authorit
     assert "no acquisition" in c["explanation"]
 
 
-# -- pure helpers --------------------------------------------------------------------------------------
+# -- pure helpers ----------------------------------------------------------------------------------
 
 
 @pytest.mark.parametrize(
@@ -684,7 +684,7 @@ def test_value_location_respects_number_boundaries(value, text, found):
     assert locate_value(value, text) is found
 
 
-# -- property: authority never comes from declarations alone ----------------------------------------------
+# -- property: authority never comes from declarations alone ---------------------------------------
 
 
 def test_property_no_declaration_combination_verifies_without_an_observed_acquisition(tmp_path):
@@ -819,7 +819,7 @@ def test_text_presence_records_disagreement_between_older_and_newer_artifacts(tm
     assert r["scope_limited"] is True
 
 
-# -- dogfood findings: assurance must not imply a check that did not happen ---------------------------
+# -- dogfood findings: assurance must not imply a check that did not happen ------------------------
 
 
 def test_a_forecast_citing_acquired_evidence_does_not_report_an_observed_origin(tmp_path, store):

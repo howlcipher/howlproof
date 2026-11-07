@@ -13,7 +13,9 @@ from howlproof.evaluators import research
 
 SCHEMAS_DIR = Path(__file__).resolve().parent / "ecosystem_schemas"
 SCHEMA_PATH = SCHEMAS_DIR / "howl.claim_bundle.v1.schema.json"
-REPO_SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schemas" / "howl.claim_bundle.v1.schema.json"
+REPO_SCHEMA_PATH = (
+    Path(__file__).resolve().parent.parent / "schemas" / "howl.claim_bundle.v1.schema.json"
+)
 
 
 @pytest.fixture
@@ -86,7 +88,9 @@ def canonical_bundle() -> dict[str, Any]:
                     "id": "acq-1234567890abcdef",
                     "content_sha256": "1" * 64,
                 },
-                "methodology_quote": "We measured the end-to-end response latency across 100 trials",
+                "methodology_quote": (
+                    "We measured the end-to-end response latency across 100 trials"
+                ),
             }
         ],
         "lineage": {

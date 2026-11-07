@@ -92,7 +92,7 @@ def test_an_oversize_stored_artifact_is_refused_not_loaded(tmp_path, store):
     assert store.verify(sealed["id"], sealed["content_sha256"]).status == "TOO_LARGE"
 
 
-# -- attacks that must fail ----------------------------------------------------------------------------
+# -- attacks that must fail ------------------------------------------------------------------------
 
 
 def test_a_generic_phrase_is_not_a_methodology(tmp_path, store):
@@ -197,7 +197,7 @@ def test_fabricated_contradicting_evidence_cannot_silently_cancel_a_real_refutat
     assert c["claim_status"] == "INCONCLUSIVE" and c["conflicts"]  # conservative, and visible
 
 
-# -- KNOWN LIMITS: attacks that still succeed, recorded so they are never forgotten ------------------------
+# -- KNOWN LIMITS: attacks that still succeed, recorded so they are never forgotten ----------------
 
 
 def test_known_limit_a_real_number_with_the_wrong_meaning_passes(tmp_path, store):
@@ -231,7 +231,11 @@ def test_known_limit_author_chosen_subject_terms_can_be_too_generic(tmp_path, st
 def test_known_limit_a_vendors_own_page_passes_as_a_single_uncorroborated_source(tmp_path, store):
     root = tmp_path / "bundle"
     e = ev(
-        root, "e1", facts={"latency_ms": "42 ms"}, store=store, raw=SOURCE + "Rubydex 42 ms (our own numbers)",
+        root,
+        "e1",
+        facts={"latency_ms": "42 ms"},
+        store=store,
+        raw=SOURCE + "Rubydex 42 ms (our own numbers)",
         declared={**DECLARED, "produced_by": "the-vendor"},
     )  # fmt: skip
     write_bundle(root, [lat_claim()], [e], authorship=REAL)

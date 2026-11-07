@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+Fix CI on `main`, red since the research claims evaluator merge. `ruff format --check`
+failed first and hid two more failures: nine lines over flake8's 100 characters, and
+`docs/evaluators.md` missing the `research.claims` evaluator and `research` profile. Lines
+are wrapped and the docs regenerated. No behavior change.
+
 Vendor canonical JSON Schema for `howl.claim_bundle/v1` (`schemas/howl.claim_bundle.v1.schema.json`
 and `tests/ecosystem_schemas/howl.claim_bundle.v1.schema.json`). Adds test suite in
 `tests/test_claim_bundle_schema.py` verifying required envelope fields (`schema`, `candidate`,
