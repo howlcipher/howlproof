@@ -27,6 +27,7 @@ SCHEMA = "howl.interop/v1"
 # Commands that always print JSON on stdout; others do so with --json or
 # --format json.
 ALWAYS_JSON = {
+    "verify-improvement",
     "init",
     "calibrate",
     "validate",
@@ -38,6 +39,7 @@ ALWAYS_JSON = {
 }
 
 EMITS = {
+    "verify-improvement": ["howlproof.improvement_verification/v1"],
     "evaluate": [RESULT_SCHEMA, RUN_SCHEMA, LEDGER_SCHEMA],
     "report": [RESULT_SCHEMA],
     "inspect": [RESULT_SCHEMA],
