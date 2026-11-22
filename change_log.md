@@ -181,3 +181,6 @@ to end through HowlPlane's own reconcile command, which accepted it. There is no
 HowlChangeOps ingest path for an external verdict and the handoff for it says so
 plainly rather than implying one exists. HowlGuard is not built; only the boundary
 is written down.
+
+- Added a pinned evidence check for the HowlWriter PDF heading regression.
+- Hardened the parser for bounded improvement regression reports.

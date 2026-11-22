@@ -52,6 +52,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=__version__)
     commands = parser.add_subparsers(dest="command", required=True)
 
+    improvement = commands.add_parser("verify-improvement", help="Check pinned Writer PDF evidence")
+    for name in ("candidate", "baseline", "current", "regression"):
+        improvement.add_argument(name, type=Path)
+    improvement.add_argument("--sha256", nargs=4, required=True)
+    improvement.add_argument(
+        "--record-in", type=Path, help="Record a supported verdict in this local store"
+    )
+
     init = commands.add_parser("init", help="create a starter contract without overwriting one")
     init.add_argument("target", type=Path, nargs="?", default=Path("."))
     init.add_argument("--profile", action="append", dest="profiles", default=[])
@@ -235,6 +243,23 @@ def _dispatch(args: argparse.Namespace) -> int:
         from howlproof.interop_descriptor import describe
 
         print(json.dumps(describe(build_parser()), indent=2))
+        return 0
+    if args.command == "verify-improvement":
+        from howlproof.improvement import verify_pdf_evidence
+
+        print(
+            json.dumps(
+                verify_pdf_evidence(
+                    args.candidate,
+                    args.baseline,
+                    args.current,
+                    args.regression,
+                    args.sha256,
+                    args.record_in,
+                ),
+                indent=2,
+            )
+        )
         return 0
     if args.command == "init":
         from howlproof.initialize import initialize
