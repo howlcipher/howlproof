@@ -183,3 +183,4 @@ plainly rather than implying one exists. HowlGuard is not built; only the bounda
 is written down.
 
 - Added a pinned evidence check for the HowlWriter PDF heading regression.
+- Hardened the parser for bounded improvement regression reports.

@@ -3,7 +3,10 @@
 from importlib import import_module
 from pathlib import Path
 from typing import Any
-from xml.etree import ElementTree
+from xml.etree.ElementTree import ParseError
+
+from defusedxml.common import DefusedXmlException
+from defusedxml.ElementTree import fromstring
 
 CHECKS = {"heading", "adjacent_paragraph", "reference", "page_number"}
 REGRESSIONS = {
@@ -103,27 +106,7 @@ def verify_pdf_evidence(
     if old_commit == new_commit or {e.run_id for e in old_events} & {e.run_id for e in new_events}:
         raise ValueError("verification requires a distinct candidate revision and new observations")
 
-    xml = read_pinned(regression_path, expected_hashes[3])
-    if b"<!" in xml or b"\x00" in xml:
-        raise ValueError("unsupported XML document")
-    try:
-        root = ElementTree.fromstring(xml)
-    except ElementTree.ParseError as exc:
-        raise ValueError("invalid regression report") from exc
-    suites = list(root.iter("testsuite"))
-    if (
-        not suites
-        or any(
-            suite.get(key, "0") != "0"
-            for suite in suites
-            for key in ("errors", "failures", "skipped")
-        )
-        or any(list(root.iter(tag)) for tag in ("failure", "error", "skipped"))
-    ):
-        raise ValueError("regression report must record executed and passing checks")
-    names = [(test.get("classname"), test.get("name")) for test in root.iter("testcase")]
-    if any(names.count(name) != 1 for name in REGRESSIONS):
-        raise ValueError("required PDF regression check missing or duplicated")
+    validate_regression_report(read_pinned(regression_path, expected_hashes[3]))
     result = {
         "schema": "howlproof.improvement_verification/v1",
         "candidate_id": candidate["candidate_id"],
@@ -152,3 +135,26 @@ def verify_pdf_evidence(
         except store_api.StorageError as exc:
             raise ValueError("HowlLoop evidence store is unavailable") from exc
     return result
+
+
+def validate_regression_report(xml: bytes) -> None:
+    if len(xml) > 65536:
+        raise ValueError("regression report exceeds size limit")
+    try:
+        root = fromstring(xml, forbid_dtd=True, forbid_entities=True, forbid_external=True)
+    except (ParseError, DefusedXmlException) as exc:
+        raise ValueError("invalid or unsupported regression report") from exc
+    suites = list(root.iter("testsuite"))
+    if (
+        not suites
+        or any(
+            suite.get(key, "0") != "0"
+            for suite in suites
+            for key in ("errors", "failures", "skipped")
+        )
+        or any(list(root.iter(tag)) for tag in ("failure", "error", "skipped"))
+    ):
+        raise ValueError("regression report must record executed and passing checks")
+    names = [(test.get("classname"), test.get("name")) for test in root.iter("testcase")]
+    if any(names.count(name) != 1 for name in REGRESSIONS):
+        raise ValueError("required PDF regression check missing or duplicated")
