@@ -52,7 +52,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=__version__)
     commands = parser.add_subparsers(dest="command", required=True)
 
-    improvement = commands.add_parser("verify-improvement", help="Check pinned Writer PDF evidence")
+    improvement = commands.add_parser(
+        "verify-improvement", help="Check pinned Writer rendering evidence"
+    )
     for name in ("candidate", "baseline", "current", "regression"):
         improvement.add_argument(name, type=Path)
     improvement.add_argument("--sha256", nargs=4, required=True)
@@ -245,11 +247,11 @@ def _dispatch(args: argparse.Namespace) -> int:
         print(json.dumps(describe(build_parser()), indent=2))
         return 0
     if args.command == "verify-improvement":
-        from howlproof.improvement import verify_pdf_evidence
+        from howlproof.improvement import verify_improvement_evidence
 
         print(
             json.dumps(
-                verify_pdf_evidence(
+                verify_improvement_evidence(
                     args.candidate,
                     args.baseline,
                     args.current,

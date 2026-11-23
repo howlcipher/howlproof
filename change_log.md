@@ -184,3 +184,5 @@ is written down.
 
 - Added a pinned evidence check for the HowlWriter PDF heading regression.
 - Hardened the parser for bounded improvement regression reports.
+- Added DOCX heading fidelity as a second pinned HowlLoop verification profile.
+- Reject detached JUnit test cases and mismatched suite counts.

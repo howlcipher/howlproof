@@ -597,11 +597,20 @@ Markers must be nonblank and non-overlapping. Per-call timeouts are bounded to
 uncooperative entry point cannot establish parser correctness. This is a local
 adapter test, not a live-model benchmark or a general JSON-schema validator.
 
-### HowlLoop PDF verification
+### HowlLoop rendering verification
 
 With HowlLoop installed in the same environment, use `howlproof verify-improvement`
-to check the bounded Writer PDF reproduction evidence. Run the reproduction and
-regression suite independently and retain the four SHA-256 pins. The verifier checks
-the candidate, distinct revision observations, required passing tests, and hashes.
-`--record-in` records the scoped verdict in a local HowlLoop store. No publication,
-execution, or promotion authority is granted.
+to check bounded Writer heading-regression evidence. The candidate operation selects
+the PDF or DOCX profile. Each profile requires two to ten observed baseline and
+candidate samples, distinct revisions, named passing tests, and four SHA-256 pins.
+
+Each sample contains a HowlLoop `event`, the `producer`, and boolean `checks` for
+`heading`, `adjacent_paragraph`, and `reference`. PDF samples identify `Skia/PDF`
+as the producer and also include `page_number`. DOCX samples identify
+`python-docx` and use the actual exported paragraphs for the checks. The baseline
+must reproduce the missing paragraph. The candidate must preserve all checked content.
+Run the reproduction and regression suite independently and retain the exact artifact
+hashes.
+
+`--record-in` records the scoped verdict in a local HowlLoop store. The verdict
+is advisory. HowlPlane continues to own execution and promotion decisions.
